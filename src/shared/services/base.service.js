@@ -1,7 +1,7 @@
 const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL;
 
 export class BaseService {
-    constructor(resourceEndpoint = '/resources') {
+    constructor(resourceEndpoint = '/resources', options = {}) {
         this.resourceEndpoint = resourceEndpoint;
         this.serverBaseUrl = propgmsApiUrl;
         this.httpOptions = {
@@ -9,14 +9,18 @@ export class BaseService {
                 'Content-Type': 'application/json'
             }
         };
+
+        if (options.create) this.create = this._create;
+        if (options.getAll) this.getAll = this._getAll;
+        if (options.getById) this.getById = this._getById;
+        if (options.update) this.update = this._update;
+        if (options.delete) this.delete = this._delete;
     }
 
-    // Constructs the full resource URL
     resourcePath() {
         return `${this.serverBaseUrl}${this.resourceEndpoint}`;
     }
 
-    // Handles client/server errors
     handleError(error) {
         if (error instanceof Error) {
             console.error('Client-side error:', error.message);
@@ -26,8 +30,7 @@ export class BaseService {
         throw new Error('Something went wrong. Please try again later.');
     }
 
-    // Creates a new resource
-    async create(resource) {
+    async _create(resource) {
         try {
             const res = await fetch(this.resourcePath(), {
                 method: 'POST',
@@ -40,8 +43,7 @@ export class BaseService {
         }
     }
 
-    // Deletes a resource by ID
-    async delete(id) {
+    async _delete(id) {
         try {
             const res = await fetch(`${this.resourcePath()}/${id}`, {
                 method: 'DELETE',
@@ -53,8 +55,7 @@ export class BaseService {
         }
     }
 
-    // Updates a resource by ID
-    async update(id, resource) {
+    async _update(id, resource) {
         try {
             const res = await fetch(`${this.resourcePath()}/${id}`, {
                 method: 'PUT',
@@ -67,8 +68,7 @@ export class BaseService {
         }
     }
 
-    // Retrieves all resources
-    async getAll() {
+    async _getAll() {
         try {
             const res = await fetch(this.resourcePath(), {
                 method: 'GET',
@@ -80,8 +80,7 @@ export class BaseService {
         }
     }
 
-    // Retrieves a resource by ID
-    async getById(id) {
+    async _getById(id) {
         try {
             const res = await fetch(`${this.resourcePath()}/${id}`, {
                 method: 'GET',

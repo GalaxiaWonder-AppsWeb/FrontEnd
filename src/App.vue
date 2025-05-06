@@ -1,8 +1,15 @@
 <script>
+import {defineComponent} from "vue";
+import LanguageSwitcher from "./public/components/language-switcher.component.vue";
+
+export default defineComponent({
+  components: {LanguageSwitcher}
+})
 </script>
 
 <template>
-  <h1>Test</h1>
+  <h1>{{ $t('test') }}</h1>
+  <language-switcher/>
 </template>
 
 <style scoped>

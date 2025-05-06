@@ -8,8 +8,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <h1>{{ $t('test') }}</h1>
   <language-switcher/>
+  <h1>{{ $t('test') }}</h1>
+  <router-view/>
 </template>
 
 <style scoped>

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL;
 
 export class AuthService {
@@ -12,26 +14,22 @@ export class AuthService {
 
     async register({ email, password }) {
         try {
-            // Primero verificar si ya existe el usuario
-            const res = await fetch(`${this.baseUrl}/users?email=${email}`);
-            const users = await res.json();
-            if (users.length > 0) {
+            const res = await axios.get(`${this.baseUrl}/users`, {
+                params: { email },
+                headers: this.httpOptions.headers
+            });
+
+            if (res.data.length > 0) {
                 throw new Error('User already exists');
             }
 
-            // Crear nuevo usuario
-            const createRes = await fetch(`${this.baseUrl}/users`, {
-                method: 'POST',
-                headers: this.httpOptions.headers,
-                body: JSON.stringify({ email, password })
-            });
+            const createRes = await axios.post(
+                `${this.baseUrl}/users`,
+                { email, password },
+                this.httpOptions
+            );
 
-            if (!createRes.ok) {
-                const text = await createRes.text();
-                throw new Error(`Failed to register: ${text}`);
-            }
-
-            return await createRes.json();
+            return createRes.data;
         } catch (error) {
             console.error('[AuthService] Register error:', error.message);
             throw error;
@@ -40,22 +38,17 @@ export class AuthService {
 
     async login({ email, password }) {
         try {
-            const res = await fetch(`${this.baseUrl}/users?email=${email}&password=${password}`, {
-                method: 'GET',
+            const res = await axios.get(`${this.baseUrl}/users`, {
+                params: { email, password },
                 headers: this.httpOptions.headers
             });
 
-            if (!res.ok) {
-                throw new Error('Login request failed');
-            }
-
-            const users = await res.json();
+            const users = res.data;
 
             if (users.length === 0) {
                 throw new Error('Invalid email or password');
             }
 
-            // Simulamos guardar un "token"
             localStorage.setItem('user', JSON.stringify(users[0]));
             return users[0];
         } catch (error) {

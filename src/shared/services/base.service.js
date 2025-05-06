@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL;
 
 export class BaseService {
@@ -22,22 +24,20 @@ export class BaseService {
     }
 
     handleError(error) {
-        if (error instanceof Error) {
-            console.error('Client-side error:', error.message);
+        if (error.response) {
+            console.error(`Server error (${error.response.status}):`, error.response.data);
+        } else if (error.request) {
+            console.error('No response from server:', error.request);
         } else {
-            console.error(`Server returned error (${error.status}):`, error);
+            console.error('Client-side error:', error.message);
         }
         throw new Error('Something went wrong. Please try again later.');
     }
 
     async _create(resource) {
         try {
-            const res = await fetch(this.resourcePath(), {
-                method: 'POST',
-                headers: this.httpOptions.headers,
-                body: JSON.stringify(resource)
-            });
-            return await res.json();
+            const res = await axios.post(this.resourcePath(), resource, this.httpOptions);
+            return res.data;
         } catch (error) {
             this.handleError(error);
         }
@@ -45,11 +45,8 @@ export class BaseService {
 
     async _delete(id) {
         try {
-            const res = await fetch(`${this.resourcePath()}/${id}`, {
-                method: 'DELETE',
-                headers: this.httpOptions.headers
-            });
-            return await res.json();
+            const res = await axios.delete(`${this.resourcePath()}/${id}`, this.httpOptions);
+            return res.data;
         } catch (error) {
             this.handleError(error);
         }
@@ -57,12 +54,8 @@ export class BaseService {
 
     async _update(id, resource) {
         try {
-            const res = await fetch(`${this.resourcePath()}/${id}`, {
-                method: 'PUT',
-                headers: this.httpOptions.headers,
-                body: JSON.stringify(resource)
-            });
-            return await res.json();
+            const res = await axios.put(`${this.resourcePath()}/${id}`, resource, this.httpOptions);
+            return res.data;
         } catch (error) {
             this.handleError(error);
         }
@@ -70,11 +63,8 @@ export class BaseService {
 
     async _getAll() {
         try {
-            const res = await fetch(this.resourcePath(), {
-                method: 'GET',
-                headers: this.httpOptions.headers
-            });
-            return await res.json();
+            const res = await axios.get(this.resourcePath(), this.httpOptions);
+            return res.data;
         } catch (error) {
             this.handleError(error);
         }
@@ -82,11 +72,8 @@ export class BaseService {
 
     async _getById(id) {
         try {
-            const res = await fetch(`${this.resourcePath()}/${id}`, {
-                method: 'GET',
-                headers: this.httpOptions.headers
-            });
-            return await res.json();
+            const res = await axios.get(`${this.resourcePath()}/${id}`, this.httpOptions);
+            return res.data;
         } catch (error) {
             this.handleError(error);
         }

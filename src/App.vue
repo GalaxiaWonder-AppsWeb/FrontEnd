@@ -1,16 +1,15 @@
 <script>
 import {defineComponent} from "vue";
 import LanguageSwitcher from "./public/components/language-switcher.component.vue";
+import RegisterComponent from "./iam/components/register-form.component.vue"
 
 export default defineComponent({
-  components: {LanguageSwitcher}
+  components: {LanguageSwitcher, RegisterComponent},
 })
 </script>
 
 <template>
-  <language-switcher/>
-  <h1>{{ $t('test') }}</h1>
-  <router-view/>
+  <RegisterComponent/>
 </template>
 
 <style scoped>

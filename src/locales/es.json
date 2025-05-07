@@ -1,3 +1,16 @@
 {
-
+  "register": {
+    "title": "Registro de Usuario",
+    "email": "Correo",
+    "password": "Contraseña",
+    "submit": "Registrarse",
+    "successful-register": "exitosamente registrado",
+    "roles": {
+      "title": "Rol",
+      "choose-role": "Selecciona un rol",
+      "contractor": "Contratista",
+      "specialist": "Especialista",
+      "client": "Cliente"
+    }
+  }
 }

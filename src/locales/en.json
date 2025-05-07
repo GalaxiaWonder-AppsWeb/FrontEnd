@@ -1,3 +1,16 @@
 {
-
+  "register": {
+    "title": "User Register",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Register",
+    "successful-register": "successfully registered",
+    "roles": {
+      "title": "Role",
+      "choose-role": "Choose a role",
+      "contractor": "Contractor",
+      "specialist": "Specialist",
+      "client": "Client"
+    }
+  }
 }

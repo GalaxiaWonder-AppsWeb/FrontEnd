@@ -1,6 +1,5 @@
 <template>
   <div class="field">
-    <label for="role">{{ $t('register.roles.title') }}</label>
     <pv-select
         id="role"
         v-model="internalValue"
@@ -76,5 +75,6 @@ export default {
 ::v-deep(.p-dropdown-trigger) {
   color: white;
 }
+
 </style>
 

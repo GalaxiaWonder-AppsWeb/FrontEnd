@@ -1,6 +1,10 @@
 {
   "register": {
     "title": "Registro de Usuario",
+    "name": "Nombre",
+    "last-name": "Apellido",
+    "phone": "Celular",
+    "profession": "Profesión",
     "email": "Correo",
     "password": "Contraseña",
     "submit": "Registrarse",

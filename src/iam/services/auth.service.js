@@ -1,72 +1,99 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL;
+import {Credentials} from "../model/credentials.entity.js";
+
+const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL
 
 export class AuthService {
     constructor() {
-        this.baseUrl = propgmsApiUrl;
+        this.baseUrl = propgmsApiUrl
         this.httpOptions = {
             headers: {
                 'Content-Type': 'application/json'
             }
-        };
+        }
     }
 
-    async register({ email, password }) {
-        try {
-            const res = await axios.get(`${this.baseUrl}/users`, {
-                params: { email },
-                headers: this.httpOptions.headers
-            });
+    async findUserByEmail(email) {
+        const res = await axios.get(`${this.baseUrl}/users`, {
+            params: { email },
+            headers: this.httpOptions.headers
+        })
+        return res.data[0] || null
+    }
 
-            if (res.data.length > 0) {
-                throw new Error('User already exists');
+    async register(credentials) {
+        if (!(credentials instanceof Credentials)) {
+            throw new Error('Invalid credentials object')
+        }
+
+        try {
+            const existingUser = await this.findUserByEmail(credentials.email)
+            if (existingUser) {
+                throw new Error('User already exists')
             }
 
             const createRes = await axios.post(
                 `${this.baseUrl}/users`,
-                { email, password },
+                {
+                    email: credentials.email,
+                    password: credentials.password
+                },
                 this.httpOptions
-            );
+            )
 
-            return createRes.data;
+            return createRes.data
         } catch (error) {
-            console.error('[AuthService] Register error:', error.message);
-            throw error;
+            this.handleError('Register', error)
         }
     }
 
-    async login({ email, password }) {
+    async login(credentials) {
+        if (!(credentials instanceof Credentials)) {
+            throw new Error('Invalid credentials object')
+        }
+
         try {
             const res = await axios.get(`${this.baseUrl}/users`, {
-                params: { email, password },
+                params: {
+                    email: credentials.email,
+                    password: credentials.password
+                },
                 headers: this.httpOptions.headers
-            });
+            })
 
-            const users = res.data;
-
-            if (users.length === 0) {
-                throw new Error('Invalid email or password');
+            if (res.data.length === 0) {
+                throw new Error('Invalid email or password')
             }
 
-            localStorage.setItem('user', JSON.stringify(users[0]));
-            return users[0];
+            const user = res.data[0]
+            this.storeUser(user)
+            return user
         } catch (error) {
-            console.error('[AuthService] Login error:', error.message);
-            throw error;
+            this.handleError('Login', error)
         }
     }
 
     logout() {
-        localStorage.removeItem('user');
+        localStorage.removeItem('user')
+    }
+
+    storeUser(user) {
+        localStorage.setItem('user', JSON.stringify(user))
     }
 
     getCurrentUser() {
-        const stored = localStorage.getItem('user');
-        return stored ? JSON.parse(stored) : null;
+        const stored = localStorage.getItem('user')
+        return stored ? JSON.parse(stored) : null
     }
 
     isLoggedIn() {
-        return !!this.getCurrentUser();
+        return !!this.getCurrentUser()
+    }
+
+    handleError(context, error) {
+        const msg = error.response?.data || error.message || 'Unexpected error'
+        console.error(`[AuthService] ${context} error:`, msg)
+        throw new Error(msg)
     }
 }

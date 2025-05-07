@@ -23,7 +23,16 @@
     <div class="field-row">
       <div class="p-field">
         <label for="phoneNumber">{{ $t('register.phone') }}</label>
-        <pv-input-text id="phoneNumber" v-model="phoneNumber" type="tel" required />
+        <pv-input-text
+            id="phoneNumber"
+            v-model="phoneNumber"
+            type="tel"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="9"
+            required
+        />
+
       </div>
       <div class="p-field">
         <label for="profession">{{ $t('register.profession') }}</label>
@@ -52,10 +61,16 @@
     <!-- Rol -->
     <div class="p-field">
       <label>{{ $t('register.roles.title') }}</label>
-      <SelectRole v-model="role" />
+      <SelectRole v-model="role" required/>
     </div>
 
-    <pv-button class="p-button" :label="$t('register.submit')" icon="pi pi-user-plus" type="submit" />
+    <pv-button
+        class="p-button"
+        :label="$t('register.submit')"
+        icon="pi pi-user-plus"
+        type="submit"
+        :disabled="!role || (['Contractor', 'Specialist'].includes(role) && !profession)"
+    />
   </form>
 
 </template>
@@ -87,6 +102,28 @@ export default {
   methods: {
     async handleRegister() {
       this.message = ''
+
+      const phoneRegex = /^\d{9}$/;
+
+      if (!phoneRegex.test(this.phoneNumber)) {
+        this.message = this.$t('register.errors.invalid-phone');
+        this.messageType = 'error';
+        return;
+      }
+
+
+      if (!this.role) {
+        this.message = this.$t('register.errors.missing-role');
+        this.messageType = 'error';
+        return;
+      }
+
+      if (['Contractor', 'Specialist'].includes(this.role) && !this.profession) {
+        this.message = this.$t('register.errors.missing-profession');
+        this.messageType = 'error';
+        return;
+      }
+
       try {
         const person = new Person(
             this.name,

@@ -5,7 +5,7 @@
     </div>
 
 
-    <h2 class="form-title">{{ $t('register.title') }}</h2>
+    <h1 class="form-title">{{ $t('register.title') }}</h1>
 
     <!-- Name and Lastname -->
     <div class="field-row">
@@ -186,7 +186,7 @@ export default {
 
 .form-title {
   text-align: center;
-  font-size: 1.25rem;
+  font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
 }
@@ -221,16 +221,14 @@ label {
 }
 
 
-.p-message {
-  font-size: 0.95rem;
-  padding: 1rem;
-}
-
 ::v-deep(.profession-input:disabled) {
   color: #888888;             /* texto gris tenue */
   cursor: not-allowed;
   opacity: 1; /* evita que se vea deslavado si PrimeVue le baja la opacidad */
 }
 
+::v-deep(.p-password-input) {
+  width: 100% !important;
+}
 
 </style>

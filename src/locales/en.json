@@ -15,5 +15,13 @@
       "worker": "Worker",
       "client": "Client"
     }
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Enter",
+    "no-account": "Don't have an account yet?",
+    "go-register": "Register here"
   }
 }

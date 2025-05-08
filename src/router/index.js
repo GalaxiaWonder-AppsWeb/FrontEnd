@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // Layouts
-import AuthLayout from '@/layouts/AuthLayout.vue'
+import AuthLayoutComponent from '../iam/components/auth-layout.component.vue'
 
 // Auth
-import Login from '@/views/auth/Login.vue'
-import Register from '@/views/auth/Register.vue'
+import Login from '../iam/components/login-form.component.vue'
+import Register from '../iam/components/register-form.component.vue'
 
 
 const routes = [
@@ -15,7 +15,7 @@ const routes = [
     },
     {
         path: '/',
-        component: AuthLayout,
+        component: AuthLayoutComponent,
         children: [
             { path: 'login', name: 'login', component: Login },
             { path: 'register', name: 'register', component: Register }
@@ -165,12 +165,13 @@ const routes = [
                 ]
             }
         ]
-    },*/
+    },
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
         component: NotFound
     }
+    */
 ]
 
 const router = createRouter({

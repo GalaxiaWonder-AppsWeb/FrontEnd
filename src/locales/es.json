@@ -15,5 +15,13 @@
       "worker": "Trabajador",
       "client": "Cliente"
     }
+  },
+  "login": {
+    "title": "Login de usuario",
+    "email": "Correo",
+    "password": "Contraseña",
+    "submit": "Ingresar",
+    "no-account": "¿No tienes una cuenta aún?",
+    "go-register": "Registrate aquí"
   }
 }

@@ -10,7 +10,7 @@ export default defineComponent({
 </script>
 
 <template>
-
+  <router-view/>
 </template>
 
 <style scoped>

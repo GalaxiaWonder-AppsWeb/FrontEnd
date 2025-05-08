@@ -1,0 +1,19 @@
+{
+  "register": {
+    "title": "Registro de Usuario",
+    "name": "Nombre",
+    "last-name": "Apellido",
+    "phone": "Celular",
+    "profession": "Profesión",
+    "email": "Correo",
+    "password": "Contraseña",
+    "submit": "Registrarse",
+    "successful-register": "exitosamente registrado",
+    "roles": {
+      "title": "Rol",
+      "choose-role": "Selecciona un rol",
+      "worker": "Trabajador",
+      "client": "Cliente"
+    }
+  }
+}

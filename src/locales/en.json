@@ -1,0 +1,19 @@
+{
+  "register": {
+    "title": "User Register",
+    "name": "Name",
+    "last-name": "Last Name",
+    "phone": "Phone Number",
+    "profession": "Profession",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Register",
+    "successful-register": "successfully registered",
+    "roles": {
+      "title": "Role",
+      "choose-role": "Choose a role",
+      "worker": "Worker",
+      "client": "Client"
+    }
+  }
+}

@@ -3,7 +3,7 @@
     <!-- Parte superior fija -->
     <pv-toolbar class="toolbar-top">
       <template #start>
-        <h1 class="section-title">{{ sectionTitle }}</h1>
+        <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
       </template>
       <template #end>
         <pv-button icon="pi pi-bell" text rounded severity="warning" />
@@ -15,9 +15,9 @@
     <!-- Parte inferior: navegación dinámica -->
     <nav class="toolbar-nav">
       <template v-if="inOrganizationView">
-        <pv-button text plain label="Information" @click="goTo('information')" />
-        <pv-button text plain label="Projects" @click="goTo('projects')" />
-        <pv-button text plain label="Organization Members" @click="goTo('members')" />
+        <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
+        <pv-button text plain :label="$t(sectionTitle + '.section.projects')" @click="goTo('projects')" />
+        <pv-button text plain :label="$t(sectionTitle + '.section.members')" @click="goTo('members')" />
       </template>
 
       <template v-else-if="inProjectView">
@@ -52,8 +52,8 @@ export default {
       return this.route.path.includes('/project')
     },
     sectionTitle() {
-      if (this.inProjectView) return 'Project'
-      if (this.inOrganizationView) return 'Organization'
+      if (this.inProjectView) return 'project'
+      if (this.inOrganizationView) return 'organization'
       return 'Dashboard'
     }
   },

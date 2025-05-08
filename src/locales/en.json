@@ -23,5 +23,13 @@
     "submit": "Enter",
     "no-account": "Don't have an account yet?",
     "go-register": "Register here"
+  },
+  "organization": {
+    "title": "Organization",
+    "section": {
+      "information":"Information",
+      "projects": "Projects",
+      "members": "Members"
+    }
   }
 }

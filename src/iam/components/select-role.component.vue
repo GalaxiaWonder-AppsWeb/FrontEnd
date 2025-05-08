@@ -1,10 +1,10 @@
 <template>
   <div class="field">
     <pv-select
-        id="role"
         v-model="internalValue"
         :options="roleOptions"
         optionLabel="label"
+        optionValue="value"
         :placeholder="$t('register.roles.choose-role')"
         class="w-full"
     />
@@ -27,8 +27,8 @@ export default {
   computed: {
     roleOptions() {
       return [
-        { label: this.$t('register.roles.worker'), value: UserType.WORKER },
-        { label: this.$t('register.roles.client'), value: UserType.CLIENT }
+        { label: this.$t('register.roles.worker'), value: UserType.WORKER},
+        { label: this.$t('register.roles.client'), value: UserType.CLIENT}
       ]
     },
     internalValue: {

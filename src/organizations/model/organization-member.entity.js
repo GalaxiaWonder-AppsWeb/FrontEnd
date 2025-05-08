@@ -17,6 +17,18 @@ export class OrganizationMember {
         this.joinedAt = joinedAt
     }
 
+    changeType(newType) {
+        this.type = newType
+    }
+
+    isWorker() {
+        return this.type === OrganizationMemberType.WORKER
+    }
+
+    isContractor() {
+        return this.type === OrganizationMemberType.CONTRACTOR
+    }
+
     toJSON() {
         return {
             id: this.id?.value ?? null,

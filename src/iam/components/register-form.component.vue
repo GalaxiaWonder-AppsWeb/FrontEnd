@@ -95,7 +95,7 @@ export default {
       profession: '',
       email: '',
       password: '',
-      role: '',
+      role: '', // If u want an empty field use it like this, but always use enum values later for security
       message: '',
       messageType: 'success',
       authService: new AuthService()
@@ -140,10 +140,10 @@ export default {
             this.password
         )
 
-        const account = new UserAccount(
+        const account = new UserAccount({
           credentials,
-          this.role
-        )
+          userType: this.role
+        })
 
         const result = await this.authService.register(account, person)
 
@@ -165,7 +165,7 @@ export default {
   },
   watch: {
     role(newRole) {
-      if (newRole === 'Client' || newRole?.value === 'Client') {
+      if (newRole === UserType.CLIENT) {
         this.profession = '';
       }
     }

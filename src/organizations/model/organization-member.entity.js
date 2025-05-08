@@ -16,6 +16,16 @@ export class OrganizationMember {
         this.type = type
         this.joinedAt = joinedAt
     }
+
+    toJSON() {
+        return {
+            id: this.id?.value ?? null,
+            personId: this.personId?.value ?? null,
+            organizationId: this.organizationId?.value ?? null,
+            type: this.type,
+            joinedAt: this.joinedAt
+        }
+    }
 }
 
 export class OrganizationMemberId {

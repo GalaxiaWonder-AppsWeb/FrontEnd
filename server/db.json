@@ -47,9 +47,7 @@
       "ruc": "20123456789",
       "createdBy": "304a7bd8-4342-4d55-8218-eced03c1531f",
       "createdAt": "2025-05-08T18:23:23.552Z",
-      "status": "Active",
-      "members": [],
-      "invitations": []
+      "status": "Active"
     },
     {
       "id": "036c98c3-dd42-4dbc-9028-bd5ec0aba6d7",
@@ -58,9 +56,7 @@
       "ruc": "20123456789",
       "createdBy": "e246c04f-b1aa-4d12-ba39-c81c06b11d5b",
       "createdAt": "2025-05-08T18:28:20.144Z",
-      "status": "Active",
-      "members": [],
-      "invitations": []
+      "status": "Active"
     }
   ],
   "invitations": [
@@ -72,6 +68,15 @@
       "invitedAt": "2025-05-08T20:43:38.372Z",
       "acceptedAt": null,
       "status": "Pending"
+    }
+  ],
+  "members": [
+    {
+      "id": "45fca51a-1349-4b66-a3e9-06d1df4fec48",
+      "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
+      "organizationId": "990f7011-1312-44c4-90c9-0614e73efdfb",
+      "type": "Worker",
+      "joinedAt": "2025-05-08T21:18:21.911Z"
     }
   ]
 }

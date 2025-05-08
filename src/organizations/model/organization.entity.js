@@ -65,9 +65,7 @@ export class Organization {
             ruc: this.ruc?.value ?? null,
             createdBy: this.createdBy?.value ?? null,
             createdAt: this.createdAt,
-            status: this.status,
-            members: this.members,
-            invitations: this.invitations
+            status: this.status
         }
     }
 }

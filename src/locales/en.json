@@ -12,8 +12,7 @@
     "roles": {
       "title": "Role",
       "choose-role": "Choose a role",
-      "contractor": "Contractor",
-      "specialist": "Specialist",
+      "worker": "Worker",
       "client": "Client"
     }
   }

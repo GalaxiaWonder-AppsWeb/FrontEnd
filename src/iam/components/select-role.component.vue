@@ -27,8 +27,7 @@ export default {
   computed: {
     roleOptions() {
       return [
-        { label: this.$t('register.roles.contractor'), value: UserType.CONTRACTOR },
-        { label: this.$t('register.roles.specialist'), value: UserType.SPECIALIST },
+        { label: this.$t('register.roles.worker'), value: UserType.WORKER },
         { label: this.$t('register.roles.client'), value: UserType.CLIENT }
       ]
     },

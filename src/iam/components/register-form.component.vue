@@ -39,7 +39,7 @@
         <pv-input-text
             id="profession"
             v-model="profession"
-            :disabled="role?.value === 'Client'"
+            :disabled="!(role?.value === 'Worker')"
             class="profession-input"
         />
       </div>
@@ -81,6 +81,7 @@ import { Person } from '../model/person.entity.js'
 import { AuthService } from '../services/auth.service.js'
 import SelectRole from './select-role.component.vue'
 import LanguageSwitcher from '../../public/components/language-switcher.component.vue'
+import {UserType} from "../model/user-type.js";
 
 export default {
   name: 'RegisterForm',
@@ -118,7 +119,7 @@ export default {
         return;
       }
 
-      if (['Contractor', 'Specialist'].includes(this.role) && !this.profession) {
+      if (this.role === UserType.WORKER && this.profession === '') {
         this.message = this.$t('register.errors.missing-profession');
         this.messageType = 'error';
         return;

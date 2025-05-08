@@ -85,52 +85,6 @@ export default {
       } catch (err) {
         this.message = err.message
       }
-    },
-
-    async testAddMember() {
-      try {
-        const res = await organizationService.addMember(this.organizationId, {
-          personId: this.personId,
-          type: 'WORKER'
-        })
-        this.message = `Member added`
-        console.log(res)
-      } catch (err) {
-        this.message = err.message
-      }
-    },
-
-    async testInvitePerson() {
-      try {
-        const res = await organizationService.invitePerson(this.organizationId, {
-          personId: this.personId,
-          invitedBy: this.personId
-        })
-        this.message = `Invitation sent`
-        console.log(res)
-      } catch (err) {
-        this.message = err.message
-      }
-    },
-
-    async testGetMembers() {
-      try {
-        const res = await organizationService.getMembers(this.organizationId)
-        this.message = `Fetched ${res.length} members`
-        console.log(res)
-      } catch (err) {
-        this.message = err.message
-      }
-    },
-
-    async testGetInvitations() {
-      try {
-        const res = await organizationService.getInvitations(this.organizationId)
-        this.message = `Fetched ${res.length} invitations`
-        console.log(res)
-      } catch (err) {
-        this.message = err.message
-      }
     }
   }
 }
@@ -145,10 +99,6 @@ export default {
       <button @click="testGetById" :disabled="!organizationId">Get By ID</button>
       <button @click="testUpdate" :disabled="!organizationId">Update</button>
       <button @click="testDelete" :disabled="!organizationId">Delete</button>
-      <button @click="testAddMember" :disabled="!organizationId">Add Member</button>
-      <button @click="testInvitePerson" :disabled="!organizationId">Invite Person</button>
-      <button @click="testGetMembers" :disabled="!organizationId">Get Members</button>
-      <button @click="testGetInvitations" :disabled="!organizationId">Get Invitations</button>
     </div>
 
     <p v-if="message"><strong>{{ message }}</strong></p>

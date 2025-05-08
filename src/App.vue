@@ -2,14 +2,15 @@
 import {defineComponent} from "vue";
 import LanguageSwitcher from "./public/components/language-switcher.component.vue";
 import RegisterComponent from "./iam/components/register-form.component.vue"
+import OrganizationTest from "./organizations/components/organization-test.component.vue";
 
 export default defineComponent({
-  components: {LanguageSwitcher, RegisterComponent},
+  components: {OrganizationTest, LanguageSwitcher, RegisterComponent},
 })
 </script>
 
 <template>
-  <RegisterComponent/>
+  <OrganizationTest></OrganizationTest>
 </template>
 
 <style scoped>

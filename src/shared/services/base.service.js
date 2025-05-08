@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+const propGmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL
+
 export class BaseService {
     constructor(resourceEndpoint) {
-        this.url = `${import.meta.env.VITE_PROPGMS_API_URL}${resourceEndpoint}`;
+        this.url = `${propGmsApiUrl}${resourceEndpoint}`;
     }
 
     get(path = '') {

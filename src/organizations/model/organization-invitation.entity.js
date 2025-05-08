@@ -1,6 +1,6 @@
 import {OrganizationId} from "./organization.entity.js";
 import {PersonId} from "../../iam/model/person.entity.js";
-import {OrganizationStatus} from "./organization-status.js";
+import {OrganizationInvitationStatus} from "./organization-invitation-status.js";
 
 export class OrganizationInvitation {
     constructor({
@@ -10,7 +10,7 @@ export class OrganizationInvitation {
         invitedBy = new PersonId(),
         invitedAt = new Date(),
         acceptedAt = null,
-        status = OrganizationStatus.ACTIVE
+        status = OrganizationInvitationStatus.PENDING
                 }) {
         this.id = organizationInvitationId
         this.organizationId = organizationId
@@ -31,6 +31,26 @@ export class OrganizationInvitation {
             acceptedAt: this.acceptedAt,
             status: this.status
         }
+    }
+
+    accept(date = new Date()) {
+        if (this.status !== OrganizationInvitationStatus.PENDING) {
+            throw new Error('Invitation cannot be accepted')
+        }
+        this.status = OrganizationInvitationStatus.ACCEPTED
+        this.acceptedAt = date
+    }
+
+    reject() {
+        if (this.status !== OrganizationInvitationStatus.PENDING) {
+            throw new Error('Invitation cannot be rejected')
+        }
+        this.status = OrganizationInvitationStatus.REJECTED
+        this.acceptedAt = null
+    }
+
+    isPending() {
+        return this.status === OrganizationInvitationStatus.PENDING
     }
 }
 

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { RoleType } from '../services/role-type.js'
+import { UserType } from '../model/user-type.js'
 
 export default {
   name: 'SelectRole',
@@ -27,9 +27,9 @@ export default {
   computed: {
     roleOptions() {
       return [
-        { label: this.$t('register.roles.contractor'), value: RoleType.CONTRACTOR },
-        { label: this.$t('register.roles.specialist'), value: RoleType.SPECIALIST },
-        { label: this.$t('register.roles.client'), value: RoleType.CLIENT }
+        { label: this.$t('register.roles.contractor'), value: UserType.CONTRACTOR },
+        { label: this.$t('register.roles.specialist'), value: UserType.SPECIALIST },
+        { label: this.$t('register.roles.client'), value: UserType.CLIENT }
       ]
     },
     internalValue: {

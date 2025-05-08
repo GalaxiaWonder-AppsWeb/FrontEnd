@@ -17,6 +17,15 @@
       "createdAt": "2025-05-08T18:12:02.570Z",
       "lastLoginAt": null,
       "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d"
+    },
+    {
+      "id": "b423456c-4860-45fd-a1ef-58c555a5576a",
+      "email": "henry29@hotmail.com",
+      "password": "paolo29",
+      "userType": "Worker",
+      "createdAt": "2025-05-08T20:20:11.786Z",
+      "lastLoginAt": null,
+      "personId": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359"
     }
   ],
   "persons": [
@@ -36,6 +45,15 @@
       "email": "carlos20194@gmail.com",
       "phoneNumber": "987455632",
       "profession": "Topografo",
+      "professionalId": null
+    },
+    {
+      "id": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359",
+      "name": "Henry",
+      "lastName": "Tussilini",
+      "email": "henry29@hotmail.com",
+      "phoneNumber": "964115945",
+      "profession": "Ingeniero de Software",
       "professionalId": null
     }
   ],

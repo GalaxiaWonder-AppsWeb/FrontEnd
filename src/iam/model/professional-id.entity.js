@@ -1,4 +1,4 @@
-import ProfessionalIdType from './professional-id-type'
+import { ProfessionalIdType } from './professional-id.type.js'
 
 export class ProfessionalId {
     constructor(value = '', type = ProfessionalIdType.CIP) {

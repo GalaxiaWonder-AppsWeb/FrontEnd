@@ -1,4 +1,4 @@
-import ProfessionalId from './professional-id.entity.js'
+import { ProfessionalId }  from './professional-id.entity.js'
 
 export class Person {
     constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null) {

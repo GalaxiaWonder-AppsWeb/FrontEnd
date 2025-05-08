@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+import {UserAccount} from "../model/user-account.entity.js";
 import {Credentials} from "../model/credentials.entity.js";
 import {Person} from "../model/person.entity.js";
 
@@ -23,41 +24,43 @@ export class AuthService {
         return res.data[0] || null
     }
 
-    async register(credentials, person) {
+    async register(credentials, person, role) {
         if (!(credentials instanceof Credentials)) {
-            throw new Error('Invalid credentials object');
+            throw new Error('Invalid credentials object')
         }
 
         if (!(person instanceof Person)) {
-            throw new Error('Invalid person object');
+            throw new Error('Invalid person object')
         }
 
         try {
-            const existingUser = await this.findUserByEmail(credentials.email);
+            const existingUser = await this.findUserByEmail(credentials.email)
             if (existingUser) {
-                throw new Error('User already exists');
+                throw new Error('User already exists')
             }
 
             const personRes = await axios.post(
                 `${this.baseUrl}/persons`,
                 person,
                 this.httpOptions
-            );
+            )
+
+            const userAcc = new UserAccount({
+                id: personRes.data.id,
+                credentials,
+                userType: role,
+                personId: personRes.data.id
+            })
 
             const createRes = await axios.post(
                 `${this.baseUrl}/users`,
-                {
-                    email: credentials.email,
-                    password: credentials.password,
-                    role: credentials.role,
-                    personId: personRes.data.id
-                },
+                userAcc,
                 this.httpOptions
-            );
+            )
 
-            return createRes.data;
+            return createRes.data
         } catch (error) {
-            this.handleError('Register', error);
+            this.handleError('Register', error)
         }
     }
 

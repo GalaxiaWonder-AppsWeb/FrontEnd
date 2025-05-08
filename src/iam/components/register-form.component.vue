@@ -136,11 +136,12 @@ export default {
 
         const credentials = new Credentials(
             this.email,
-            this.password,
-            this.role
+            this.password
         )
 
-        const result = await this.authService.register(credentials, person)
+        const role = this.role
+
+        const result = await this.authService.register(credentials, person, role)
 
         this.message = `${result.email} ${this.$t('register.successful-register')}`
         this.messageType = 'success'

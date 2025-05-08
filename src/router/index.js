@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // Layouts
 import AuthLayoutComponent from '../iam/components/auth-layout.component.vue'
+import UserLayout from '../organizations/components/user-layout.component.vue'
 
 // Auth
 import Login from '../iam/components/login-form.component.vue'
@@ -20,11 +21,11 @@ const routes = [
             { path: 'login', name: 'login', component: Login },
             { path: 'register', name: 'register', component: Register }
         ]
-    },/*
+    },
     {
         path: '/organizations',
         component: UserLayout,
-        meta: { requiresAuth: true, roles: ['contractor', 'specialist'] },
+        meta: { requiresAuth: true, roles: ['contractor', 'specialist'] }}/*,
         children: [
             {
                 path: '',

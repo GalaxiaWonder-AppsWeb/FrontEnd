@@ -62,5 +62,16 @@
       "members": [],
       "invitations": []
     }
+  ],
+  "invitations": [
+    {
+      "id": "6448c96c-c7e6-48ac-a4e7-fc43b989c262",
+      "organizationId": "990f7011-1312-44c4-90c9-0614e73efdfb",
+      "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
+      "invitedBy": "644c5132-03ef-46bb-bc25-a69e6b05fb80",
+      "invitedAt": "2025-05-08T20:43:38.372Z",
+      "acceptedAt": null,
+      "status": "Pending"
+    }
   ]
 }

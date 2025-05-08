@@ -3,6 +3,7 @@ import axios from 'axios'
 import {UserAccount} from "../model/user-account.entity.js";
 import {Credentials} from "../model/credentials.entity.js";
 import {Person} from "../model/person.entity.js";
+import {UserType} from "../model/user-type.js";
 
 const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL
 
@@ -24,9 +25,9 @@ export class AuthService {
         return res.data[0] || null
     }
 
-    async register(credentials, person, role) {
-        if (!(credentials instanceof Credentials)) {
-            throw new Error('Invalid credentials object')
+    async register(account, person) {
+        if (!(account instanceof UserAccount)) {
+            throw new Error('Invalid account object')
         }
 
         if (!(person instanceof Person)) {
@@ -34,27 +35,22 @@ export class AuthService {
         }
 
         try {
-            const existingUser = await this.findUserByEmail(credentials.email)
+            const existingUser = await this.findUserByEmail(account.email)
             if (existingUser) {
                 throw new Error('User already exists')
             }
 
             const personRes = await axios.post(
                 `${this.baseUrl}/persons`,
-                person,
+                person.toJSON(),
                 this.httpOptions
             )
 
-            const userAcc = new UserAccount({
-                id: personRes.data.id,
-                credentials,
-                userType: role,
-                personId: personRes.data.id
-            })
+            account.personId = personRes.data.id
 
             const createRes = await axios.post(
                 `${this.baseUrl}/users`,
-                userAcc,
+                account.toJSON(),
                 this.httpOptions
             )
 

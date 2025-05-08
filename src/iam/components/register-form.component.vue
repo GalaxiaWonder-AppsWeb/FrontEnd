@@ -39,7 +39,7 @@
         <pv-input-text
             id="profession"
             v-model="profession"
-            :disabled="!(role?.value === 'Worker')"
+            :disabled="!(role === 'Worker')"
             class="profession-input"
         />
       </div>
@@ -82,6 +82,7 @@ import { AuthService } from '../services/auth.service.js'
 import SelectRole from './select-role.component.vue'
 import LanguageSwitcher from '../../public/components/language-switcher.component.vue'
 import {UserType} from "../model/user-type.js";
+import {UserAccount} from "../model/user-account.entity.js";
 
 export default {
   name: 'RegisterForm',
@@ -139,9 +140,12 @@ export default {
             this.password
         )
 
-        const role = this.role
+        const account = new UserAccount(
+          credentials,
+          this.role
+        )
 
-        const result = await this.authService.register(credentials, person, role)
+        const result = await this.authService.register(account, person)
 
         this.message = `${result.email} ${this.$t('register.successful-register')}`
         this.messageType = 'success'

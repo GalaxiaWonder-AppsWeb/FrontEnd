@@ -2,6 +2,7 @@ import { ProfessionalId }  from './professional-id.entity.js'
 
 export class Person {
     constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null) {
+        this.id = new PersonId()
         this.name = name
         this.lastName = lastName
         this.email = email
@@ -13,5 +14,23 @@ export class Person {
         }
 
         this.professionalId = professionalId
+    }
+
+    toJSON() {
+        return {
+            id: this.id.value,
+            name: this.name,
+            lastName: this.lastName,
+            email: this.email,
+            phoneNumber: this.phoneNumber,
+            profession: this.profession,
+            professionalId: this.professionalId ? this.professionalId.value : null
+        }
+    }
+}
+
+export class PersonId {
+    constructor() {
+        this.value = crypto.randomUUID()
     }
 }

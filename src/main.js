@@ -4,7 +4,7 @@ import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura';
 import { createApp } from 'vue'
 
-import {SelectButton, InputText, Password, Button, Message, Select, Toolbar, Card} from "primevue";
+import {SelectButton, InputText, Password, Button, Message, Select, Toolbar, Card, Dialog} from "primevue";
 
 
 import i18n from "./i18n.js";
@@ -22,4 +22,5 @@ createApp(App).use(i18n)
     .component('pv-select', Select)
     .component('pv-toolbar', Toolbar)
     .component('pv-card', Card)
+    .component('pv-dialog', Dialog)
     .mount('#app')

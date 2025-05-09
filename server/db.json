@@ -1,84 +1,35 @@
 {
   "users": [
     {
-      "id": "6e02ff12-e7f2-45f0-8c51-c40439925bc7",
+      "id": "6c16daf4-e93c-488b-bd4b-5f4711d380cf",
       "email": "henry29.2004@hotmail.com",
-      "password": "paoloxd",
-      "userType": "Worker",
-      "createdAt": "2025-05-08T18:11:28.738Z",
-      "lastLoginAt": null,
-      "personId": "644c5132-03ef-46bb-bc25-a69e6b05fb80"
-    },
-    {
-      "id": "373022e5-e7e3-4ce8-a3f3-83719a29dd52",
-      "email": "carlos20194@gmail.com",
-      "password": "584584562521545",
-      "userType": "Worker",
-      "createdAt": "2025-05-08T18:12:02.570Z",
-      "lastLoginAt": null,
-      "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d"
-    },
-    {
-      "id": "b423456c-4860-45fd-a1ef-58c555a5576a",
-      "email": "henry29@hotmail.com",
       "password": "paolo29",
       "userType": "Worker",
-      "createdAt": "2025-05-08T20:20:11.786Z",
+      "createdAt": "2025-05-09T19:10:45.054Z",
       "lastLoginAt": null,
-      "personId": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359"
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c"
     }
   ],
   "persons": [
     {
-      "id": "644c5132-03ef-46bb-bc25-a69e6b05fb80",
-      "name": "Henry",
+      "id": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "name": "Henry ",
       "lastName": "Reaño",
       "email": "henry29.2004@hotmail.com",
-      "phoneNumber": "964415984",
-      "profession": "Ingeniero",
-      "professionalId": null
-    },
-    {
-      "id": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
-      "name": "Carlos",
-      "lastName": "Ochoa",
-      "email": "carlos20194@gmail.com",
-      "phoneNumber": "987455632",
-      "profession": "Topografo",
-      "professionalId": null
-    },
-    {
-      "id": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359",
-      "name": "Henry",
-      "lastName": "Tussilini",
-      "email": "henry29@hotmail.com",
-      "phoneNumber": "964115945",
+      "phoneNumber": "964419415",
       "profession": "Ingeniero de Software",
       "professionalId": null
     }
   ],
   "organizations": [
     {
-      "id": "990f7011-1312-44c4-90c9-0614e73efdfb",
-      "legalName": "Test Org SAC",
-      "commercialName": "TestOrg",
-      "ruc": "20123456789",
-      "createdBy": "304a7bd8-4342-4d55-8218-eced03c1531f",
-      "createdAt": "2025-05-08T18:23:23.552Z",
-      "status": "Active",
-      "members": [],
-      "invitations": []
-    },
-    {
-      "id": "036c98c3-dd42-4dbc-9028-bd5ec0aba6d7",
-      "legalName": "Test Org SAC",
-      "commercialName": "TestOrg",
-      "ruc": "20123456789",
-      "createdBy": "e246c04f-b1aa-4d12-ba39-c81c06b11d5b",
-      "createdAt": "2025-05-08T18:28:20.144Z",
-      "status": "Active",
-      "members": [],
-      "invitations": []
+      "id": "fe2c36d2-5464-45d1-be5d-bc0ab4abb93a",
+      "legalName": "dwadwad",
+      "commercialName": "wadwa",
+      "ruc": "11111111111",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-05-09T20:34:23.651Z",
+      "status": "Active"
     }
   ]
 }

@@ -32,6 +32,17 @@
       "members": "Members",
       "configurations": "Configurations"
     },
-    "no-organizations": "You do not have associated organizations."
+    "no-organizations": "You do not have associated organizations.",
+    "create-organization":{
+      "title": "New organization",
+      "information": {
+        "title": "Organization information",
+        "legal-name": "Legal Name",
+        "commercial-name": "Commercial Name",
+        "ruc": "RUC",
+        "create": "Create organization",
+        "cancel": "Cancel"
+      }
+    }
   }
 }

@@ -6,16 +6,20 @@
     <!-- Contenido privado de la app -->
     <main class="user-main">
       <router-view />
+      <CreateOrganization/>
     </main>
   </div>
+
 </template>
 
 <script>
 import ToolbarComponent from '../../public/components/toolbar-content.component.vue'
+import CreateOrganization from "./create-organization.component.vue";
 
 export default {
   name: 'UserLayout',
   components: {
+    CreateOrganization,
     ToolbarComponent
   }
 }

@@ -1,4 +1,6 @@
 import { Organization } from "../model/organization.entity.js";
+import {PersonId} from "../../iam/model/person.entity.js";
+import {Ruc} from "../model/ruc.js";
 
 export class OrganizationAssembler {
     static toEntityFromResource(resource) {
@@ -6,9 +8,9 @@ export class OrganizationAssembler {
             id: resource.id,
             legalName: resource.legalName,
             commercialName: resource.commercialName,
-            ruc: resource.ruc,
-            createdBy: resource.createdBy,
-            createdAt: resource.createdAt,
+            ruc: new Ruc(resource.ruc),
+            createdBy: new PersonId(resource.createdBy),
+            createdAt: new Date(resource.createdAt),
             status: resource.status,
             members: resource.members,
             invitations: resource.invitations

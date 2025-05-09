@@ -16,16 +16,11 @@ export default {
   methods: {
     loadOrganizations(){
       console.log("Owner: ", this.owner)
-      this.api.getByCreatedBy({createdBy: this.owner.id})
+      this.api.getByCreatedBy({createdBy: this.owner.personId})
           .then(data => {
             this.organizations = OrganizationAssembler.toEntitiesFromResponse(data);
           })
-          .catch(error => {
-            console.log(error);
-            this.errors.push(error);
-            this.organizations = [];
-          })
-      console.log(this.organizations)
+      console.log("ORGANIZACIONES",this.organizations)
     }
   },
   created() {

@@ -16,6 +16,18 @@ export class Organization {
                     members = [],
                     invitations = []
                 }) {
+        if (!legalName || typeof legalName !== 'string') {
+            throw new Error('Legal name is required and must be a non-empty string')
+        }
+
+        if (!(ruc instanceof Ruc) || !ruc.value) {
+            throw new Error('RUC must be a valid Ruc instance with a value')
+        }
+
+        if (!(createdBy instanceof PersonId) || !createdBy.value) {
+            throw new Error('createdBy must be a valid PersonId instance with a value')
+        }
+
         this.id = id
         this.legalName = legalName
         this.commercialName = commercialName
@@ -27,12 +39,26 @@ export class Organization {
         this.invitations = invitations
     }
 
+    updateLegalName(newLegalName) {
+        if (!newLegalName || typeof newLegalName !== 'string') {
+            throw new Error('Legal name must be a non-empty string')
+        }
+        this.legalName = newLegalName
+    }
+
+    updateCommercialName(newCommercialName) {
+        if (!newCommercialName || typeof newCommercialName !== 'string') {
+            throw new Error('Commercial name must be a non-empty string')
+        }
+        this.commercialName = newCommercialName
+    }
+
     addMember(member) {
         this.members.push(member)
     }
 
     removeMemberByPersonId(personId) {
-        this.members = this.members.filter(m => !m.personId.value === personId.value)
+        this.members = this.members.filter(m => m.personId.value !== personId.value)
     }
 
     invitePerson(personId, invitedBy) {

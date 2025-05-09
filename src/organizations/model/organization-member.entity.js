@@ -42,5 +42,6 @@ export class OrganizationMember {
 
 export class OrganizationMemberId {
     constructor() {
+        this.value = crypto.randomUUID()
     }
 }

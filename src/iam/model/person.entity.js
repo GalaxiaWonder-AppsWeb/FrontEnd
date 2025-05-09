@@ -16,6 +16,35 @@ export class Person {
         this.professionalId = professionalId
     }
 
+    updateContact({ email, phoneNumber }) {
+        if (email) this.email = email
+        if (phoneNumber) this.phoneNumber = phoneNumber
+    }
+
+    updateIdentity({ name, lastName }) {
+        if (name) this.name = name
+        if (lastName) this.lastName = lastName
+    }
+
+    updateProfession(profession) {
+        this.profession = profession
+    }
+
+    assignProfessionalId(professionalId) {
+        if (!(professionalId instanceof ProfessionalId)) {
+            throw new Error('professionalId must be an instance of ProfessionalId')
+        }
+        this.professionalId = professionalId
+    }
+
+    removeProfessionalId() {
+        this.professionalId = null
+    }
+
+    hasProfessionalId() {
+        return this.professionalId !== null
+    }
+
     toJSON() {
         return {
             id: this.id.value,

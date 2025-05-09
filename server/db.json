@@ -8,6 +8,15 @@
       "createdAt": "2025-05-09T19:10:45.054Z",
       "lastLoginAt": null,
       "personId": "b81b7ae5-9039-4349-817e-f819d18a432c"
+    },
+    {
+      "id": "fa05a5a9-9f3a-4375-a17c-26278a96ca03",
+      "email": "ramon2002@gmail.com",
+      "password": "ramon20",
+      "userType": "Worker",
+      "createdAt": "2025-05-09T23:33:40.299Z",
+      "lastLoginAt": null,
+      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6"
     }
   ],
   "persons": [
@@ -18,6 +27,15 @@
       "email": "henry29.2004@hotmail.com",
       "phoneNumber": "964419415",
       "profession": "Ingeniero de Software",
+      "professionalId": null
+    },
+    {
+      "id": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
+      "name": "Ramon",
+      "lastName": "Garcia",
+      "email": "ramon2002@gmail.com",
+      "phoneNumber": "974511222",
+      "profession": "Topografo",
       "professionalId": null
     }
   ],

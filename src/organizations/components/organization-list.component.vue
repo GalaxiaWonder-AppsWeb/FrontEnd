@@ -2,10 +2,11 @@
 import OrganizationItem from "./organization-item.component.vue";
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationAssembler} from "../services/organization.assembler.js";
+import CreateOrganization from "./create-organization.component.vue";
 
 export default {
   name: "OrganizationList",
-  components: {OrganizationItem},
+  components: {CreateOrganization, OrganizationItem},
   data() {
     return {
       organizations: [],
@@ -41,6 +42,7 @@ export default {
   <div v-else>
     <p>{{ $t('organization.no-organizations') }}</p>
   </div>
+  <CreateOrganization/>
 
 </template>
 

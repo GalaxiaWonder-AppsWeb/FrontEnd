@@ -6,7 +6,6 @@
     <!-- Contenido privado de la app -->
     <main class="user-main">
       <router-view />
-      <CreateOrganization/>
     </main>
   </div>
 

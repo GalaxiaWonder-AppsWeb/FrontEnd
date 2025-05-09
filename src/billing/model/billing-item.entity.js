@@ -1,4 +1,3 @@
-import { BillingItemId } from './billing-item.entity.js'
 import { Money } from '../../shared/model/money.js'
 
 export class BillingItem {

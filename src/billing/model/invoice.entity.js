@@ -1,4 +1,3 @@
-import { InvoiceId } from './invoice.entity.js'
 import { PersonId } from '../../iam/model/person.entity.js'
 import { PaymentStatus } from './payment-status.js'
 import { Money } from '../../shared/model/money.js'
@@ -56,5 +55,11 @@ export class Invoice {
             totalAmount: this.totalAmount.toJSON(),
             items: this.items.map(i => i.toJSON())
         }
+    }
+}
+
+export class InvoiceId {
+    constructor() {
+        this.value = crypto.randomUUID()
     }
 }

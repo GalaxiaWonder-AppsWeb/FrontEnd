@@ -23,5 +23,15 @@
     "submit": "Ingresar",
     "no-account": "¿No tienes una cuenta aún?",
     "go-register": "Registrate aquí"
+  },
+  "organization": {
+    "title": "Organización",
+    "section": {
+      "information":"Información",
+      "projects": "Proyectos",
+      "members": "Miembros",
+      "configurations": "Configuraciones"
+    },
+    "no-organizations": "No tienes organizaciones asociadas."
   }
 }

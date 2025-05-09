@@ -44,7 +44,7 @@ export default {
     />
   </div>
   <div v-else>
-    <p>No se encontraron organizaciones 😢</p>
+    <p>{{ $t('organization.no-organizations') }}</p>
   </div>
 
 </template>

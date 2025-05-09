@@ -3,14 +3,15 @@ import {defineComponent} from "vue";
 import LanguageSwitcher from "./public/components/language-switcher.component.vue";
 import RegisterComponent from "./iam/components/register-form.component.vue"
 import OrganizationTest from "./organizations/components/organization-test.component.vue";
+import BillingTest from "./billing/components/billing-test.component.vue";
 
 export default defineComponent({
-  components: {OrganizationTest, LanguageSwitcher, RegisterComponent},
+  components: {BillingTest, OrganizationTest, LanguageSwitcher, RegisterComponent},
 })
 </script>
 
 <template>
-  <router-view/>
+  <billing-test></billing-test>
 </template>
 
 <style scoped>

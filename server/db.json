@@ -96,5 +96,19 @@
       "type": "Worker",
       "joinedAt": "2025-05-08T21:18:21.911Z"
     }
+  ],
+  "invoices": [
+    {
+      "id": "e98ae79b-3c45-4e27-b89a-c0af33197559",
+      "payer": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
+      "status": "PENDING",
+      "issuedDate": "2025-05-09T01:58:12.062Z",
+      "dueDate": "2025-05-09T01:58:12.062Z",
+      "totalAmount": {
+        "amount": 0,
+        "currency": "PEN"
+      },
+      "items": []
+    }
   ]
 }

@@ -59,7 +59,12 @@ export class Person {
 }
 
 export class PersonId {
-    constructor() {
-        this.value = crypto.randomUUID()
+    constructor(id = null) {
+        if (id && typeof id === 'string') {
+            this.value = id
+        } else {
+            this.value = crypto.randomUUID()
+        }
     }
 }
+

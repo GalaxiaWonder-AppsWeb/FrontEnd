@@ -46,7 +46,7 @@ export default {
     </div>
     <div class="info-block">
       <h3 class="label">RUC</h3>
-      <p class="value">{{ organization.ruc }}</p>
+      <p class="value">{{ organization.ruc.value }}</p>
     </div>
     <div class="info-block">
       <h3 class="label">Creation date</h3>
@@ -54,7 +54,7 @@ export default {
     </div>
     <div class="info-block">
       <h3 class="label">Contractor</h3>
-      <p class="value">{{ organization.createdBy}}</p>
+      <p class="value">{{ organization.createdBy.value}}</p>
     </div>
   </div>
 </template>

@@ -63,7 +63,7 @@ export default {
           legalName: 'Test Updated Org SAC',
           commercialName: 'TestOrg',
           ruc: new Ruc('20123456789'),
-          createdBy: new PersonId(this.personId),
+          createdBy: this.personId,
           status: OrganizationStatus.INACTIVE
         });
 

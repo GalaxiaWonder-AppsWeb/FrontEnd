@@ -5,6 +5,9 @@ import {Ruc} from "../model/ruc.js";
 import {PersonId} from "../../iam/model/person.entity.js";
 import {OrganizationStatus} from "../model/organization-status.js";
 import {organizationService} from "../services/organization.service.js";
+import {OrganizationMember} from "../model/organization-member.entity.js";
+import {OrganizationMemberType} from "../model/organization-member-type.js";
+import {organizationMemberService} from "../services/organization-member.service.js";
 export default {
   name: "CreateOrganization",
   components: {PvButton, PvInputText},
@@ -34,6 +37,7 @@ export default {
         const res = await organizationService.create(org)
         this.organizationId = org.id
         this.message = `Created: ${res.legalName}`
+        await this.LinkContractor(new PersonId(this.user.personId), this.organizationId)
       } catch (err) {
         this.message = err.message
       }
@@ -42,6 +46,17 @@ export default {
       const value = event.target.value
       const numeric = value.replace(/\D/g, '')
       event.target.value = numeric
+    },
+    async LinkContractor(person, organization) {
+      const member = new OrganizationMember({
+        personId: person,
+        organizationId: organization,
+        type: OrganizationMemberType.CONTRACTOR
+      })
+      const res = await organizationMemberService.create(member.toJSON())
+      this.createdMemberId = res.id
+      this.message = `Member created for person ${res.personId}`
+      console.log(res)
     }
   },
   created(){

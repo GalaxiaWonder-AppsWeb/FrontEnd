@@ -23,13 +23,22 @@
   ],
   "organizations": [
     {
-      "id": "85a07a8f-cabf-4fb5-9fd5-fe1b580a363e",
-      "legalName": "Tung Tung Tung Salim Sahur Inc.",
-      "commercialName": "Tung Tung Sahur",
-      "ruc": "10548556232",
+      "id": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "legalName": "Tung Tung Tung Salim Sahur Sulca Org.",
+      "commercialName": "Tung Tung Org.",
+      "ruc": "20458563325",
       "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "createdAt": "2025-05-09T20:47:11.678Z",
+      "createdAt": "2025-05-09T22:32:54.491Z",
       "status": "Active"
+    }
+  ],
+  "members": [
+    {
+      "id": "b1d4f8cb-86d9-494c-b90e-a4277c80c0c2",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "type": "Contractor",
+      "joinedAt": "2025-05-09T22:32:54.531Z"
     }
   ]
 }

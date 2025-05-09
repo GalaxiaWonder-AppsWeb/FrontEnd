@@ -8,6 +8,8 @@ import UserLayout from '../organizations/components/user-layout.component.vue'
 import Login from '../iam/components/login-form.component.vue'
 import Register from '../iam/components/register-form.component.vue'
 
+//Organizations
+import OrganizationList from '../organizations/components/organization-list.component.vue'
 
 const routes = [
     {
@@ -25,14 +27,14 @@ const routes = [
     {
         path: '/organizations',
         component: UserLayout,
-        meta: { requiresAuth: true, roles: ['contractor', 'specialist'] }}/*,
+        meta: { requiresAuth: true, roles: ['contractor', 'specialist'] },
         children: [
             {
                 path: '',
                 name: 'organizations',
-                component: OrganizationsList,
+                component: OrganizationList,
                 meta: { requiresAuth: true, roles: ['contractor', 'specialist'] }
-            },
+            }]}/*,
             {
                 path: ':orgId',
                 component: OrganizationLayout,

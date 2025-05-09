@@ -1,11 +1,13 @@
 <template>
-  <pv-card class="organization-card">
-    <template #content>
-      <div class="organization-content">
-        <span class="organization-name">{{ organization.legalName }}</span>
-      </div>
-    </template>
-  </pv-card>
+  <router-link :to="`/organizations/${organization.id}`" class="card-link">
+    <pv-card class="organization-card">
+      <template #content>
+        <div class="organization-content">
+          <span class="organization-name">{{ organization.legalName }}</span>
+        </div>
+      </template>
+    </pv-card>
+  </router-link>
 </template>
 
 <script>
@@ -30,7 +32,7 @@ export default {
 .organization-card {
   border-radius: 16px;
   background-color: #f8fbfa;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(5, 0, 0, 0.40);
   padding: 1.2rem 1.5rem;
   display: flex;
   align-items: center;
@@ -49,4 +51,10 @@ export default {
   font-weight: 700;
   color: #101020;
 }
+
+.card-link {
+  text-decoration: none;
+  display: block;
+}
+
 </style>

@@ -30,6 +30,7 @@
       "information":"Information",
       "projects": "Projects",
       "members": "Members"
-    }
+    },
+    "no-organizations": "You do not have associated organizations."
   }
 }

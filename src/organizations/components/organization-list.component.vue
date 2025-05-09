@@ -36,12 +36,17 @@ export default {
 </script>
 
 <template>
-  <div class="organization-list">
-
-    <div class="organization-items">
-      <OrganizationItem v-for="(item, index) in organizations" :key="index" :organization="item" />
-    </div>
+  <div class="organization-items" v-if="organizations.length">
+    <OrganizationItem
+        v-for="(item, index) in organizations"
+        :key="index"
+        :organization="item"
+    />
   </div>
+  <div v-else>
+    <p>No se encontraron organizaciones 😢</p>
+  </div>
+
 </template>
 
 <style scoped>

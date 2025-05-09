@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     inOrganizationView() {
-      return this.route.path.includes('/organization') && !this.route.path.includes('/project')
+      return this.route.path.startsWith('/organizations/') && !this.route.path.includes('/project');
     },
     inProjectView() {
       return this.route.path.includes('/project')
@@ -54,7 +54,7 @@ export default {
     sectionTitle() {
       if (this.inProjectView) return 'project'
       if (this.inOrganizationView) return 'organization'
-      return 'Dashboard'
+      return 'organization'
     }
   },
   methods: {
@@ -62,9 +62,9 @@ export default {
       const { orgId, projectId } = this.route.params
       let path = ''
       if (this.inProjectView && projectId) {
-        path = `/organization/${orgId}/project/${projectId}/${section}`
+        path = `/organizations/${orgId}/project/${projectId}/${section}`
       } else if (this.inOrganizationView && orgId) {
-        path = `/organization/${orgId}/${section}`
+        path = `/organizations/${orgId}/${section}`
       }
       this.router.push(path)
     }

@@ -29,7 +29,8 @@
     "section": {
       "information":"Information",
       "projects": "Projects",
-      "members": "Members"
+      "members": "Members",
+      "configurations": "Configurations"
     },
     "no-organizations": "You do not have associated organizations."
   }

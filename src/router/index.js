@@ -33,7 +33,6 @@ const routes = [
     {
         path: '/organizations',
         component: UserLayout,
-        meta: { requiresAuth: true, roles: ['contractor', 'specialist'] },
         children: [
             {
                 path: '',

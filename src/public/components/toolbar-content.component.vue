@@ -18,6 +18,7 @@
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.projects')" @click="goTo('projects')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.members')" @click="goTo('members')" />
+        <pv-button text plain :label="$t(sectionTitle + '.section.configurations')" @click="goTo('settings')" />
       </template>
 
       <template v-else-if="inProjectView">

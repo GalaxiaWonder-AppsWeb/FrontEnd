@@ -26,6 +26,15 @@
       "createdAt": "2025-05-08T20:20:11.786Z",
       "lastLoginAt": null,
       "personId": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359"
+    },
+    {
+      "id": "55752872-45bb-4f06-910a-1db30bf9be9e",
+      "email": "paolo29@gmail.com",
+      "password": "paolo29",
+      "userType": "Client",
+      "createdAt": "2025-05-09T02:55:07.881Z",
+      "lastLoginAt": null,
+      "personId": "0e5ea3cb-b1d4-4b94-9f25-4694b05e3747"
     }
   ],
   "persons": [
@@ -54,6 +63,15 @@
       "email": "henry29@hotmail.com",
       "phoneNumber": "964115945",
       "profession": "Ingeniero de Software",
+      "professionalId": null
+    },
+    {
+      "id": "0e5ea3cb-b1d4-4b94-9f25-4694b05e3747",
+      "name": "Paolo",
+      "lastName": "Delgadillo",
+      "email": "paolo29@gmail.com",
+      "phoneNumber": "965854552",
+      "profession": "",
       "professionalId": null
     }
   ],

@@ -29,7 +29,8 @@
     "section": {
       "information":"Información",
       "projects": "Proyectos",
-      "members": "Miembros"
+      "members": "Miembros",
+      "configurations": "Configuraciones"
     },
     "no-organizations": "No tienes organizaciones asociadas."
   }

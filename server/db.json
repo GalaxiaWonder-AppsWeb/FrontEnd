@@ -110,5 +110,37 @@
       },
       "items": []
     }
+  ],
+  "workspaces": [
+    {
+      "id": "e7915c1a-3a5c-4b18-a90f-e61eddc8ad7d",
+      "organizationId": "990f7011-1312-44c4-90c9-0614e73efdfb",
+      "createdBy": "ae443e26-7606-48e6-8ac2-2f1e56e864bd",
+      "createdAt": "2025-05-10T03:00:59.982Z",
+      "subscriptionId": "675a1bdd-6a07-40a5-a822-e7821645c9c2",
+      "maxMembers": 10,
+      "maxStorageSizeInBytes": 5000000,
+      "maxProjects": 5
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "b0effe4c-00a3-417c-b356-11d888743ebb",
+      "startDate": "2025-05-10T02:58:48.694Z",
+      "endDate": "2025-05-10T02:58:48.694Z",
+      "status": "Active",
+      "personId": "ae443e26-7606-48e6-8ac2-2f1e56e864bd",
+      "subscriptionPlan": "a5a909b3-ce0e-470b-86ff-cf20e411a6b2",
+      "isAutoRenew": false
+    },
+    {
+      "id": "675a1bdd-6a07-40a5-a822-e7821645c9c2",
+      "startDate": "2025-05-10T03:00:58.166Z",
+      "endDate": "2025-05-10T03:00:58.166Z",
+      "status": "Active",
+      "personId": "165777cf-2ee5-4ca0-8834-8dec43c09e7b",
+      "subscriptionPlan": "2a806e56-31b6-4576-aaaa-2a7520c6393e",
+      "isAutoRenew": false
+    }
   ]
 }

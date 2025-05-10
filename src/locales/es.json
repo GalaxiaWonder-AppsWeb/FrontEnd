@@ -23,5 +23,26 @@
     "submit": "Ingresar",
     "no-account": "¿No tienes una cuenta aún?",
     "go-register": "Registrate aquí"
+  },
+  "organization": {
+    "title": "Organización",
+    "section": {
+      "information":"Información",
+      "projects": "Proyectos",
+      "members": "Miembros",
+      "configurations": "Configuraciones"
+    },
+    "no-organizations": "No tienes organizaciones asociadas.",
+    "create-organization":{
+      "title": "Nueva organización",
+      "information": {
+        "title": "Información de organización",
+        "legal-name": "Nombre legal",
+        "commercial-name": "Nombre comercial",
+        "ruc": "RUC",
+        "create": "Crear organización",
+        "cancel": "Cancelar"
+      }
+    }
   }
 }

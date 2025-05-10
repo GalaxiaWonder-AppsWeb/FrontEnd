@@ -1,100 +1,62 @@
 {
   "users": [
     {
-      "id": "6e02ff12-e7f2-45f0-8c51-c40439925bc7",
+      "id": "6c16daf4-e93c-488b-bd4b-5f4711d380cf",
       "email": "henry29.2004@hotmail.com",
-      "password": "paoloxd",
-      "userType": "Worker",
-      "createdAt": "2025-05-08T18:11:28.738Z",
-      "lastLoginAt": null,
-      "personId": "644c5132-03ef-46bb-bc25-a69e6b05fb80"
-    },
-    {
-      "id": "373022e5-e7e3-4ce8-a3f3-83719a29dd52",
-      "email": "carlos20194@gmail.com",
-      "password": "584584562521545",
-      "userType": "Worker",
-      "createdAt": "2025-05-08T18:12:02.570Z",
-      "lastLoginAt": null,
-      "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d"
-    },
-    {
-      "id": "b423456c-4860-45fd-a1ef-58c555a5576a",
-      "email": "henry29@hotmail.com",
       "password": "paolo29",
       "userType": "Worker",
-      "createdAt": "2025-05-08T20:20:11.786Z",
+      "createdAt": "2025-05-09T19:10:45.054Z",
       "lastLoginAt": null,
-      "personId": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359"
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c"
+    },
+    {
+      "id": "fa05a5a9-9f3a-4375-a17c-26278a96ca03",
+      "email": "ramon2002@gmail.com",
+      "password": "ramon20",
+      "userType": "Worker",
+      "createdAt": "2025-05-09T23:33:40.299Z",
+      "lastLoginAt": null,
+      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6"
     }
   ],
   "persons": [
     {
-      "id": "644c5132-03ef-46bb-bc25-a69e6b05fb80",
-      "name": "Henry",
+      "id": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "name": "Henry ",
       "lastName": "Reaño",
       "email": "henry29.2004@hotmail.com",
-      "phoneNumber": "964415984",
-      "profession": "Ingeniero",
-      "professionalId": null
-    },
-    {
-      "id": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
-      "name": "Carlos",
-      "lastName": "Ochoa",
-      "email": "carlos20194@gmail.com",
-      "phoneNumber": "987455632",
-      "profession": "Topografo",
-      "professionalId": null
-    },
-    {
-      "id": "bc46f02c-bcb9-401d-b0d8-17ab5fd60359",
-      "name": "Henry",
-      "lastName": "Tussilini",
-      "email": "henry29@hotmail.com",
-      "phoneNumber": "964115945",
+      "phoneNumber": "964419415",
       "profession": "Ingeniero de Software",
+      "professionalId": null
+    },
+    {
+      "id": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
+      "name": "Ramon",
+      "lastName": "Garcia",
+      "email": "ramon2002@gmail.com",
+      "phoneNumber": "974511222",
+      "profession": "Topografo",
       "professionalId": null
     }
   ],
   "organizations": [
     {
-      "id": "990f7011-1312-44c4-90c9-0614e73efdfb",
-      "legalName": "Test Org SAC",
-      "commercialName": "TestOrg",
-      "ruc": "20123456789",
-      "createdBy": "304a7bd8-4342-4d55-8218-eced03c1531f",
-      "createdAt": "2025-05-08T18:23:23.552Z",
+      "id": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "legalName": "Tung Tung Tung Salim Sahur Sulca Org.",
+      "commercialName": "Tung Tung Org.",
+      "ruc": "20458563325",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-05-09T22:32:54.491Z",
       "status": "Active"
-    },
-    {
-      "id": "036c98c3-dd42-4dbc-9028-bd5ec0aba6d7",
-      "legalName": "Test Org SAC",
-      "commercialName": "TestOrg",
-      "ruc": "20123456789",
-      "createdBy": "e246c04f-b1aa-4d12-ba39-c81c06b11d5b",
-      "createdAt": "2025-05-08T18:28:20.144Z",
-      "status": "Active"
-    }
-  ],
-  "invitations": [
-    {
-      "id": "6448c96c-c7e6-48ac-a4e7-fc43b989c262",
-      "organizationId": "990f7011-1312-44c4-90c9-0614e73efdfb",
-      "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
-      "invitedBy": "644c5132-03ef-46bb-bc25-a69e6b05fb80",
-      "invitedAt": "2025-05-08T20:43:38.372Z",
-      "acceptedAt": null,
-      "status": "Pending"
     }
   ],
   "members": [
     {
-      "id": "45fca51a-1349-4b66-a3e9-06d1df4fec48",
-      "personId": "006b0403-ab9e-4f78-9288-cd3570fb1c0d",
-      "organizationId": "990f7011-1312-44c4-90c9-0614e73efdfb",
-      "type": "Worker",
-      "joinedAt": "2025-05-08T21:18:21.911Z"
+      "id": "b1d4f8cb-86d9-494c-b90e-a4277c80c0c2",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "type": "Contractor",
+      "joinedAt": "2025-05-09T22:32:54.531Z"
     }
   ],
   "invoices": [

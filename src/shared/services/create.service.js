@@ -39,7 +39,7 @@ function removeIdFromPayload(payload) {
 function buildRequestHandler(verb, base, urlPath) {
     switch (verb) {
         case HttpVerb.GET:
-            return () => base.get(urlPath).then(res => res.data);
+            return (params = {}) => base.get(urlPath, params).then(res => res.data);
         case HttpVerb.POST:
             return (data) => base.post(urlPath, data).then(res => res.data);
         case HttpVerb.PUT:

@@ -7,9 +7,11 @@ export class BaseService {
         this.url = `${propGmsApiUrl}${resourceEndpoint}`;
     }
 
-    get(path = '') {
-        return axios.get(`${this.url}/${path}`.replace(/\/+$/, ''));
+    get(path = '', params = null) {
+        const cleanUrl = `${this.url}/${path}`.replace(/\/+$/, '')
+        return axios.get(cleanUrl, { params })
     }
+
 
     post(path = '', data) {
         return axios.post(`${this.url}/${path}`.replace(/\/+$/, ''), data);

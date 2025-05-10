@@ -8,6 +8,15 @@
       "createdAt": "2025-05-09T19:10:45.054Z",
       "lastLoginAt": null,
       "personId": "b81b7ae5-9039-4349-817e-f819d18a432c"
+    },
+    {
+      "id": "fa05a5a9-9f3a-4375-a17c-26278a96ca03",
+      "email": "ramon2002@gmail.com",
+      "password": "ramon20",
+      "userType": "Worker",
+      "createdAt": "2025-05-09T23:33:40.299Z",
+      "lastLoginAt": null,
+      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6"
     }
   ],
   "persons": [
@@ -19,17 +28,35 @@
       "phoneNumber": "964419415",
       "profession": "Ingeniero de Software",
       "professionalId": null
+    },
+    {
+      "id": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
+      "name": "Ramon",
+      "lastName": "Garcia",
+      "email": "ramon2002@gmail.com",
+      "phoneNumber": "974511222",
+      "profession": "Topografo",
+      "professionalId": null
     }
   ],
   "organizations": [
     {
-      "id": "85a07a8f-cabf-4fb5-9fd5-fe1b580a363e",
-      "legalName": "Tung Tung Tung Salim Sahur Inc.",
-      "commercialName": "Tung Tung Sahur",
-      "ruc": "10548556232",
+      "id": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "legalName": "Tung Tung Tung Salim Sahur Sulca Org.",
+      "commercialName": "Tung Tung Org.",
+      "ruc": "20458563325",
       "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "createdAt": "2025-05-09T20:47:11.678Z",
+      "createdAt": "2025-05-09T22:32:54.491Z",
       "status": "Active"
+    }
+  ],
+  "members": [
+    {
+      "id": "b1d4f8cb-86d9-494c-b90e-a4277c80c0c2",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "type": "Contractor",
+      "joinedAt": "2025-05-09T22:32:54.531Z"
     }
   ]
 }

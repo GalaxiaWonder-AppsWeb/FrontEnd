@@ -70,6 +70,7 @@ export default {
     }
   },
   created() {
+    localStorage.clear()
     this.router = useRouter()
     this.authService = new AuthService()
   },

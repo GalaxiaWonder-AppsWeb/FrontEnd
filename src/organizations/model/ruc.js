@@ -3,6 +3,11 @@ export class Ruc {
         this.value = value
     }
 
+    // Ajustamos cómo se serializa este objeto
+    toJSON() {
+        return this.value; // Al convertir a JSON, devuelve la cadena directamente
+    }
+
     isValid() {
         const regex = /^\d{11}$/
         if (!regex.test(this.value)) return false

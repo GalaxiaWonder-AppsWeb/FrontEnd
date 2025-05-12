@@ -84,6 +84,7 @@ export class Organization {
     }
 
     toJSON() {
+        console.log('Valor de this.id antes de serializar:', this.id);
         return {
             id: this.id?.value ?? null,
             legalName: this.legalName,
@@ -97,7 +98,8 @@ export class Organization {
 }
 
 export class OrganizationId {
-    constructor() {
-        this.value = crypto.randomUUID()
+    constructor(value) {
+        // Si no se proporciona un valor, genera un UUID
+        this.value = value || crypto.randomUUID();
     }
 }

@@ -1,0 +1,100 @@
+import {Specialty} from "./specialty.js";
+import {TaskStatus} from "./task-status.js";
+import {ProjectTeamMemberId} from "./project-team-member.entity.js";
+
+export class Task {
+    constructor({
+                    id = new TaskId(),
+                    name = '',
+                    specialty,
+                    status = TaskStatus.DRAFT,
+                    startingDate = new Date(),
+                    dueDate = new Date(),
+                    //submission = new TaskSubmission(),
+                    responsible = new ProjectTeamMemberId(),
+                }) {
+        if (!name || typeof name !== 'string') {
+            throw new Error('Name is required and must be a non-empty string');
+        }
+
+        if (!Object.values(Specialty).includes(specialty)) {
+            throw new Error(`Specialty must be one of the valid Specialty values: ${Object.values(Specialty).join(', ')}`);
+        }
+
+        if (!Object.values(TaskStatus).includes(status)) {
+            throw new Error(`Status must be one of the valid TaskStatus values: ${Object.values(TaskStatus).join(', ')}`);
+        }
+
+        if (!(startingDate instanceof Date) || isNaN(startingDate)) {
+            throw new Error('Starting date must be a valid Date object');
+        }
+
+        if (!(dueDate instanceof Date) || isNaN(dueDate)) {
+            throw new Error('Due date must be a valid Date object');
+        }
+
+        if (dueDate < startingDate) {
+            throw new Error('Due date cannot be earlier than starting date');
+        }
+
+        if (!(responsible instanceof ProjectTeamMemberId) || !responsible.value) {
+            throw new Error('Responsible must be a valid ProjectTeamMemberId instance with a value');
+        }
+
+        this.id = id;
+        this.name = name;
+        this.specialty = specialty;
+        this.status = status;
+        this.startingDate = startingDate;
+        this.dueDate = dueDate;
+        //this.submission = submission;
+        this.responsible = responsible;
+    }
+
+    getStartingDate() {
+        return this.startingDate;
+    }
+
+    getDueDate() {
+        return this.dueDate;
+    }
+
+    assignResponsible(responsible) {
+        if (!(responsible instanceof ProjectTeamMemberId) || !responsible.value) {
+            throw new Error('Responsible must be a valid ProjectTeamMemberId instance with a value');
+        }
+        this.responsible = responsible;
+    }
+
+    updateStatus(newStatus) {
+        if (!Object.values(TaskStatus).includes(newStatus)) {
+            throw new Error(`Status must be one of the valid TaskStatus values: ${Object.values(TaskStatus).join(', ')}`);
+        }
+        this.status = newStatus;
+    }
+
+    toJSON() {
+        return {
+            id: this.id?.value ?? null,
+            name: this.name,
+            specialty: this.specialty,
+            status: this.status,
+            startingDate: this.startingDate,
+            dueDate: this.dueDate,
+            //submission: this.submission,
+            responsible: this.responsible?.value ?? null
+        };
+    }
+}
+
+export class TaskId {
+    constructor(value) {
+        this.value = value || crypto.randomUUID();
+    }
+
+    toJSON() {
+        return {
+            value: this.value
+        };
+    }
+}

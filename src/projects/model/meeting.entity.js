@@ -83,9 +83,17 @@ export class Meeting {
     }
 
     setParticipants(newParticipants) {
+        // Verificar si newParticipants es un array
         if (!Array.isArray(newParticipants)) {
             throw new Error('Participants must be an array');
         }
+
+        // Verificar si todos los elementos del array son instancias de ProjectTeamMemberId
+        if (!newParticipants.every(participant => participant instanceof ProjectTeamMemberId)) {
+            throw new Error('All participants must be valid ProjectTeamMemberId instances');
+        }
+
+        // Actualizar la lista de participantes
         this.participants = newParticipants;
     }
 }

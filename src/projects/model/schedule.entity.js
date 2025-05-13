@@ -1,3 +1,5 @@
+import {Milestone, MilestoneId} from './milestone.entity.js';
+
 export class Schedule {
     constructor({ milestones = [] } = {}) {
         if (!Array.isArray(milestones)) {

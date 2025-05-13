@@ -5,7 +5,7 @@ import {ContractingEntityId} from '../../shared/model/contracting-entity-id.js'
 import {OrganizationId} from '../../organizations/model/organization.entity.js'
 import {ProjectTeamMember, ProjectTeamMemberId} from './project-team-member.entity.js'
 
-export class Organization {
+export class Project {
     constructor({
                     id = new ProjectId(),
                     name = '',

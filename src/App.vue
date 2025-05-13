@@ -12,7 +12,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <subscription-workspace-test></subscription-workspace-test>
+  <router-view></router-view>
+  <!--<subscription-workspace-test></subscription-workspace-test>-->
 </template>
 
 <style scoped>

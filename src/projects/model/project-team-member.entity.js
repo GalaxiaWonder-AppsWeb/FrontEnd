@@ -1,4 +1,6 @@
 import {OrganizationMemberId} from '../../shared/model/organization-member-id.js'
+import {ProjectRole} from "./project-role.js";
+import {Specialty} from "./specialty.js";
 
 export class ProjectTeamMember {
     constructor({
@@ -11,12 +13,24 @@ export class ProjectTeamMember {
             throw new Error('Id must be a valid ProjectTeamMemberId instance.');
         }
 
-        if (!role) {
-            throw new Error('Role is required.');
+        if (!Object.values(ProjectRole).includes(role)) {
+            throw new Error(`Role must be one of the valid ProjectRole values: ${Object.values(ProjectRole).join(', ')}`);
         }
 
-        if (!specialty) {
-            throw new Error('Specialty is required.');
+        // Validación condicional basada en el rol
+        if (role === ProjectRole.SPECIALIST) {
+            if (!specialty) {
+                throw new Error('Specialty is required for a Specialist role.');
+            }
+            // Valida que el specialty sea uno de los valores permitidos en Specialty
+            if (!Object.values(Specialty).includes(specialty)) {
+                throw new Error(`Specialty must be one of the valid Specialty values: ${Object.values(Specialty).join(', ')}`);
+            }
+        } else {
+            // Si no es Specialist, specialty debe ser null
+            if (specialty) {
+                throw new Error('Specialty is only required for the Specialist role.');
+            }
         }
 
         if (!(memberId instanceof OrganizationMemberId) || !memberId.value) {
@@ -25,11 +39,12 @@ export class ProjectTeamMember {
 
         this.id = id;
         this.role = role; // Esperando a que definas ProjectRole o lo que corresponda
-        this.specialty = specialty; // Esperando definición de Specialty
+        this.specialty = specialty || null; // Esperando definición de Specialty
         this.memberId = memberId;
     }
 
     toJSON() {
+        console.log('Valor de this.id antes de serializar:', this.id);
         return {
             id: this.id.value,
             role: this.role,

@@ -66,6 +66,8 @@ export class AuthService {
         }
 
         try {
+            console.log(propgmsApiUrl);
+            console.log(credentials);
             const res = await axios.get(`${this.baseUrl}/users`, {
                 params: {
                     email: credentials.email,
@@ -73,7 +75,7 @@ export class AuthService {
                 },
                 headers: this.httpOptions.headers
             })
-
+            console.log(res)
             if (res.data.length === 0) {
                 throw new Error('Invalid email or password')
             }
@@ -107,5 +109,17 @@ export class AuthService {
         const msg = error.response?.data || error.message || 'Unexpected error'
         console.error(`[AuthService] ${context} error:`, msg)
         throw new Error(msg)
+    }
+
+    async getAllPersons() {
+        try {
+            const res = await axios.get(`
+            ${this.baseUrl}/persons`,
+              this.httpOptions)
+
+            return res.data
+        } catch (error) {
+            this.handleError('GetAllPersons', error)
+        }
     }
 }

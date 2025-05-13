@@ -1,9 +1,9 @@
 import {ProjectStatus} from './project-status.js'
 import {Schedule} from './schedule.entity.js'
-import {OrganizationMemberId} from '../../shared/model/organization-member-id.js'
+import {OrganizationMemberId} from '../../organizations/model/organization-member.entity.js'
 import {ContractingEntityId} from '../../shared/model/contracting-entity-id.js'
 import {OrganizationId} from '../../organizations/model/organization.entity.js'
-import {ProjectTeamMember} from './project-team-member.entity.js'
+import {ProjectTeamMember, ProjectTeamMemberId} from './project-team-member.entity.js'
 
 export class Organization {
     constructor({
@@ -70,9 +70,9 @@ export class Organization {
     }
 
 
-    removeTeamMemberByPersonId(memberId) {
-        if (!(memberId instanceof OrganizationMemberId)) {
-            throw new Error('MemberId must be a valid OrganizationMemberId instance.');
+    removeTeamMember(memberId) {
+        if (!(memberId instanceof ProjectTeamMemberId)) {
+            throw new Error('MemberId must be a valid ProjectTeamMemberId instance.');
         }
 
         this.team = this.team.filter(member => member.memberId.value !== memberId.value);

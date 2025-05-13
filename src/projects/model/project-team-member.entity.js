@@ -1,4 +1,4 @@
-import {OrganizationMemberId} from '../../shared/model/organization-member-id.js'
+import {OrganizationMemberId} from '../../organizations/model/organization-member.entity.js'
 import {ProjectRole} from "./project-role.js";
 import {Specialty} from "./specialty.js";
 

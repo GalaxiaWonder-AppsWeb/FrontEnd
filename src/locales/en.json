@@ -43,6 +43,18 @@
         "create": "Create organization",
         "cancel": "Cancel"
       }
+    },
+    "info-organization": {
+      "business-name": "Business Name",
+      "ruc": "RUC",
+      "creation-date": "Creation Date",
+      "contractor": "Contractor"
+    },
+    "edit-organization": {
+      "title": "Edit organization",
+      "legal-name": "Legal Name",
+      "commercial-name": "Commercial Name",
+      "change-settings": "Change settings"
     }
   }
 }

@@ -1,30 +1,48 @@
 <script>
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationAssembler} from "../services/organization.assembler.js";
-
-
+import {personService} from "../services/person.service.js";
 export default {
   name: "OrganizationInformation",
   data() {
     return {
       organization: null,
+      contractorName: null,
       api: organizationService,
       orgId: ''
     }
   },
   methods: {
-    loadInformation(){
-      console.log("ORGANIZATION ID: ",this.orgId);
-      this.api.getById({ id: this.orgId })
-          .then(data => {
-            this.organization = OrganizationAssembler.toEntityFromResource(data)
-            console.log("ORGANIZATION:" ,this.organization)
-          })
-          .catch(error => {
-            console.log(error)
-            this.organization = null
-          })
+    async loadInformation() {
+      try {
+        console.log("ORGANIZATION ID: ", this.orgId);
+
+        // 1. Obtener información de la organización
+        const organizationData = await this.api.getById({ id: this.orgId });
+        this.organization = OrganizationAssembler.toEntityFromResource(organizationData);
+        console.log("ORGANIZATION:", this.organization);
+
+        // 2. Obtener el ID del contratista (createdBy)
+        const contractorId = this.organization.createdBy.value;
+        console.log("CONTRATISTA ID:", contractorId);
+        // 3. Hacer una llamada al endpoint /persons/:id para obtener el nombre completo
+        if (contractorId) {
+          try {
+            console.log("Haciendo llamada al endpoint /persons/:id");
+            const { data } = await personService.getById(contractorId); // Llamada al servicio
+            console.log("Datos del contratista recibidos:", data); // Mostrar datos en consola
+            this.contractorName = `${data.name.trim()} ${data.lastName.trim()}`; // Procesar datos
+          } catch (error) {
+            console.error("Error durante la llamada al servicio personService.getById:", error);
+          }
+        }
+      } catch (error) {
+        console.error("Error al cargar la información:", error);
+        this.organization = null;
+        this.contractorName = null;
+      }
     },
+
     formatDate(dateString) {
       const date = new Date(dateString)
       return new Intl.DateTimeFormat('es-PE').format(date)
@@ -41,20 +59,21 @@ export default {
 <template>
   <div class="organization-info-card" v-if="organization">
     <div class="info-block">
-      <h3 class="label">Business Name</h3>
+      <h3 class="label">{{ $t('organization.info-organization.business-name')}}</h3>
       <p class="value">{{ organization.legalName }}</p>
     </div>
     <div class="info-block">
-      <h3 class="label">RUC</h3>
+      <h3 class="label">{{ $t('organization.info-organization.ruc')}}</h3>
       <p class="value">{{ organization.ruc.value }}</p>
     </div>
     <div class="info-block">
-      <h3 class="label">Creation date</h3>
+      <h3 class="label">{{ $t('organization.info-organization.creation-date')}}</h3>
       <p class="value">{{ formatDate(organization.createdAt) }}</p>
     </div>
     <div class="info-block">
-      <h3 class="label">Contractor</h3>
-      <p class="value">{{ organization.createdBy.value}}</p>
+      <h3 class="label">{{ $t('organization.info-organization.contractor')}}</h3>
+      <p class="value">{{ contractorName || "Información no disponible"
+        }}</p>
     </div>
   </div>
 </template>

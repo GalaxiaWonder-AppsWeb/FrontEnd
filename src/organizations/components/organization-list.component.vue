@@ -19,7 +19,8 @@ export default {
       console.log("Owner: ", this.owner)
       this.api.getByCreatedBy({createdBy: this.owner.personId})
           .then(data => {
-            this.organizations = OrganizationAssembler.toEntitiesFromResponse(data);
+            console.log(data)
+            this.organizations = OrganizationAssembler.toEntitiesFromResponse(data)
           })
       console.log("ORGANIZACIONES",this.organizations)
     }

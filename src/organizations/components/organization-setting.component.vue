@@ -1,21 +1,21 @@
 <template>
   <form @submit.prevent="handleUpdate" class="p-fluid form-grid register-card">
-    <h1 class="form-title">Editar Organización</h1>
+    <h1 class="form-title">{{$t('organization.edit-organization.title')}}</h1>
 
     <div class="field-row">
       <div class="p-field">
-        <label for="legalName">Legal Name</label>
+        <label for="legalName">{{$t('organization.edit-organization.legal-name')}}</label>
         <pv-input-text id="legalName" v-model="legalName" required />
       </div>
       <div class="p-field">
-        <label for="commercialName">Commercial Name</label>
+        <label for="commercialName">{{$t('organization.edit-organization.commercial-name')}}</label>
         <pv-input-text id="commercialName" v-model="commercialName" required />
       </div>
     </div>
 
     <pv-button
         class="p-button"
-        label="Guardar cambios"
+        :label="$t('organization.edit-organization.change-settings')"
         icon="pi pi-save"
         type="submit"
         :disabled="!isValid"
@@ -47,6 +47,7 @@ export default {
   },
   methods: {
     async loadOrganization() {
+      console.log('Valor desde la URL:', this.$route.params.orgId);
       try {
         this.organizationId = this.$route.params.orgId
         console.log("ID DE ORGANIZACION:", this.organizationId)
@@ -69,7 +70,9 @@ export default {
           createdBy: this.originalOrg.createdBy,
           status: this.originalOrg.status
         })
-        console.log("ORGANIZATION INFORMATION: ", updatedOrg.toJSON())
+        console.log('Objeto antes de toJSON():', updatedOrg);
+        console.log('ID asignado:', this.organizationId);
+        console.log('Objeto convertido a JSON:', updatedOrg.toJSON());
         const res = await organizationService.update(updatedOrg.toJSON())
         this.message = `Organización actualizada: ${res.legalName}`
         console.log('Actualizado:', res)
@@ -124,5 +127,6 @@ label {
 
 .p-button {
   width: 100%;
+  margin-top: 0.5rem;
 }
 </style>

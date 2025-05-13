@@ -3,7 +3,7 @@
     <pv-card class="organization-card">
       <template #content>
         <div class="organization-content">
-          <span class="organization-name">{{ organization.legalName }}</span>
+          <span class="organization-name">{{ organization.legalName}}</span>
         </div>
       </template>
     </pv-card>

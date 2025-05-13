@@ -16,7 +16,6 @@ import OrganizationProjects from '../organizations/components/organization-proje
 import OrganizationMembers from '../organizations/components/organization-members.component.vue'
 import OrganizationSettings from '../organizations/components/organization-setting.component.vue'
 
-
 const routes = [
     {
         path: '/',
@@ -70,7 +69,8 @@ const routes = [
                         path: 'settings',
                         name: 'organization-settings',
                         component: OrganizationSettings
-                    }
+                    },
+
                 ]
             }
         ]

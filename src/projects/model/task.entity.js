@@ -1,8 +1,10 @@
 import {Specialty} from "./specialty.js";
 import {TaskStatus} from "./task-status.js";
 import {ProjectTeamMemberId} from "./project-team-member.entity.js";
+import {TaskSubmission} from "./task-submission.entity.js";
+import {ScheduleItem} from "./schedule-item.js";
 
-export class Task {
+export class Task extends ScheduleItem {
     constructor({
                     id = new TaskId(),
                     name = '',
@@ -13,6 +15,9 @@ export class Task {
                     //submission = new TaskSubmission(),
                     responsible = new ProjectTeamMemberId(),
                 }) {
+
+        super();
+
         if (!name || typeof name !== 'string') {
             throw new Error('Name is required and must be a non-empty string');
         }

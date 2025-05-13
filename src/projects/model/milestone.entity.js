@@ -1,3 +1,5 @@
+import {ScheduleItem} from "./schedule-item.js";
+
 export class Milestone {
     constructor({
                     id = new MilestoneId(),
@@ -48,6 +50,21 @@ export class Milestone {
             throw new Error('New end date is required and must be a Date object')
         }
         this.endDate = newEndDate
+    }
+
+    addItem(item) {
+        if (!(item instanceof ScheduleItem)) {
+            throw new Error('Item must be a valid ScheduleItem');
+        }
+        this.items.push(item);
+    }
+
+    removeItem(item) {
+        const index = this.items.indexOf(item);
+        if (index === -1) {
+            throw new Error('Item not found in the milestone');
+        }
+        this.items.splice(index, 1);
     }
 
     toJSON() {

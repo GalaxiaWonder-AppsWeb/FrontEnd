@@ -1,6 +1,7 @@
 import {ProjectTeamMemberId} from "./project-team-member.entity.js";
+import {ScheduleItem} from "./schedule-item.js";
 
-export class Meeting {
+export class Meeting extends ScheduleItem {
     constructor({
                     id = new MeetingId(),
                     topic = '',
@@ -10,6 +11,9 @@ export class Meeting {
                     calledBy = new ProjectTeamMemberId(),
                     participants = [],
                 }){
+
+        super();
+
         if (!topic || typeof topic !== 'string') {
             throw new Error('Topic is required and must be a non-empty string');
         }
@@ -100,7 +104,8 @@ export class Meeting {
 
 export class MeetingId {
     constructor(value) {
-        this.value = value;
+        // Si no se proporciona un valor, genera un UUID
+        this.value = value || crypto.randomUUID();
     }
 
     toString() {

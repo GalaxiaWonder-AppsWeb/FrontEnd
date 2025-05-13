@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     async getMemberType() {
-      const user = JSON.parse(localStorage.getItem("user"))
+      const user = JSON.parse(localStorage.getItem("organization"))
       this.personId = user.personId
       this.organizationId = user.organizationId
 

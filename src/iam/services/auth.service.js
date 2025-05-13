@@ -110,4 +110,16 @@ export class AuthService {
         console.error(`[AuthService] ${context} error:`, msg)
         throw new Error(msg)
     }
+
+    async getAllPersons() {
+        try {
+            const res = await axios.get(`
+            ${this.baseUrl}/persons`,
+              this.httpOptions)
+
+            return res.data
+        } catch (error) {
+            this.handleError('GetAllPersons', error)
+        }
+    }
 }

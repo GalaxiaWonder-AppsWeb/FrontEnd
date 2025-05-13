@@ -66,6 +66,8 @@ export class AuthService {
         }
 
         try {
+            console.log(propgmsApiUrl);
+            console.log(credentials);
             const res = await axios.get(`${this.baseUrl}/users`, {
                 params: {
                     email: credentials.email,
@@ -73,7 +75,7 @@ export class AuthService {
                 },
                 headers: this.httpOptions.headers
             })
-
+            console.log(res)
             if (res.data.length === 0) {
                 throw new Error('Invalid email or password')
             }

@@ -11,6 +11,7 @@ import {organizationMemberService} from "../services/organization-member.service
 export default {
   name: "CreateOrganization",
   components: {PvButton, PvInputText},
+  emits: ['organization-created'],
   data() {
     return {
       user: '',
@@ -33,11 +34,11 @@ export default {
           status: OrganizationStatus.ACTIVE
         })
         this.visible = false
-        console.log("ID DEL USUARIO:",this.user.personId)
         const res = await organizationService.create(org)
         this.organizationId = org.id
         this.message = `Created: ${res.legalName}`
         await this.LinkContractor(new PersonId(this.user.personId), this.organizationId)
+        this.$emit('organization-created', this.organizationId)
       } catch (err) {
         this.message = err.message
       }
@@ -56,12 +57,10 @@ export default {
       const res = await organizationMemberService.create(member.toJSON())
       this.createdMemberId = res.id
       this.message = `Member created for person ${res.personId}`
-      console.log(res)
     }
   },
   created(){
     this.user = JSON.parse(localStorage.getItem("user"))
-    console.log("ID DEL USUARIO:",this.user.personId)
   },
   computed: {
     isFormValid() {
@@ -125,7 +124,7 @@ export default {
 .form-group label {
   font-weight: 600;
   width: 8rem;
-  color: #f0f0f0;
+  color: #000000;
 }
 
 

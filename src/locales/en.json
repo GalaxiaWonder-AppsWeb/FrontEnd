@@ -1,0 +1,85 @@
+{
+  "register": {
+    "title": "User Register",
+    "name": "Name",
+    "last-name": "Last Name",
+    "phone": "Phone Number",
+    "profession": "Profession",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Register",
+    "successful-register": "successfully registered",
+    "roles": {
+      "title": "Role",
+      "choose-role": "Choose a role",
+      "worker": "Worker",
+      "client": "Client"
+    }
+  },
+  "login": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Enter",
+    "no-account": "Don't have an account yet?",
+    "go-register": "Register here"
+  },
+  "organization": {
+    "title": "Organization",
+    "section": {
+      "information":"Information",
+      "projects": "Projects",
+      "members": "Members",
+      "configurations": "Configurations"
+    },
+    "no-organizations": "You do not have associated organizations.",
+    "create-organization":{
+      "title": "New organization",
+      "information": {
+        "title": "Organization information",
+        "legal-name": "Legal Name",
+        "commercial-name": "Commercial Name",
+        "ruc": "RUC",
+        "create": "Create organization",
+        "cancel": "Cancel"
+      }
+    },
+    "info-organization": {
+      "business-name": "Business Name",
+      "ruc": "RUC",
+      "creation-date": "Creation Date",
+      "contractor": "Contractor"
+    },
+    "edit-organization": {
+      "title": "Edit organization",
+      "legal-name": "Legal Name",
+      "commercial-name": "Commercial Name",
+      "change-settings": "Change settings"
+    },
+    "member": {
+        "membersTitle": "Current members",
+        "noMembers": "No members registered.",
+        "role": {
+          "title": "Role",
+          "Contractor": "Contractor",
+          "Worker": "Worker"
+        },
+        "since": "Since",
+        "invitationsTitle": "Invitations",
+        "noInvitations": "No invitations registered.",
+        "invitationFor": "Invitation for"
+    }
+  },
+  "navigation": {
+    "dashboard": {
+      "organizations": "Organizations",
+      "invitations": "Invitations"
+    }
+  },
+  "project": {
+    "title": "Project",
+    "information": "Information",
+    "schedule": "Schedule",
+    "change-management": "Change Management"
+  }
+}

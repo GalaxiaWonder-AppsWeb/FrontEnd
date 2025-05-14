@@ -1,0 +1,85 @@
+{
+  "register": {
+    "title": "Registro de Usuario",
+    "name": "Nombre",
+    "last-name": "Apellido",
+    "phone": "Celular",
+    "profession": "Profesión",
+    "email": "Correo",
+    "password": "Contraseña",
+    "submit": "Registrarse",
+    "successful-register": "exitosamente registrado",
+    "roles": {
+      "title": "Rol",
+      "choose-role": "Selecciona un rol",
+      "worker": "Trabajador",
+      "client": "Cliente"
+    }
+  },
+  "login": {
+    "title": "Login de usuario",
+    "email": "Correo",
+    "password": "Contraseña",
+    "submit": "Ingresar",
+    "no-account": "¿No tienes una cuenta aún?",
+    "go-register": "Registrate aquí"
+  },
+  "organization": {
+    "title": "Organización",
+    "section": {
+      "information":"Información",
+      "projects": "Proyectos",
+      "members": "Miembros",
+      "configurations": "Configuraciones"
+    },
+    "no-organizations": "No tienes organizaciones asociadas.",
+    "create-organization":{
+      "title": "Nueva organización",
+      "information": {
+        "title": "Información de organización",
+        "legal-name": "Nombre legal",
+        "commercial-name": "Nombre comercial",
+        "ruc": "RUC",
+        "create": "Crear organización",
+        "cancel": "Cancelar"
+      }
+    },
+    "info-organization": {
+      "business-name": "Nombre del negocio",
+      "ruc": "RUC",
+      "creation-date": "Fecha de Creación",
+      "contractor": "Contratista"
+    },
+    "edit-organization": {
+      "title": "Editar organización",
+      "legal-name": "Nombre legal",
+      "commercial-name": "Nombre comercial",
+      "change-settings": "Guardar cambios"
+    },
+    "member": {
+      "membersTitle": "Miembros actuales",
+      "noMembers": "No hay miembros registrados.",
+      "role": {
+        "title": "Rol",
+        "Contractor": "Contratista",
+        "Worker": "Trabajador"
+      },
+      "since": "Desde",
+      "invitationsTitle": "Invitaciones",
+      "noInvitations": "No hay invitaciones registradas.",
+      "invitationFor": "Invitación para"
+    }
+  },
+  "navigation": {
+    "dashboard": {
+      "organizations": "Organizaciones",
+      "invitations": "Invitaciones"
+    }
+  },
+  "project": {
+    "title": "Proyecto",
+    "information": "Información",
+    "schedule": "Cronograma",
+    "change-management": "Gestión del cambio"
+  }
+}

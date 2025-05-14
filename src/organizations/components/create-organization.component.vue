@@ -26,21 +26,45 @@ export default {
   methods:{
     async CreateOrganization() {
       try {
-        const org = new Organization({
-          legalName : document.getElementById('legalName')?.value,
-          commercialName : document.getElementById('commercialName')?.value,
-          ruc : new Ruc(document.getElementById('ruc')?.value),
-          createdBy: new PersonId(this.user.personId),
+        console.log('ENTRADA');
+
+        const legalName = document.getElementById('legalName')?.value || '';
+        const commercialName = document.getElementById('commercialName')?.value || '';
+        const rucValue = document.getElementById('ruc')?.value || '';
+        const personId = this.user?.personId;
+
+        console.log("Legal Name:", legalName);
+        console.log("Commercial Name:", commercialName);
+        console.log("RUC:", rucValue);
+        console.log("Created By:", personId);
+        console.log("Status:", OrganizationStatus.ACTIVE);
+
+        // Validación opcional de campos
+        if (!legalName || !commercialName || !rucValue || !personId) {
+          throw new Error("Todos los campos son obligatorios");
+        }
+
+        // Construir objeto plano
+        const org = {
+          legalName: legalName.trim(),
+          commercialName: commercialName.trim(),
+          ruc: rucValue.trim(),
+          createdBy: personId,
           status: OrganizationStatus.ACTIVE
-        })
-        this.visible = false
-        const res = await organizationService.create(org)
-        this.organizationId = org.id
-        this.message = `Created: ${res.legalName}`
-        await this.LinkContractor(new PersonId(this.user.personId), this.organizationId)
-        this.$emit('organization-created', this.organizationId)
+        };
+
+        this.visible = false;
+
+        const res = await organizationService.create(org);
+        this.organizationId = res.id; // el ID viene del backend
+        this.message = `Created: ${res.legalName}`;
+
+        await this.LinkContractor(new PersonId(personId), this.organizationId);
+        this.$emit('organization-created', this.organizationId);
+
       } catch (err) {
-        this.message = err.message
+        console.error("Error al crear organización:", err);
+        this.message = err.message || 'Error desconocido';
       }
     },
     onlyNumbers(event) {

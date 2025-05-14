@@ -83,6 +83,14 @@ export class Organization {
         this.status = OrganizationStatus.INACTIVE
     }
 
+    static salute(){
+        console.log('Holi')
+    }
+
+    salute2(){
+        console.log('Holi')
+    }
+
     toJSON() {
         console.log('Valor de this.id antes de serializar:', this.id);
         return {

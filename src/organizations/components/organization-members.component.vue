@@ -30,8 +30,8 @@ export default {
       this.organizationId = organization.id
       console.log("orga:", this.organizationId)
 
-      const members = await organizationMemberService.getByOrganizationId(this.organizationId);
-      this.members = members;
+      this.members = await organizationMemberService.getByOrganizationId(this.organizationId);
+      console.log(this.members)
 
 
     } catch (err) {
@@ -42,38 +42,27 @@ export default {
 </script>
 
 <template>
-  <pv-card class="organization-members-container">
-    <template #content>
-      <div class="section-title">{{ $t('organization.member.membersTitle') }}</div>
+  <div v-if="members.length===0 || members.length===undefined">
+    No members
+  </div>
 
-      <div v-if="members.length === 0" class="empty-state">
-        {{ $t('organization.member.noMembers') }}
-      </div>
+  <div v-for="member in members" :key="member.id">
+    <pv-card class="organization-members-container">
+      <template #content>
+        <div class="section-title">{{ $t('organization.member.membersTitle') }}</div>
 
-      <div v-else class="members-grid">
-        <div v-for="member in members"
-             :key="member.id"
-             class="member-card">
-          <p><strong>{{ member.firstName }} {{ member.lastName }}</strong></p>
-          <p>{{ member.email }}</p>
-          <p>{{ $t('organization.member.role.title') }}: {{ $t('organization.member.role.' + member.type) }}</p>
-          <p>{{ $t('organization.member.since') }}: {{ member.joinedAt }}</p>
+        <div class="members-grid">
+            <p><strong>{{ member.firstName }} {{ member.lastName }}</strong></p>
+            <p>{{ member.email }}</p>
+            <p>{{ $t('organization.member.role.title') }}: {{ $t('organization.member.role.' + member.type) }}</p>
+            <p>{{ $t('organization.member.since') }}: {{ member.joinedAt }}</p>
         </div>
-      </div>
 
-      <div class="section-title">{{ $t('organization.member.invitationsTitle') }}</div>
+        <div class="section-title">{{ $t('organization.member.invitationsTitle') }}</div>
 
-      <div v-if="invitations.length === 0" class="empty-state">
-        {{ $t('organization.member.noInvitations') }}
-      </div>
-
-      <div v-else class="invitations-list">
-        <div v-for="inv in invitations" :key="inv.id" class="invitation-card">
-          {{ $t('organization.member.invitationFor') }}: {{ inv.personId }}
-        </div>
-      </div>
-    </template>
-  </pv-card>
+      </template>
+    </pv-card>
+  </div>
 </template>
 
 <style scoped>

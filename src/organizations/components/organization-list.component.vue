@@ -15,6 +15,10 @@ export default {
     }
   },
   methods: {
+    handleOrgCreated(orgId) {
+      console.log('Organización creada con ID:', orgId)
+      this.loadOrganizations()
+    },
     loadOrganizations(){
       console.log("Owner: ", this.owner)
       this.api.getByCreatedBy({createdBy: this.owner.personId})
@@ -33,6 +37,7 @@ export default {
 </script>
 
 <template>
+  <CreateOrganization @organization-created="handleOrgCreated" />
   <div class="organization-items" v-if="organizations.length">
     <OrganizationItem
         v-for="(item, index) in organizations"
@@ -43,7 +48,6 @@ export default {
   <div v-else>
     <p>{{ $t('organization.no-organizations') }}</p>
   </div>
-  <CreateOrganization/>
 
 </template>
 

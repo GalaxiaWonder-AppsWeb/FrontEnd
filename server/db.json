@@ -48,6 +48,42 @@
       "createdAt": "2025-05-12T13:34:25.564Z",
       "status": "Active",
       "id": "840c90b2-10f7-4385-bfbb-30f08539f58b"
+    },
+    {
+      "id": "4256a877-b003-4300-8793-38affafc7894",
+      "legalName": "ASD",
+      "commercialName": "ASD",
+      "ruc": "20191712561",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-05-14T00:29:13.209Z",
+      "status": "Active"
+    },
+    {
+      "id": "439ae842-cb51-4ea8-8610-f2a7415ac8c1",
+      "legalName": "XD",
+      "commercialName": "XD",
+      "ruc": "20113688913",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-05-14T00:48:02.884Z",
+      "status": "Active"
+    },
+    {
+      "id": "3b92f8cb-c38e-48fc-ba11-c840293b0e8e",
+      "legalName": "XDXD",
+      "commercialName": "XDXD",
+      "ruc": "20113688913",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-05-14T00:49:20.716Z",
+      "status": "Active"
+    },
+    {
+      "id": "376f4c4a-69c6-4298-b667-96128e3fa2d1",
+      "legalName": "XDDDDDDDDD",
+      "commercialName": "XDDDDDDDDD",
+      "ruc": "20113688913",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-05-14T00:56:16.674Z",
+      "status": "Active"
     }
   ],
   "members": [
@@ -60,6 +96,34 @@
       "email": "exampleR@gmail.com",
       "type": "Contractor",
       "joinedAt": "2025-05-09T22:32:54.531Z"
+    },
+    {
+      "id": "9a7e3fad-3b9a-4af4-a385-178332b223e2",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "4256a877-b003-4300-8793-38affafc7894",
+      "type": "Contractor",
+      "joinedAt": "2025-05-14T00:29:13.233Z"
+    },
+    {
+      "id": "e4c7cbe5-82a3-4cc8-b3cb-ac66e7afa7aa",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "439ae842-cb51-4ea8-8610-f2a7415ac8c1",
+      "type": "Contractor",
+      "joinedAt": "2025-05-14T00:48:02.893Z"
+    },
+    {
+      "id": "ef8d074b-fb1a-498e-90ec-172a25c222f6",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "3b92f8cb-c38e-48fc-ba11-c840293b0e8e",
+      "type": "Contractor",
+      "joinedAt": "2025-05-14T00:49:20.725Z"
+    },
+    {
+      "id": "0a378dc7-5700-4bbb-97e7-b800543e4263",
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "376f4c4a-69c6-4298-b667-96128e3fa2d1",
+      "type": "Contractor",
+      "joinedAt": "2025-05-14T00:56:16.687Z"
     }
   ],
   "invoices": [

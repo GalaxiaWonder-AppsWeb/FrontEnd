@@ -55,6 +55,19 @@
       "legal-name": "Legal Name",
       "commercial-name": "Commercial Name",
       "change-settings": "Change settings"
+    },
+    "member": {
+        "membersTitle": "Current members",
+        "noMembers": "No members registered.",
+        "role": {
+          "title": "Role",
+          "Contractor": "Contractor",
+          "Worker": "Worker"
+        },
+        "since": "Since",
+        "invitationsTitle": "Invitations",
+        "noInvitations": "No invitations registered.",
+        "invitationFor": "Invitation for"
     }
   }
 }

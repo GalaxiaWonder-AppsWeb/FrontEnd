@@ -20,6 +20,8 @@
         type="submit"
         :disabled="!isValid"
     />
+
+    <p class="confirm-message">{{this.message}}</p>
   </form>
 </template>
 
@@ -42,7 +44,7 @@ export default {
   },
   computed: {
     isValid() {
-      return this.legalName.trim() !== '' && this.commercialName.trim() !== ''
+      return this.isEmpty() && this.isOriginal();
     }
   },
   methods: {
@@ -50,13 +52,11 @@ export default {
       console.log('Valor desde la URL:', this.$route.params.orgId);
       try {
         this.organizationId = this.$route.params.orgId
-        console.log("ID DE ORGANIZACION:", this.organizationId)
         const res = await organizationService.getById({ id: this.organizationId })
         this.originalOrg = OrganizationAssembler.toEntityFromResource(res)
         this.legalName = this.originalOrg.legalName
         this.commercialName = this.originalOrg.commercialName
       } catch (err) {
-        console.error('Error al cargar la organización:', err)
         this.message = err.message
       }
     },
@@ -70,16 +70,19 @@ export default {
           createdBy: this.originalOrg.createdBy,
           status: this.originalOrg.status
         })
-        console.log('Objeto antes de toJSON():', updatedOrg);
-        console.log('ID asignado:', this.organizationId);
-        console.log('Objeto convertido a JSON:', updatedOrg.toJSON());
         const res = await organizationService.update(updatedOrg.toJSON())
-        this.message = `Organización actualizada: ${res.legalName}`
+        this.message = `Organización actualizada`
         console.log('Actualizado:', res)
       } catch (err) {
-        console.error('Error al actualizar organización:', err)
+        console.error('Error al actualizar organización')
         this.message = err.message
       }
+    },
+    isEmpty(){
+      return this.legalName.trim() !== '' && this.commercialName.trim() !== ''
+    },
+    isOriginal(){
+      return this.legalName.trim() !== this.originalOrg.legalName.trim() || this.commercialName.trim() !== this.originalOrg.commercialName.trim()
     }
   },
   created() {
@@ -128,5 +131,9 @@ label {
 .p-button {
   width: 100%;
   margin-top: 0.5rem;
+}
+
+.confirm-message {
+  color: green;
 }
 </style>

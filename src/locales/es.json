@@ -69,5 +69,17 @@
       "noInvitations": "No hay invitaciones registradas.",
       "invitationFor": "Invitación para"
     }
+  },
+  "navigation": {
+    "dashboard": {
+      "organizations": "Organizaciones",
+      "invitations": "Invitaciones"
+    }
+  },
+  "project": {
+    "title": "Proyecto",
+    "information": "Información",
+    "schedule": "Cronograma",
+    "change-management": "Gestión del cambio"
   }
 }

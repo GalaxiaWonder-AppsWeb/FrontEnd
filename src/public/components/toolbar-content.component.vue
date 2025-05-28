@@ -55,7 +55,7 @@ export default {
       return this.route.path.startsWith('/organizations/') && !this.route.path.includes('/project');
     },
     inProjectView() {
-      return this.route.path.includes('/project')
+
     },
     inOrganizationGeneralView(){
       return this.route.path.includes('/organizations') || this.route.path.includes('/invitations')

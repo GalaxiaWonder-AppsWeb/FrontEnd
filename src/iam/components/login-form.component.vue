@@ -53,7 +53,7 @@ import {Credentials} from '../model/credentials.entity.js'
 import { useRouter } from 'vue-router'
 
 export default {
-  name: 'LoginView',
+  name: 'login-form',
   components: {
     LanguageSwitcher
   },

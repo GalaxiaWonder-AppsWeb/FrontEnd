@@ -17,6 +17,15 @@
       "createdAt": "2025-05-09T23:33:40.299Z",
       "lastLoginAt": null,
       "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6"
+    },
+    {
+      "id": "5e67a01a-09ba-47e9-bfdc-0ba0efcaa48a",
+      "email": "xd@example.com",
+      "password": "ASDFGH123",
+      "userType": "Client",
+      "createdAt": "2025-05-14T05:48:41.616Z",
+      "lastLoginAt": null,
+      "personId": "2cffd48e-17c7-4fd6-87eb-8adf159f6c64"
     }
   ],
   "persons": [
@@ -36,6 +45,15 @@
       "email": "ramon2002@gmail.com",
       "phoneNumber": "974511222",
       "profession": "Topografo",
+      "professionalId": null
+    },
+    {
+      "id": "2cffd48e-17c7-4fd6-87eb-8adf159f6c64",
+      "name": "Álvaro",
+      "lastName": "Orozco Torres",
+      "email": "xd@example.com",
+      "phoneNumber": "123456789",
+      "profession": "",
       "professionalId": null
     }
   ],

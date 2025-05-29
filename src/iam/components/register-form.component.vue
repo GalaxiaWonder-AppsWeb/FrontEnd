@@ -61,7 +61,14 @@
     <!-- Rol -->
     <div class="p-field">
       <label>{{ $t('register.roles.title') }}</label>
-      <SelectRole v-model="role" required/>
+      <pv-select
+          v-model="role"
+          :options="roleOptions"
+          optionLabel="label"
+          optionValue="value"
+          :placeholder="$t('register.roles.choose-role')"
+          class="w-full"
+      />
     </div>
 
     <pv-button
@@ -79,14 +86,13 @@
 import { Credentials } from '../model/credentials.entity.js'
 import { Person } from '../model/person.entity.js'
 import { AuthService } from '../services/auth.service.js'
-import SelectRole from './select-role.component.vue'
 import LanguageSwitcher from '../../public/components/language-switcher.component.vue'
-import {UserType} from "../model/user-type.js";
-import {UserAccount} from "../model/user-account.entity.js";
+import { UserType } from "../model/user-type.js"
+import { UserAccount } from "../model/user-account.entity.js"
 
 export default {
-  name: 'RegisterForm',
-  components: { LanguageSwitcher, SelectRole },
+  name: 'register-form',
+  components: { LanguageSwitcher },
   data() {
     return {
       name: '',
@@ -95,55 +101,46 @@ export default {
       profession: '',
       email: '',
       password: '',
-      role: '', // If u want an empty field use it like this, but always use enum values later for security
+      role: '',
       message: '',
       messageType: 'success',
       authService: new AuthService()
     }
   },
+  computed: {
+    roleOptions() {
+      return [
+        { label: this.$t('register.roles.worker'), value: UserType.WORKER },
+        { label: this.$t('register.roles.client'), value: UserType.CLIENT }
+      ]
+    }
+  },
   methods: {
     async handleRegister() {
       this.message = ''
-
       const phoneRegex = /^\d{9}$/;
-
       if (!phoneRegex.test(this.phoneNumber)) {
-        this.message = this.$t('register.errors.invalid-phone');
-        this.messageType = 'error';
-        return;
+        this.message = this.$t('register.errors.invalid-phone')
+        this.messageType = 'error'
+        return
       }
 
-
       if (!this.role) {
-        this.message = this.$t('register.errors.missing-role');
-        this.messageType = 'error';
-        return;
+        this.message = this.$t('register.errors.missing-role')
+        this.messageType = 'error'
+        return
       }
 
       if (this.role === UserType.WORKER && this.profession === '') {
-        this.message = this.$t('register.errors.missing-profession');
-        this.messageType = 'error';
-        return;
+        this.message = this.$t('register.errors.missing-profession')
+        this.messageType = 'error'
+        return
       }
 
       try {
-        const person = new Person(
-            this.name,
-            this.lastName,
-            this.email,
-            this.phoneNumber,
-            this.profession
-        )
-
-        const credentials = new Credentials(
-            this.email,
-            this.password
-        )
-
-        const account = new UserAccount({
-          credentials,
-          userType: this.role
-        })
+        const person = new Person(this.name, this.lastName, this.email, this.phoneNumber, this.profession)
+        const credentials = new Credentials(this.email, this.password)
+        const account = new UserAccount({ credentials, userType: this.role })
 
         const result = await this.authService.register(account, person)
 
@@ -166,12 +163,13 @@ export default {
   watch: {
     role(newRole) {
       if (newRole === UserType.CLIENT) {
-        this.profession = '';
+        this.profession = ''
       }
     }
   }
 }
 </script>
+
 <style scoped>
 .register-card {
   max-width: 540px;
@@ -226,7 +224,6 @@ label {
   width: 100%;
 }
 
-
 ::v-deep(.profession-input:disabled) {
   color: #888888;             /* texto gris tenue */
   cursor: not-allowed;
@@ -237,4 +234,27 @@ label {
   width: 100% !important;
 }
 
+::v-deep(.p-select) {
+  width: 100%;
+}
+
+::v-deep(.p-inputtext) {
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+::v-deep(.p-dropdown) {
+  background-color: black;
+  border: none;
+  border-radius: 8px;
+}
+
+::v-deep(.p-dropdown-label),
+::v-deep(.p-dropdown-trigger) {
+  color: white;
+}
 </style>

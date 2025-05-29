@@ -1,21 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Layouts
-import AuthLayoutComponent from '../iam/components/auth-layout.component.vue'
-import UserLayout from '../organizations/components/user-layout.component.vue'
-import OrganizationLayout from '../organizations/components/organization-layout.component.vue'
-
 // Auth
 import LoginPage from "../iam/pages/login-page.component.vue";
 import RegisterPage from "../iam/pages/register-page.component.vue";
 
 // Organizations
 import OrganizationList from '../organizations/components/organization-list.component.vue'
-import OrganizationInformation from '../organizations/components/organization-information.component.vue'
-import OrganizationProjects from '../organizations/components/organization-projects.component.vue'
-import OrganizationMembers from '../organizations/components/organization-members.component.vue'
-import OrganizationSettings from '../organizations/components/organization-setting.component.vue'
-import OrganizationInvitations from "../organizations/components/organization-invitations.component.vue";
+import OrganizationInformationTab from '../organizations/pages/organization-information-tab.component.vue'
+import OrganizationProjectsTab from '../organizations/pages/organization-projects-tab.component.vue'
+import OrganizationMembersTab from '../organizations/pages/organization-members-tab.component.vue'
+import OrganizationConfigurationTab from '../organizations/pages/organization-configuration-tab.component.vue'
+import OrganizationInvitationsTab from "../organizations/pages/organization-invitations-tab.component.vue";
+
+import WorkerLayout from "../organizations/pages/worker-layout.component.vue";
+import OrganizationLayout from "../organizations/pages/organization-layout.component.vue";
 
 const routes = [
     {
@@ -31,53 +29,51 @@ const routes = [
         component: RegisterPage
     },
     {
-        path: '/organizations',
-        component: UserLayout,
+        path: '',
+        component: WorkerLayout,
         children: [
             {
-                path: '',
+                path: '/organizations',
                 name: 'organizations',
                 component: OrganizationList
             },
             {
               path: '/invitations',
                 name: 'invitations',
-                component: OrganizationInvitations
+                component: OrganizationInvitationsTab
+            }
+        ]
+    },
+    {
+        path: '/organizations/:orgId',
+        component: OrganizationLayout,
+        children: [
+            {
+                path: '',
+                redirect: to => ({
+                    name: 'organization-information',
+                    params: { orgId: to.params.orgId }
+                })
             },
             {
-                path: ':orgId',
-                component: OrganizationLayout,
-                meta: { requiresAuth: true, roles: ['contractor', 'specialist'] },
-                children: [
-                    {
-                        path: '',
-                        redirect: to => ({
-                            name: 'organization-information',
-                            params: { orgId: to.params.orgId }
-                        })
-                    },
-                    {
-                        path: 'information',
-                        name: 'organization-information',
-                        component: OrganizationInformation
-                    },
-                    {
-                        path: 'projects',
-                        name: 'organization-projects',
-                        component: OrganizationProjects
-                    },
-                    {
-                        path: 'members',
-                        name: 'organization-members',
-                        component: OrganizationMembers
-                    },
-                    {
-                        path: 'settings',
-                        name: 'organization-settings',
-                        component: OrganizationSettings
-                    },
-
-                ]
+                path: 'information',
+                name: 'organization-information',
+                component: OrganizationInformationTab
+            },
+            {
+                path: 'projects',
+                name: 'organization-projects',
+                component: OrganizationProjectsTab
+            },
+            {
+                path: 'members',
+                name: 'organization-members',
+                component: OrganizationMembersTab
+            },
+            {
+                path: 'configuration',
+                name: 'organization-configuration',
+                component: OrganizationConfigurationTab
             }
         ]
     }

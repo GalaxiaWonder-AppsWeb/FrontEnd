@@ -3,7 +3,7 @@ import {organizationService} from "../services/organization.service.js";
 import {OrganizationAssembler} from "../services/organization.assembler.js";
 import {personService} from "../services/person.service.js";
 export default {
-  name: "OrganizationInformation",
+  name: "organization-information-tab",
   data() {
     return {
       organization: null,

@@ -1,3 +1,12 @@
+<script>
+import ToolbarComponent from "../../public/components/toolbar-content.component.vue";
+
+export default {
+  name: "worker-layout",
+  components: {ToolbarComponent}
+}
+</script>
+
 <template>
   <div class="user-layout">
     <!-- Aquí insertarás tu ToolbarComponent -->
@@ -8,24 +17,7 @@
       <router-view />
     </main>
   </div>
-
 </template>
-
-<script>
-import ToolbarComponent from '../../public/components/toolbar-content.component.vue'
-import CreateOrganization from "./create-organization.component.vue";
-
-export default {
-  name: 'UserLayout',
-  components: {
-    CreateOrganization,
-    ToolbarComponent
-  }
-}
-
-
-
-</script>
 
 <style scoped>
 .user-layout {

@@ -1,23 +1,9 @@
-<template>
-  <div class="organization-layout">
-    <ToolbarComponent />
-
-    <main class="organization-main">
-      <router-view />
-    </main>
-  </div>
-</template>
-
 <script>
-import ToolbarComponent from '../../public/components/toolbar-content.component.vue'
-import { organizationMemberService } from '../services/organization-member.service.js'
-import { OrganizationInvitationService } from '../services/organization-invitation.service.js'
+import {organizationMemberService} from "../services/organization-member.service.js";
+import {OrganizationInvitationService} from "../services/organization-invitation.service.js";
 
 export default {
-  name: 'OrganizationLayout',
-  components: {
-    ToolbarComponent
-  },
+  name: "organization-layout",
   data() {
     return {
       personId: null,
@@ -63,17 +49,14 @@ export default {
 }
 </script>
 
-<style scoped>
-.organization-layout {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
-}
+<template>
+  <div class="organization-layout">
+    <main class="organization-main">
+      <router-view />
+    </main>
+  </div>
+</template>
 
-.organization-main {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-}
+<style scoped>
+
 </style>

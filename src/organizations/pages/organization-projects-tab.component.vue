@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "OrganizationProjects",
+  name: "organization-projects-tab",
 }
 </script>
 

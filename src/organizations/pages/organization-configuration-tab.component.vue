@@ -32,7 +32,7 @@ import { OrganizationAssembler } from '../services/organization.assembler.js'
 import {Ruc} from "../model/ruc.js";
 
 export default {
-  name: 'EditOrganization',
+  name: 'organization-configuration-tab',
   data() {
     return {
       organizationId: null,

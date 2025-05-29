@@ -1,19 +1,11 @@
 <script>
-import {defineComponent} from "vue";
-import LanguageSwitcher from "./public/components/language-switcher.component.vue";
-import RegisterComponent from "./iam/components/register-form.component.vue"
-import OrganizationTest from "./organizations/components/organization-test.component.vue";
-import BillingTest from "./billing/components/billing-test.component.vue";
-import SubscriptionWorkspaceTest from "./subscription/components/subscription-test.component.vue";
-
-export default defineComponent({
-  components: {SubscriptionWorkspaceTest, BillingTest, OrganizationTest, LanguageSwitcher, RegisterComponent},
-})
+export default {
+  name: 'App'
+}
 </script>
 
 <template>
   <router-view></router-view>
-
 </template>
 
 <style scoped>

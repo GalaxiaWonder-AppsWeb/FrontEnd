@@ -2,7 +2,7 @@
 import { organizationMemberService } from '../services/members.service.js';
 
 export default {
-  name: "OrganizationMembers",
+  name: "organization-members-tab",
   data() {
     return {
       organizationId: null,

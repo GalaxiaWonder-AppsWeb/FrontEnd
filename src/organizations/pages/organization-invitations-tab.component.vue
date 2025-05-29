@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "OrganizationInvitations"
+  name: "organization-invitations-tab"
 }
 </script>
 

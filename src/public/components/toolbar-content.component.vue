@@ -1,6 +1,6 @@
 <template>
+  <!--
   <div class="toolbar-container">
-    <!-- Parte superior fija -->
     <pv-toolbar class="toolbar-top">
       <template #start>
         <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
@@ -12,7 +12,6 @@
       </template>
     </pv-toolbar>
 
-    <!-- Parte inferior: navegación dinámica -->
     <nav class="toolbar-nav">
       <template v-if="inOrganizationView">
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
@@ -33,6 +32,7 @@
       </template>
     </nav>
   </div>
+  -->
 </template>
 
 <script>

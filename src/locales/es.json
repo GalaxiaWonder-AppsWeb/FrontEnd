@@ -72,14 +72,32 @@
   },
   "navigation": {
     "dashboard": {
+      "title": "Dashboard",
       "organizations": "Organizaciones",
       "invitations": "Invitaciones"
+    },
+    "client-area": "Área de Cliente",
+    "organization": {
+      "title": "Organización",
+      "information": "Información",
+      "projects": "Proyectos",
+      "members": "Miembros",
+      "configuration": "Configuración"
+    },
+    "project": {
+      "title": "Proyecto",
+      "information": "Información",
+      "technical-file": "Expediente técnico",
+      "schedule": "Cronograma",
+      "working-team": "Equipo de trabajo",
+      "change-management": "Gestión de cambios",
+      "configuration": "Configuración"
+    },
+    "milestone": {
+      "title": "Hito",
+      "tasks": "Tareas",
+      "meetings": "Reuniones",
+      "configuration": "Configuración"
     }
-  },
-  "project": {
-    "title": "Proyecto",
-    "information": "Información",
-    "schedule": "Cronograma",
-    "change-management": "Gestión del cambio"
   }
 }

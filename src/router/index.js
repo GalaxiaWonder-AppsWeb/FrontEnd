@@ -62,6 +62,12 @@ const routes = [
                         component: OrganizationProjects
                     },
                     {
+                        // Asegurar que los proyectos específicos también usen el layout de organización
+                        path: 'projects/:projectId?',
+                        name: 'organization-specific-project',
+                        component: OrganizationProjects
+                    },
+                    {
                         path: 'members',
                         name: 'organization-members',
                         component: OrganizationMembers

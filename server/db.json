@@ -86,86 +86,9 @@
       "profession": "Ingeniero Civil",
       "professionalId": null,
       "userType": "Worker"
-    },
-    {
-      "id": "80a667a4-0971-4bde-b872-7a9019392ad4",
-      "name": "TESTEO1",
-      "lastName": "TESTEO1",
-      "email": "testeo1@gmail.com",
-      "phoneNumber": "999999999",
-      "profession": "null",
-      "professionalId": null
     }
   ],
-  "organizations": [
-    {
-      "legalName": "Place Holder Organization",
-      "commercialName": "Place Holder Organization Inc.",
-      "ruc": "20458563325",
-      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "createdAt": "2025-05-14T00:32:30.976Z",
-      "status": "Active",
-      "id": "840c90b2-10f7-4385-bfbb-30f08539f58b",
-      "members": [
-        "b1d4f8cb-86d9-494c-b90e-a4277c80c0c2"
-      ]
-    },
-    {
-      "id": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
-      "legalName": "RAMONORG",
-      "commercialName": "RAMONORG",
-      "ruc": "20454949491",
-      "createdBy": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
-      "createdAt": "2025-06-01T22:04:37.296Z",
-      "status": "Active",
-      "members": [
-        "b5e94539-a20a-4523-ac8c-15c5314f1c89"
-      ]
-    }
-  ],
-  "members": [
-    {
-      "id": "b1d4f8cb-86d9-494c-b90e-a4277c80c0c2",
-      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
-      "firstName": "Roman",
-      "lastName": "Reigns",
-      "email": "exampleR@gmail.com",
-      "type": "Contractor",
-      "joinedAt": "2025-05-09T22:32:54.531Z"
-    },
-    {
-      "id": "b5e94539-a20a-4523-ac8c-15c5314f1c89",
-      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
-      "organizationId": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
-      "type": "Contractor",
-      "joinedAt": "2025-06-01T22:04:37.452Z"
-    },
-    {
-      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "organizationId": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
-      "type": "Worker",
-      "joinedAt": "2025-06-03T22:12:08.541Z",
-      "id": "5Q3KIS4"
-    },
-    {
-      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
-      "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
-      "type": "Worker",
-      "joinedAt": "2025-06-03T22:16:26.310Z",
-      "id": "6woEx60"
-    }
-  ],
-  "invitations": [
-    {
-      "id": "d1ef9a25-3f23-4c8d-b8c7-a5e2b9845e3d",
-      "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
-      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
-      "invitedBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "invitedAt": "2025-06-01T18:30:00.000Z",
-      "acceptedAt": null,
-      "status": "Rejected",
-      "rejectedAt": "2025-06-03T17:07:48.896Z"
-    }
-  ]
+  "organizations": [],
+  "members": [],
+  "invitations": []
 }

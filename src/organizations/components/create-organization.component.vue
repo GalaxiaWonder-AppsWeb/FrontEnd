@@ -7,7 +7,7 @@ import {OrganizationStatus} from "../model/organization-status.js";
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationMember} from "../model/organization-member.entity.js";
 import {OrganizationMemberType} from "../model/organization-member-type.js";
-import {organizationMemberService} from "../services/organization-member.service.js";
+import {organizationMemberService, organizationMemberServiceCustom} from "../services/organization-member.service.js";
 export default {
   name: "CreateOrganization",
   components: {PvButton, PvInputText},
@@ -23,24 +23,64 @@ export default {
       }
     };
   },
-  methods:{
-    async CreateOrganization() {
+  methods:{    async CreateOrganization() {
       try {
+        // 1. Crear la organización
+        console.log("Creando organización con datos:", {
+          legalName: document.getElementById('legalName')?.value,
+          commercialName: document.getElementById('commercialName')?.value,
+          ruc: document.getElementById('ruc')?.value,
+          userId: this.user
+        });
+        
         const org = new Organization({
-          legalName : document.getElementById('legalName')?.value,
-          commercialName : document.getElementById('commercialName')?.value,
-          ruc : new Ruc(document.getElementById('ruc')?.value),
+          legalName: document.getElementById('legalName')?.value,
+          commercialName: document.getElementById('commercialName')?.value,
+          ruc: new Ruc(document.getElementById('ruc')?.value),
           createdBy: new PersonId(this.user.personId),
           status: OrganizationStatus.ACTIVE
-        })
-        this.visible = false
-        const res = await organizationService.create(org)
-        this.organizationId = org.id
-        this.message = `Created: ${res.legalName}`
-        await this.LinkContractor(new PersonId(this.user.personId), this.organizationId)
-        this.$emit('organization-created', this.organizationId)
+        });
+        
+        // Cerramos el diálogo antes de comenzar operaciones asíncronas
+        this.visible = false;
+        
+        // 2. Guardar la organización
+        const res = await organizationService.create(org);
+        console.log("Organización creada:", res);
+        
+        // 3. Guardar el ID de la organización y mostrar mensaje
+        this.organizationId = res.id;
+        this.message = `Organización creada: ${res.legalName}`;
+        
+        // 4. Vincular al creador como contratista
+        console.log("Vinculando contratista", this.user.personId, "con organización", this.organizationId);
+        await this.LinkContractor(new PersonId(this.user.personId), res.id);
+        
+        // 5. Notificar creación exitosa
+        this.$emit('organization-created', this.organizationId);
+        
+        // 6. Mostrar mensaje de éxito
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: `Organización "${res.legalName}" creada correctamente`,
+            life: 3000
+          });
+        }
       } catch (err) {
-        this.message = err.message
+        console.error("Error al crear organización:", err);
+        this.message = `Error: ${err.message}`;
+        
+        // Mostrar mensaje de error al usuario
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `No se pudo crear la organización: ${err.message}`,
+            life: 5000
+          });
+        }
       }
     },
     onlyNumbers(event) {
@@ -48,30 +88,29 @@ export default {
       const numeric = value.replace(/\D/g, '')
       event.target.value = numeric
     },    async LinkContractor(person, organization) {
-      const member = new OrganizationMember({
-        personId: person,
-        organizationId: organization,
-        type: OrganizationMemberType.CONTRACTOR
-      })
-      
-      // Usar el servicio personalizado para crear miembro y actualizar la organización
       try {
-        // Primero verificamos si podemos acceder al servicio extendido
-        if (organizationMemberServiceCustom && organizationMemberServiceCustom.createMember) {
-          const res = await organizationMemberServiceCustom.createMember(member.toJSON());
-          this.createdMemberId = res.id;
-          this.message = `Member created for person ${res.personId} and added to organization`;
-          console.log("Miembro creado y añadido a la organización:", res);
-        } else {
-          // Fallback al método original
-          const res = await organizationMemberService.create(member.toJSON());
-          this.createdMemberId = res.id;
-          this.message = `Member created for person ${res.personId}`;
-          console.log("Miembro creado (método original):", res);
-        }
+        console.log("Vinculando contratista:", { 
+          person: person instanceof Object ? person.value : person, 
+          organization: organization instanceof Object ? organization.value : organization 
+        });
+        
+        // Usar el método especializado para crear contratista
+        const res = await organizationMemberServiceCustom.createContractorMember(
+          person,
+          organization,
+          OrganizationMemberType.CONTRACTOR
+        );
+        
+        console.log("Respuesta del servicio:", res);
+        
+        this.createdMemberId = res.id;
+        this.message = `Miembro creado para persona ${res.personId} y añadido a la organización`;
+        console.log("Miembro creado y añadido a la organización:", res);
+        return res;
       } catch (error) {
         console.error("Error al crear miembro:", error);
-        this.message = `Error creating member: ${error.message}`;
+        this.message = `Error al crear miembro: ${error.message}`;
+        throw error; // Propagar el error para que pueda ser manejado por el llamador
       }
     }
   },

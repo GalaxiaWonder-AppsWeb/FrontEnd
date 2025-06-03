@@ -36,28 +36,72 @@ class OrganizationMemberService extends BaseService {
             return [];
         }
     }
-    
-    // Crear miembro y actualizar la organización
+      // Crear miembro y actualizar la organización
     async createMember(memberData) {
-        // 1. Crear el miembro
+        console.log("OrganizationMemberService.createMember - datos recibidos:", memberData);
+        
+        // 1. Extraer el ID de la organización, que podría ser un valor directo o un objeto
+        const orgId = memberData.organizationId && memberData.organizationId.value 
+            ? memberData.organizationId.value 
+            : memberData.organizationId;
+            
+        console.log("OrganizationMemberService.createMember - ID de organización:", orgId);
+        
+        if (!orgId) {
+            throw new Error("ID de organización no válido");
+        }
+        
+        // 2. Crear el miembro
         const response = await this.post('', memberData);
         const createdMember = response.data || response;
-        // 2. Actualizar la organización agregando el id del miembro
+        console.log("OrganizationMemberService.createMember - miembro creado:", createdMember);
+        
+        // 3. Actualizar la organización agregando el id del miembro
         try {
-            const orgId = memberData.organizationId;
             // Obtener la organización
+            console.log(`OrganizationMemberService.createMember - obteniendo organización: /organizations/${orgId}`);
             const orgRes = await axios.get(`/organizations/${orgId}`);
             const org = orgRes.data;
+            console.log("OrganizationMemberService.createMember - organización obtenida:", org);
+            
+            // Inicializar array de miembros si no existe
             if (!org.members) org.members = [];
+            
             // Evitar duplicados
             if (!org.members.includes(createdMember.id)) {
                 org.members.push(createdMember.id);
+                console.log(`OrganizationMemberService.createMember - actualizando organización con nuevo miembro:`, org);
                 await axios.put(`/organizations/${orgId}`, org);
             }
         } catch (e) {
             console.error('No se pudo actualizar la organización con el nuevo miembro:', e);
         }
         return createdMember;
+    }
+    
+    // Método especializado para crear un miembro contratista (creador de la organización)
+    async createContractorMember(personId, organizationId, type = 'Contractor') {
+        console.log("createContractorMember - Creando contratista:", { personId, organizationId, type });
+        
+        // Preparar datos para la creación del miembro
+        const memberData = {
+            personId: typeof personId === 'object' ? personId.value : personId,
+            organizationId: typeof organizationId === 'object' ? organizationId.value : organizationId,
+            type: type,
+            joinedAt: new Date().toISOString()
+        };
+        
+        console.log("createContractorMember - Datos preparados:", memberData);
+        
+        try {
+            // Crear el miembro usando el método genérico
+            const result = await this.createMember(memberData);
+            console.log("createContractorMember - Miembro contratista creado:", result);
+            return result;
+        } catch (error) {
+            console.error("createContractorMember - Error al crear contratista:", error);
+            throw error;
+        }
     }
 }
 

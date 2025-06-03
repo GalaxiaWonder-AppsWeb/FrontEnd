@@ -109,9 +109,14 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "ok": "Aceptar"
-  },
-  "auth": {
+  },  "auth": {
     "logout": "Cerrar sesión",
     "logout_success": "Sesión cerrada correctamente"
+  },
+  "navigation": {
+    "dashboard": {
+      "organizations": "Organizaciones",
+      "invitations": "Invitaciones"
+    }
   }
 }

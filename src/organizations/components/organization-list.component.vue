@@ -17,8 +17,10 @@ export default {
   created() {
     this.owner = JSON.parse(localStorage.getItem("user"));
     this.loadOrganizations();
-  },
-  methods: {
+  },  methods: {
+    handleOrgCreated() {
+      this.loadOrganizations();
+    },
     async loadOrganizations(){
       console.log("Owner: ", this.owner)
       if (!this.owner || !this.owner.personId) {
@@ -72,8 +74,7 @@ export default {
 }
 </script>
 
-<template>
-  <CreateOrganization @organization-created="handleOrgCreated" />
+<template>  <CreateOrganization @organization-created="handleOrgCreated" />
   <div class="organization-items" v-if="organizations.length">
     <OrganizationItem
         v-for="(item, index) in organizations"
@@ -84,7 +85,6 @@ export default {
   <div v-else>
     <p>{{ $t('organization.no-organizations') }}</p>
   </div>
-  <CreateOrganization/>
 </template>
 
 <style scoped>

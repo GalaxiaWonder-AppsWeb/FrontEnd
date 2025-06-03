@@ -109,9 +109,14 @@
     "delete": "Delete",
     "edit": "Edit",
     "ok": "OK"
-  },
-  "auth": {
+  },  "auth": {
     "logout": "Sign out",
     "logout_success": "Successfully signed out"
+  },
+  "navigation": {
+    "dashboard": {
+      "organizations": "Organizations",
+      "invitations": "Invitations"
+    }
   }
 }

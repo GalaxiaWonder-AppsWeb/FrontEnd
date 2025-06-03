@@ -71,8 +71,7 @@ export default {
      * Actualiza el contador de notificaciones basado en las invitaciones pendientes
      * @param {boolean} showAlert - Si debe mostrar animación de alerta
      * @returns {Promise<void>}
-     */
-    async updateNotificationCount(showAlert = true) {
+     */    async updateNotificationCount(showAlert = true) {
       if (!this.currentUserId) {
         console.log("[NotificationBell] No hay usuario autenticado");
         this.notificationCount = 0;
@@ -82,12 +81,27 @@ export default {
       try {
         console.log(`[NotificationBell] Actualizando contador para usuario: ${this.currentUserId}`);
         
-        // Obtener invitaciones pendientes usando el servicio mejorado
-        const invitations = await OrganizationInvitationService.getByPersonId(this.currentUserId);
+        // Obtener invitaciones pendientes directamente para asegurar que obtenemos los datos más recientes
+        const response = await fetch(
+          `${import.meta.env.VITE_PROPGMS_API_URL}/invitations?personId=${this.currentUserId}&status=Pending&_t=${new Date().getTime()}`
+        );
         
-        // Las invitaciones ya vienen filtradas por status=Pending desde el servicio mejorado
-        const pendingCount = Array.isArray(invitations) ? invitations.length : 0;
+        if (!response.ok) {
+          throw new Error(`Error al obtener invitaciones: ${response.status} ${response.statusText}`);
+        }
         
+        const invitations = await response.json();
+        console.log("[NotificationBell] Invitaciones obtenidas directamente:", invitations);
+        
+        // Verificar que tenemos un array
+        if (!Array.isArray(invitations)) {
+          console.error("La respuesta de invitaciones no es un array:", invitations);
+          this.notificationCount = 0;
+          return;
+        }
+        
+        // Contar invitaciones pendientes
+        const pendingCount = invitations.length;
         console.log(`[NotificationBell] ${pendingCount} invitaciones pendientes encontradas`);
         
         // Detectar si hay nuevas notificaciones para animar la campana

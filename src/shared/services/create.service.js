@@ -53,6 +53,11 @@ function buildRequestHandler(verb, base, urlPath) {
     }
 }
 
+function addQueryParams(url, params) {
+    const queryParams = new URLSearchParams(params).toString();
+    return queryParams ? `${url}?${queryParams}` : url;
+}
+
 export function createService(resourceEndpoint, methodMap = {}) {
     const base = new BaseService(resourceEndpoint);
     const service = {};
@@ -60,7 +65,7 @@ export function createService(resourceEndpoint, methodMap = {}) {
     for (const [methodName, config] of Object.entries(methodMap)) {
         const { verb, path = '', fullPath = false } = config;
 
-        service[methodName] = async (payload = null) => {
+        service[methodName] = async (payload = null, queryParams = {}) => {
             let urlPath = extractPath(path, fullPath);
             
             console.log(`[${methodName}] Creating request with path: ${urlPath}, payload:`, payload);
@@ -80,7 +85,9 @@ export function createService(resourceEndpoint, methodMap = {}) {
                 }
             }
 
-            const handler = buildRequestHandler(verb, base, urlPath);
+            const fullUrl = addQueryParams(urlPath, queryParams);
+
+            const handler = buildRequestHandler(verb, base, fullUrl);
             return handler(payload);
         };
     }

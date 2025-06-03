@@ -32,9 +32,14 @@
       </template>
 
       <template v-else-if="inProjectView">
-        <pv-button text plain label="Information" @click="goTo('information')" />
-        <pv-button text plain label="Schedule" @click="goTo('schedule')" />
-        <pv-button text plain label="Change Management" @click="goTo('change-management')" />
+        <pv-button text plain :label="$t('project.information')" @click="goTo('information')" />
+        <pv-button text plain :label="$t('project.schedule')" @click="goTo('schedule')" />
+        <pv-button text plain :label="$t('project.change-management')" @click="goTo('change-management')" />
+      </template>
+
+      <template v-else-if="inOrganizationGeneralView">
+        <pv-button text plain :label="$t('navigation.dashboard.organizations')" @click="goTo('organizations')" />
+        <pv-button text plain :label="$t('navigation.dashboard.invitations')" @click="goTo('invitations')" />
       </template>
     </nav>
   </div>
@@ -77,6 +82,10 @@ export default {
       return this.route.path.includes('/projects/') || 
              (this.route.name === 'organization-specific-project' && this.route.params.projectId)
     },
+    inOrganizationGeneralView(){
+      return this.route.path.includes('/organizations') || this.route.path.includes('/invitations')
+    }
+    ,
     sectionTitle() {
       if (this.inProjectView) return 'project'
       if (this.inOrganizationView) return 'organization'
@@ -86,6 +95,9 @@ export default {
     goTo(section) {
       const { orgId, projectId } = this.route.params
       let path = ''
+      if (this.inOrganizationGeneralView) {
+        path = `/${section}`
+      }
       if (this.inProjectView && projectId) {
         path = `/organizations/${orgId}/projects/${projectId}`
         if (section !== 'projects') {

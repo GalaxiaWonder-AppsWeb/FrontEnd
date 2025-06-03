@@ -99,11 +99,11 @@
   ],
   "organizations": [
     {
-      "legalName": "Tung Tung Tung Salim Sahur Sulca Orga.",
-      "commercialName": "Tung Tung Orga.",
+      "legalName": "Place Holder Organization",
+      "commercialName": "Place Holder Organization Inc.",
       "ruc": "20458563325",
       "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "createdAt": "2025-05-12T13:34:25.564Z",
+      "createdAt": "2025-05-14T00:32:30.976Z",
       "status": "Active",
       "id": "840c90b2-10f7-4385-bfbb-30f08539f58b",
       "members": [
@@ -128,6 +128,9 @@
       "id": "b1d4f8cb-86d9-494c-b90e-a4277c80c0c2",
       "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
       "organizationId": "840c90b2-10f7-4385-bfbb-30f08539f58b",
+      "firstName": "Roman",
+      "lastName": "Reigns",
+      "email": "exampleR@gmail.com",
       "type": "Contractor",
       "joinedAt": "2025-05-09T22:32:54.531Z"
     },

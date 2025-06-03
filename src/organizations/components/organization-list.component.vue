@@ -73,6 +73,7 @@ export default {
 </script>
 
 <template>
+  <CreateOrganization @organization-created="handleOrgCreated" />
   <div class="organization-items" v-if="organizations.length">
     <OrganizationItem
         v-for="(item, index) in organizations"

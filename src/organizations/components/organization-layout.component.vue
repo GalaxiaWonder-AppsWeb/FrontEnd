@@ -18,7 +18,8 @@ export default {
     return {
       route: useRoute(),
       personId: null,
-      organizationId: null
+      organizationId: null,
+      invitedPersonIds: [],
     }
   },
   components: {
@@ -76,9 +77,6 @@ export default {
     });
   }
 }
-
-
-
 </script>
 
 <style scoped>

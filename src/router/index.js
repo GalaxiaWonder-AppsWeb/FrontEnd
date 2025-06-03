@@ -15,7 +15,7 @@ import OrganizationInformation from '../organizations/components/organization-in
 import OrganizationProjects from '../organizations/components/organization-projects.component.vue'
 import OrganizationMembers from '../organizations/components/organization-members.component.vue'
 import OrganizationSettings from '../organizations/components/organization-setting.component.vue'
-
+import OrganizationInvitations from "../organizations/components/organization-invitations.component.vue";
 
 const routes = [
     {
@@ -38,6 +38,11 @@ const routes = [
                 path: '',
                 name: 'organizations',
                 component: OrganizationList
+            },
+            {
+              path: '/invitations',
+                name: 'invitations',
+                component: OrganizationInvitations
             },
             {
                 path: ':orgId',
@@ -76,7 +81,8 @@ const routes = [
                         path: 'settings',
                         name: 'organization-settings',
                         component: OrganizationSettings
-                    }
+                    },
+
                 ]
             }
         ]

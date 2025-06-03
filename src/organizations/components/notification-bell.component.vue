@@ -67,46 +67,40 @@ export default {
       } catch (error) {
         console.error("Error loading current user:", error);
         this.currentUserId = null;
-      }    },
-      async updateNotificationCount(showAlert = true) {
+      }    },    /**
+     * Actualiza el contador de notificaciones basado en las invitaciones pendientes
+     * @param {boolean} showAlert - Si debe mostrar animación de alerta
+     * @returns {Promise<void>}
+     */
+    async updateNotificationCount(showAlert = true) {
       if (!this.currentUserId) {
-        console.log("No hay usuario autenticado, no se actualizan notificaciones");
+        console.log("[NotificationBell] No hay usuario autenticado");
+        this.notificationCount = 0;
         return;
       }
       
       try {
-        // Obtener invitaciones pendientes para el usuario actual
-        // Añadimos un timestamp como parámetro de consulta para evitar cache
-        const timestamp = new Date().getTime();
-        const invitations = await OrganizationInvitationService.getByPersonId(
-          `${this.currentUserId}?_=${timestamp}`
-        );
+        console.log(`[NotificationBell] Actualizando contador para usuario: ${this.currentUserId}`);
         
-        // Mostrar información detallada sobre las invitaciones obtenidas
-        console.log("Invitaciones obtenidas para el usuario", this.currentUserId, ":", invitations);
+        // Obtener invitaciones pendientes usando el servicio mejorado
+        const invitations = await OrganizationInvitationService.getByPersonId(this.currentUserId);
         
-        // Verificar que invitations es un array
-        if (!Array.isArray(invitations)) {
-          console.error("La respuesta no es un array:", invitations);
-          this.notificationCount = 0;
-          return;
-        }
+        // Las invitaciones ya vienen filtradas por status=Pending desde el servicio mejorado
+        const pendingCount = Array.isArray(invitations) ? invitations.length : 0;
         
-        // Filtrar invitaciones pendientes, aceptando tanto 'Pending' como 'PENDING' como valores válidos
-        const pendingCount = invitations.filter(
-          inv => inv.status === OrganizationInvitationStatus.PENDING || inv.status === 'Pending'
-        ).length;
+        console.log(`[NotificationBell] ${pendingCount} invitaciones pendientes encontradas`);
         
-        console.log("Número de invitaciones pendientes encontradas:", pendingCount);
+        // Detectar si hay nuevas notificaciones para animar la campana
+        const hasNewNotifications = !this.isFirstLoad && pendingCount > this.notificationCount;
         
-        // Si hay nuevas notificaciones y no es la carga inicial, mostrar alerta
-        if (!this.isFirstLoad && pendingCount > this.notificationCount && showAlert) {
-          this.animateBell();
-        }
-        
-        console.log(`Actualizando contador de notificaciones: ${pendingCount}`);
+        // Actualizar el contador
         this.notificationCount = pendingCount;
         this.isFirstLoad = false;
+        
+        // Mostrar animación si corresponde
+        if (hasNewNotifications && showAlert) {
+          this.animateBell();
+        }
       } catch (error) {
         console.error("Error updating notification count:", error);
         this.notificationCount = 0;

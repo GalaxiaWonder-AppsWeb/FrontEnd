@@ -163,35 +163,28 @@ export default {
         this.loading = true;
         console.log("Invitando usuario:", user);
         
+        // Validar datos requeridos
+        if (!this.organizationId || !user.id || !this.currentUserId) {
+          throw new Error('Faltan datos requeridos para crear la invitación');
+        }
+        
+        // Datos para la invitación en formato compatible con ASP.NET Core
         const invitationData = {
           organizationId: this.organizationId,
           personId: user.id,
-          invitedBy: this.currentUserId,
-          invitedAt: new Date().toISOString(),
-          status: 'Pending'
+          invitedBy: this.currentUserId
+          // Ya no pasamos invitedAt y status, lo hará el servicio
         };
         
-        console.log("Datos de invitación:", invitationData);
+        // Usar el método mejorado del servicio de invitaciones
+        const createdInvitation = await OrganizationInvitationService.createInvitation(invitationData);
         
-        // Disparar evento para refrescar notificaciones antes de crear
-        window.dispatchEvent(new CustomEvent('refresh-notifications'));
-        
-        // Crear la invitación usando fetch para asegurarnos de que funciona
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/invitations`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(invitationData)
-        });
-        
-        if (!response.ok) {
-          throw new Error('Error al crear la invitación');
+        // Verificar que la invitación se creó correctamente
+        if (!createdInvitation || !createdInvitation.id) {
+          throw new Error('Error al crear la invitación: respuesta inválida');
         }
         
-        // Obtener los datos de la invitación creada
-        const createdInvitation = await response.json();
-        console.log("Invitación creada:", createdInvitation);
+        console.log("Invitación creada exitosamente:", createdInvitation);
           if (this.$toast) {
           this.$toast.add({
             severity: 'success',

@@ -3,6 +3,11 @@ import PrimeVue from 'primevue/config';
 import 'primeicons/primeicons.css'
 import Aura from '@primevue/themes/aura';
 import { createApp } from 'vue'
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
+import ConfirmDialog from 'primevue/confirmdialog';
+
 
 import {SelectButton, InputText, Password, Button, Message, Select, Toolbar, Card, Dialog} from "primevue";
 
@@ -13,6 +18,8 @@ import './style.css'
 
 createApp(App).use(i18n)
     .use(PrimeVue, { ripple: true, theme: {preset: Aura}})
+    .use(ToastService)
+    .use(ConfirmationService)
     .use(router)
     .component('pv-select-button', SelectButton)
     .component('pv-input-text', InputText)
@@ -23,4 +30,6 @@ createApp(App).use(i18n)
     .component('pv-toolbar', Toolbar)
     .component('pv-card', Card)
     .component('pv-dialog', Dialog)
+    .component('pv-toast', Toast)
+    .component('pv-confirm-dialog', ConfirmDialog)
     .mount('#app')

@@ -1,5 +1,4 @@
-<template>
-  <router-link :to="`/organizations/${organization.id}`" class="card-link">
+<template>  <router-link :to="`/organizations/${organization.id}`" class="card-link">
     <pv-card class="organization-card">
       <template #content>
         <div class="organization-content">
@@ -14,8 +13,7 @@
 import { Organization } from "../model/organization.entity.js";
 
 export default {
-  name: 'OrganizationItem',
-  props: {
+  name: 'OrganizationItem',  props: {
     organization: {
       type: Organization,
       required: true
@@ -55,6 +53,13 @@ export default {
 .card-link {
   text-decoration: none;
   display: block;
+}
+
+.organization-selected {
+  border: 2px solid #4caf50;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 }
 
 </style>

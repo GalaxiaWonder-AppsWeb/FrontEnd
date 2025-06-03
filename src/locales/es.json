@@ -43,12 +43,43 @@
         "create": "Crear organización",
         "cancel": "Cancelar"
       }
-    },
-    "info-organization": {
+    },    "info-organization": {
       "business-name": "Nombre del negocio",
       "ruc": "RUC",
       "creation-date": "Fecha de Creación",
       "contractor": "Contratista"
+    },    "members": {
+      "invite": "Invitar Miembro",
+      "empty": "Esta organización no tiene miembros aún",
+      "joined": "Se unió el",
+      "remove": "Eliminar",
+      "removed_title": "Miembro eliminado",
+      "removed_message": "El miembro ha sido eliminado de la organización",
+      "error_loading": "Error al cargar los miembros",
+      "error_title": "Error",
+      "error_remove": "No se pudo eliminar al miembro",
+      "no_permission": "Sin permisos",
+      "creator_only": "Solo el creador puede realizar esta acción",
+      "confirm_remove_title": "Confirmar eliminación",
+      "confirm_remove_message": "¿Estás seguro que deseas eliminar a {name} de la organización?"
+    },    "invite": {
+      "title": "Invitar Miembros",
+      "search": "Buscar trabajadores por nombre o correo",
+      "button": "Invitar",
+      "no_results": "No se encontraron trabajadores con ese criterio de búsqueda",
+      "pending": "Invitaciones pendientes",
+      "error_search": "Error al buscar trabajadores",
+      "error_invitations": "Error al cargar invitaciones",
+      "success_title": "Invitación enviada",
+      "success_message": "{name} ha sido invitado a la organización",
+      "error_title": "Error al enviar invitación",
+      "error_message": "No se pudo enviar la invitación",
+      "sending": "Enviando invitación",
+      "please_wait": "Por favor espere...",
+      "status": {
+        "pending": "Pendiente",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada"      }
     },
     "edit-organization": {
       "title": "Editar organización",
@@ -56,5 +87,31 @@
       "commercial-name": "Nombre comercial",
       "change-settings": "Guardar cambios"
     }
+  },  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No tienes notificaciones",
+    "invited_by": "Invitado por",
+    "error_loading": "Error al cargar notificaciones",
+    "login_required": "Inicia sesión para ver notificaciones",
+    "accepted_title": "Invitación aceptada",
+    "accepted_message": "Te has unido a {org} como miembro",
+    "rejected_title": "Invitación rechazada",
+    "rejected_message": "Has rechazado la invitación",
+    "error_title": "Error",
+    "error_accept": "Error al aceptar la invitación",
+    "error_reject": "Error al rechazar la invitación"
+  },
+  "common": {
+    "yes": "Sí",
+    "no": "No",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "ok": "Aceptar"
+  },
+  "auth": {
+    "logout": "Cerrar sesión",
+    "logout_success": "Sesión cerrada correctamente"
   }
 }

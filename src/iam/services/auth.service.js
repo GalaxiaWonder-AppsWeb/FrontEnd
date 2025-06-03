@@ -84,10 +84,9 @@ export class AuthService {
         } catch (error) {
             this.handleError('Login', error)
         }
-    }
-
-    logout() {
-        localStorage.removeItem('user')
+    }    logout() {
+        localStorage.removeItem('user');
+        return Promise.resolve(true);
     }
 
     storeUser(user) {
@@ -98,14 +97,19 @@ export class AuthService {
         const stored = localStorage.getItem('user')
         return stored ? JSON.parse(stored) : null
     }
+    
+    isAuthenticated() {
+        return this.isLoggedIn();
+    }
 
     isLoggedIn() {
         return !!this.getCurrentUser()
-    }
-
-    handleError(context, error) {
+    }handleError(context, error) {
         const msg = error.response?.data || error.message || 'Unexpected error'
         console.error(`[AuthService] ${context} error:`, msg)
         throw new Error(msg)
     }
 }
+
+// Exportar una instancia del servicio para usarlo en cualquier lugar
+export const authService = new AuthService();

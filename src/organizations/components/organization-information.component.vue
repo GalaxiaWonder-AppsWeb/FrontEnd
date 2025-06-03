@@ -23,17 +23,54 @@ export default {
         console.log("ORGANIZATION:", this.organization);
 
         // 2. Obtener el ID del contratista (createdBy)
-        const contractorId = this.organization.createdBy.value;
+        let contractorId = null;
+        
+        // Verificar que createdBy exista y tenga la propiedad value
+        if (this.organization && this.organization.createdBy && this.organization.createdBy.value) {
+          contractorId = this.organization.createdBy.value;
+        } 
+        // Si createdBy es directamente una cadena de texto (por ejemplo, en formato JSON directo de la API)
+        else if (this.organization && this.organization.createdBy && typeof this.organization.createdBy === 'string') {
+          contractorId = this.organization.createdBy;
+        }
+        
         console.log("CONTRATISTA ID:", contractorId);
         // 3. Hacer una llamada al endpoint /persons/:id para obtener el nombre completo
         if (contractorId) {
           try {
             console.log("Haciendo llamada al endpoint /persons/:id");
-            const { data } = await personService.getById(contractorId); // Llamada al servicio
-            console.log("Datos del contratista recibidos:", data); // Mostrar datos en consola
-            this.contractorName = `${data.name.trim()} ${data.lastName.trim()}`; // Procesar datos
+            // Primero intentar con la ruta directa
+            let contractorData = await personService.getById(contractorId);
+            
+            // Si no hay datos, intentar hacer una solicitud fetch directa como fallback
+            if (!contractorData) {
+              console.log("Intentando obtener datos con fetch directo");
+              const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/persons/${contractorId}`);
+              if (response.ok) {
+                contractorData = await response.json();
+              }
+            }
+            
+            console.log("Datos del contratista recibidos:", contractorData);
+            
+            // Verificar si tenemos un objeto válido y acceder a los datos correctamente
+            if (contractorData) {
+              // Si los datos vienen directamente en el objeto contractorData
+              if (contractorData.name) {
+                this.contractorName = `${contractorData.name.trim()} ${contractorData.lastName.trim()}`;
+              } 
+              // Si los datos vienen en una propiedad data dentro de contractorData
+              else if (contractorData.data && contractorData.data.name) {
+                this.contractorName = `${contractorData.data.name.trim()} ${contractorData.data.lastName.trim()}`;
+              } else {
+                this.contractorName = "Información no disponible";
+              }
+            } else {
+              this.contractorName = "Información no disponible";
+            }
           } catch (error) {
             console.error("Error durante la llamada al servicio personService.getById:", error);
+            this.contractorName = "Error al cargar la información";
           }
         }
       } catch (error) {

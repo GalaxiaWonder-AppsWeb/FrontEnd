@@ -1,0 +1,98 @@
+<script>
+import OrganizationItem from "./organization-item.component.vue";
+import {OptimizedOrganizationService} from "../services/optimized-organization.service.js";
+import {OrganizationAssembler} from "../services/organization.assembler.js";
+import CreateOrganization from "./create-organization.component.vue";
+
+export default {
+  name: "OrganizationList",
+  components: {CreateOrganization, OrganizationItem},
+  data() {
+    return {
+      organizations: [],
+      owner: "",
+      selectedOrgId: null,
+      loading: false
+    }
+  },
+  created() {
+    this.owner = JSON.parse(localStorage.getItem("user"));
+    this.loadOrganizations();
+  },
+  mounted() {
+    // Escuchar evento para recargar organizaciones cuando se acepta una invitación
+    window.addEventListener("organization-invitation-accepted", this.handleInvitationAccepted);
+  },
+  beforeUnmount() {
+    window.removeEventListener("organization-invitation-accepted", this.handleInvitationAccepted);
+  },
+  methods: {
+    async loadOrganizations() {
+      console.log("Owner: ", this.owner);
+      if (!this.owner || !this.owner.personId) {
+        console.error("No hay usuario logueado o falta ID de persona");
+        return;
+      }
+      
+      try {
+        // Mostrar indicador de carga
+        this.loading = true;
+        
+        // Usar el servicio optimizado con caché
+        const orgsData = await OptimizedOrganizationService.getOrganizationsForUser(this.owner.personId);
+        this.organizations = OrganizationAssembler.toEntitiesFromResponse(orgsData);
+      } catch (error) {
+        console.error("Error al cargar organizaciones:", error);
+      } finally {
+        // Asegurarse de quitar el indicador de carga
+        this.loading = false;
+      }
+    },
+    // Manejar cuando se acepta una invitación
+    handleInvitationAccepted(event) {
+      // Obtener el ID de la organización desde el evento
+      if (event && event.detail && event.detail.organizationId) {
+        this.selectedOrgId = event.detail.organizationId;
+        
+        // Invalidar la caché para forzar una recarga de datos frescos
+        OptimizedOrganizationService.invalidateUserOrganizations(this.owner?.personId);
+      }
+      this.loadOrganizations();
+    }
+  }
+}
+</script>
+
+<template>
+  <div v-if="loading" class="loading-overlay">
+    <pv-progress-spinner style="width:50px;height:50px" />
+  </div>
+  
+  <div class="organization-items" v-if="organizations.length">
+    <OrganizationItem
+        v-for="(item, index) in organizations"
+        :key="index"
+        :organization="item"
+        :is-selected="selectedOrgId === item.id"
+    />
+  </div>
+  <div v-else>
+    <p>{{ $t("organization.no-organizations") }}</p>
+  </div>
+  <CreateOrganization/>
+</template>
+
+<style scoped>
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+}
+</style>

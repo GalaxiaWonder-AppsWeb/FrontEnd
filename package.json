@@ -2,11 +2,11 @@
   "name": "front-end",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "scripts": {
+  "type": "module",  "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "json-server --watch server/db.json --routes server/routes.json --port 3000 --no-cors --delay 0"
   },
   "dependencies": {
     "@primeuix/styled": "^0.6.1",

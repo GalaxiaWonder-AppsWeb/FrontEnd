@@ -43,12 +43,43 @@
         "create": "Create organization",
         "cancel": "Cancel"
       }
-    },
-    "info-organization": {
+    },    "info-organization": {
       "business-name": "Business Name",
       "ruc": "RUC",
       "creation-date": "Creation Date",
       "contractor": "Contractor"
+    },    "members": {
+      "invite": "Invite Member",
+      "empty": "This organization doesn't have members yet",
+      "joined": "Joined on",
+      "remove": "Remove",
+      "removed_title": "Member removed",
+      "removed_message": "The member has been removed from the organization",
+      "error_loading": "Error loading members",
+      "error_title": "Error",
+      "error_remove": "Couldn't remove the member",
+      "no_permission": "No permission",
+      "creator_only": "Only the creator can perform this action",
+      "confirm_remove_title": "Confirm Removal",
+      "confirm_remove_message": "Are you sure you want to remove {name} from the organization?"
+    },    "invite": {
+      "title": "Invite Members",
+      "search": "Search workers by name or email",
+      "button": "Invite",
+      "no_results": "No workers found with that search criteria",
+      "pending": "Pending invitations",
+      "error_search": "Error searching for workers",
+      "error_invitations": "Error loading invitations",
+      "success_title": "Invitation sent",
+      "success_message": "{name} has been invited to the organization",
+      "error_title": "Error sending invitation",
+      "error_message": "Could not send invitation",
+      "sending": "Sending invitation",
+      "please_wait": "Please wait...",
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected"      }
     },
     "edit-organization": {
       "title": "Edit organization",
@@ -56,5 +87,31 @@
       "commercial-name": "Commercial Name",
       "change-settings": "Change settings"
     }
+  },  "notifications": {
+    "title": "Notifications",
+    "empty": "You don't have any notifications",
+    "invited_by": "Invited by",
+    "error_loading": "Error loading notifications",
+    "login_required": "Log in to view notifications",
+    "accepted_title": "Invitation accepted",
+    "accepted_message": "You joined {org} as a member",
+    "rejected_title": "Invitation rejected",
+    "rejected_message": "You rejected the invitation",
+    "error_title": "Error",
+    "error_accept": "Error accepting invitation",
+    "error_reject": "Error rejecting invitation"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "ok": "OK"
+  },
+  "auth": {
+    "logout": "Sign out",
+    "logout_success": "Successfully signed out"
   }
 }

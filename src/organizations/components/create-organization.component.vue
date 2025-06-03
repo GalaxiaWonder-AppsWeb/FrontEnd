@@ -46,17 +46,32 @@ export default {
       const value = event.target.value
       const numeric = value.replace(/\D/g, '')
       event.target.value = numeric
-    },
-    async LinkContractor(person, organization) {
+    },    async LinkContractor(person, organization) {
       const member = new OrganizationMember({
         personId: person,
         organizationId: organization,
         type: OrganizationMemberType.CONTRACTOR
       })
-      const res = await organizationMemberService.create(member.toJSON())
-      this.createdMemberId = res.id
-      this.message = `Member created for person ${res.personId}`
-      console.log(res)
+      
+      // Usar el servicio personalizado para crear miembro y actualizar la organización
+      try {
+        // Primero verificamos si podemos acceder al servicio extendido
+        if (organizationMemberServiceCustom && organizationMemberServiceCustom.createMember) {
+          const res = await organizationMemberServiceCustom.createMember(member.toJSON());
+          this.createdMemberId = res.id;
+          this.message = `Member created for person ${res.personId} and added to organization`;
+          console.log("Miembro creado y añadido a la organización:", res);
+        } else {
+          // Fallback al método original
+          const res = await organizationMemberService.create(member.toJSON());
+          this.createdMemberId = res.id;
+          this.message = `Member created for person ${res.personId}`;
+          console.log("Miembro creado (método original):", res);
+        }
+      } catch (error) {
+        console.error("Error al crear miembro:", error);
+        this.message = `Error creating member: ${error.message}`;
+      }
     }
   },
   created(){

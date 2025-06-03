@@ -140,27 +140,6 @@
       "organizationId": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
       "type": "Contractor",
       "joinedAt": "2025-06-01T22:04:37.452Z"
-    },
-    {
-      "personId": "v4f8d8b-86d9-494c-b90e-a4277c80c0c2",
-      "organizationId": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
-      "type": "Worker",
-      "joinedAt": "2025-06-03T17:08:31.679Z",
-      "id": "L0fZCip"
-    },
-    {
-      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "organizationId": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
-      "type": "Worker",
-      "joinedAt": "2025-06-03T17:09:17.347Z",
-      "id": "fkjCkMo"
-    },
-    {
-      "personId": "c4b19f8d-e2a7-4f3b-b9c8-d5a67e254321",
-      "organizationId": "5f4d71da-02f2-40f0-8914-0b002f3aaccb",
-      "type": "Worker",
-      "joinedAt": "2025-06-03T17:10:06.864Z",
-      "id": "PIralKX"
     }
   ],
   "invitations": [

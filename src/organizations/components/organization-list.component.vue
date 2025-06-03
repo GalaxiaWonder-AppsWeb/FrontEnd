@@ -13,12 +13,23 @@ export default {
       api: organizationService,
       owner: ''
     }
-  },
-  created() {
+  },  created() {
     this.owner = JSON.parse(localStorage.getItem("user"));
     this.loadOrganizations();
+    
+    // Escuchar evento de actualización de organizaciones
+    window.addEventListener('organizations-updated', this.handleOrganizationsUpdated);
   },
-  methods: {
+  
+  beforeUnmount() {
+    // Limpiar escucha de eventos para evitar memory leaks
+    window.removeEventListener('organizations-updated', this.handleOrganizationsUpdated);
+  },  methods: {
+    handleOrganizationsUpdated() {
+      console.log("Evento de actualización de organizaciones recibido");
+      // Recargar las organizaciones cuando se acepta una invitación
+      this.loadOrganizations();
+    },
     async loadOrganizations(){
       console.log("Owner: ", this.owner)
       if (!this.owner || !this.owner.personId) {
@@ -79,11 +90,10 @@ export default {
         :key="index"
         :organization="item"
     />
-  </div>
-  <div v-else>
+  </div>  <div v-else>
     <p>{{ $t('organization.no-organizations') }}</p>
   </div>
-  <CreateOrganization/>
+  <CreateOrganization @organization-created="handleOrganizationsUpdated" />
 </template>
 
 <style scoped>

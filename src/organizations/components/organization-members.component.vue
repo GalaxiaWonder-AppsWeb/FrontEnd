@@ -4,12 +4,14 @@ import { organizationMemberService } from '../services/organization-member.servi
 import { personService } from '../services/person.service.js';
 import { OrganizationMemberType } from '../model/organization-member-type.js';
 import InviteMember from './invite-member.component.vue';
+import OrganizationMemberCard from './organization-member-card.component.vue';
 import { authService } from '../../iam/services/auth.service.js';
 
 export default {
   name: "OrganizationMembers",
   components: {
-    InviteMember
+    InviteMember,
+    OrganizationMemberCard
   },
   data() {
     return {
@@ -45,27 +47,6 @@ export default {
     this.loadCurrentUser();
     this.loadMembers();
   },  methods: {
-    getInitials(firstName, lastName) {
-      const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : '?';
-      const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : '';
-      return `${firstInitial}${lastInitial}`;
-    },
-    
-    getMemberRoleBadgeClass(type) {
-      return {
-        'contractor-badge': type === OrganizationMemberType.CONTRACTOR,
-        'worker-badge': type === OrganizationMemberType.WORKER
-      };
-    },
-    
-    getMemberRoleIcon(type) {
-      if (type === OrganizationMemberType.CONTRACTOR) {
-        return 'pi pi-star';
-      } else if (type === OrganizationMemberType.WORKER) {
-        return 'pi pi-user';
-      }
-      return 'pi pi-user';
-    },
     
     async loadCurrentUser() {
       try {
@@ -158,15 +139,7 @@ export default {
     },
     openInviteDialog() {
       this.showInviteDialog = true;
-    },
-    formatDate(dateString) {
-      if (!dateString) return '';
-      const date = new Date(dateString);
-      return date.toLocaleDateString();
-    },
-    getMemberTypeClass(type) {
-      return type === OrganizationMemberType.CONTRACTOR ? 'contractor' : 'worker';
-    },    confirmRemoveMember(memberId, memberName) {
+    },confirmRemoveMember(memberId, memberName) {
       if (!this.isCreator) {
         this.$toast.add({
           severity: 'error',
@@ -242,41 +215,17 @@ export default {
     
     <div v-else-if="members.length === 0" class="empty-message">
       {{ $t('organization.members.empty') }}
-    </div>
-      <div v-else class="members-grid">
-      <div v-for="member in sortedMembers" :key="member.id" class="member-card">
-        <div class="member-card-header">
-          <div class="member-avatar" :class="getMemberTypeClass(member.type)">
-            {{ getInitials(member.person?.name, member.person?.lastName) }}
-          </div>
-          <div class="member-info">
-            <h3>{{ member.person?.name || 'Usuario' }} {{ member.person?.lastName || 'Desconocido' }}</h3>
-            <p class="member-email" v-if="member.person?.email">
-              <i class="pi pi-envelope"></i>
-              {{ member.person?.email }}
-            </p>
-          </div>
-          <pv-tag :class="getMemberTypeClass(member.type)" :value="member.type" />
-        </div>
-        
-        <div class="member-card-content">
-          <div class="joined-date">
-            <i class="pi pi-calendar"></i>
-            <span>{{ $t('organization.members.joined') }}: {{ formatDate(member.joinedAt) }}</span>
-          </div>
-          <div class="member-actions" v-if="isCreator && member.personId !== currentUserId">
-            <pv-button 
-              icon="pi pi-trash" 
-              class="p-button-rounded p-button-danger p-button-outlined remove-button" 
-              @click="confirmRemoveMember(member.id, `${member.person.name} ${member.person.lastName}`)" />
-          </div>
-        </div>
-        
-        <div class="member-role-badge" :class="getMemberRoleBadgeClass(member.type)">
-          <i :class="getMemberRoleIcon(member.type)"></i>
-        </div>
+    </div>      <div v-else class="members-grid">
+        <OrganizationMemberCard 
+          v-for="(member, index) in sortedMembers" 
+          :key="member.id"
+          :member="member"
+          :isCreator="isCreator"
+          :currentUserId="currentUserId"
+          @remove="confirmRemoveMember($event.id, $event.name)"
+          :style="{'--card-index': index}"
+        />
       </div>
-    </div>
     
     <pv-dialog 
       v-model:visible="showInviteDialog" 
@@ -342,134 +291,6 @@ export default {
   }
 }
 
-.member-card {
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  padding: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(var(--primary-color-rgb), 0.12);
-}
-
-.member-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  border-color: rgba(var(--primary-color-rgb), 0.3);
-}
-
-.member-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, var(--primary-color), var(--primary-600));
-  opacity: 0.85;
-}
-
-.member-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.member-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
-  color: #2196f3;
-  margin-right: 1rem;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-  border: 2px solid rgba(33, 150, 243, 0.2);
-}
-
-.member-avatar:hover {
-  transform: scale(1.05);
-}
-
-.member-avatar.contractor {
-  background: linear-gradient(135deg, var(--blue-50), var(--blue-100));
-  color: var(--blue-700);
-  border-color: var(--blue-300);
-}
-
-.member-avatar.worker {
-  background: linear-gradient(135deg, var(--green-50), var(--green-100));
-  color: var(--green-700);
-  border-color: var(--green-300);
-}
-
-.member-info {
-  flex: 1;
-}
-
-.member-info h3 {
-  margin: 0 0 0.35rem 0;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #333333;
-  letter-spacing: 0.01rem;
-}
-
-.member-email {
-  margin: 0;
-  color: #555555;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-weight: 500;
-}
-
-.member-email i {
-  font-size: 0.95rem;
-  color: var(--primary-color);
-  opacity: 0.8;
-}
-
-.member-card-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  margin-top: 0.25rem;
-}
-
-.joined-date {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #555555;
-  font-size: 0.9rem;
-  background-color: #f5f5f5;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-}
-
-.joined-date i {
-  color: var(--primary-color);
-  font-size: 0.9rem;
-}
-
-.member-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
 .invite-button {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
@@ -480,80 +301,5 @@ export default {
   background-color: var(--primary-600);
   border-color: var(--primary-600);
   box-shadow: 0 4px 10px rgba(var(--primary-color-rgb), 0.3);
-}
-
-.remove-button:hover {
-  background-color: rgba(var(--red-500-rgb), 0.1);
-  box-shadow: 0 3px 8px rgba(var(--red-500-rgb), 0.2);
-}
-
-.contractor {
-  background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
-  color: #01579b;
-  font-weight: 600;
-  padding: 0.45rem 0.85rem;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(1, 87, 155, 0.18);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid #81d4fa;
-  position: relative;
-}
-
-.contractor::before {
-  content: '★';
-  font-size: 0.8rem;
-  margin-right: 0.1rem;
-}
-
-.contractor-badge {
-  background: linear-gradient(135deg, #e1f5fe, #b3e5fc);
-  border: 1px solid #81d4fa;
-  color: #0277bd;
-  border-radius: 50%;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(2, 119, 189, 0.3);
-}
-
-.contractor-badge i {
-  font-size: 0.8rem;
-}
-
-.worker {
-  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-  color: #2e7d32;
-  font-weight: 500;
-  padding: 0.45rem 0.85rem;
-  border-radius: 12px;
-  box-shadow: 0 3px 8px rgba(46, 125, 50, 0.18);
-  border: 1px solid #a5d6a7;
-}
-
-.worker-badge {
-  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-  border: 1px solid #a5d6a7;
-  color: #2e7d32;
-  border-radius: 50%;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 25px;
-  height: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(46, 125, 50, 0.3);
-}
-
-.worker-badge i {
-  font-size: 0.8rem;
 }
 </style>

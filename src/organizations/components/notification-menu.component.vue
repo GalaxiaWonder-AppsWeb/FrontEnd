@@ -114,7 +114,7 @@ export default {
         this.currentUserId = null;
         this.error = this.$t('notifications.error_loading');
       }
-    },      async loadInvitations() {
+    },    async loadInvitations() {
       if (!this.currentUserId) {
         console.log("No hay usuario autenticado, no se cargan invitaciones");
         this.invitations = [];
@@ -128,14 +128,15 @@ export default {
         
         console.log(`Cargando invitaciones para el usuario: ${this.currentUserId}`);
         
-        // Obtener invitaciones pendientes para el usuario actual
-        // Añadimos un timestamp para evitar problemas de cache
-        const timestamp = new Date().getTime();
-        const invitations = await OrganizationInvitationService.getByPersonId(
-          `${this.currentUserId}?_=${timestamp}`
-        );
+        // Cargar invitaciones directamente de la API para asegurar que obtenemos los datos más recientes
+        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/invitations?personId=${this.currentUserId}&status=Pending&_t=${new Date().getTime()}`);
         
-        console.log("Invitaciones obtenidas para el menú:", invitations);
+        if (!response.ok) {
+          throw new Error(`Error al obtener invitaciones: ${response.status} ${response.statusText}`);
+        }
+        
+        const invitations = await response.json();
+        console.log("Invitaciones obtenidas directamente de la API:", invitations);
         
         // Verificar que tenemos datos de invitaciones
         if (!Array.isArray(invitations)) {
@@ -147,7 +148,7 @@ export default {
         
         // Filtrar invitaciones pendientes, aceptando tanto 'Pending' como 'PENDING'
         const pendingInvitations = invitations.filter(
-          inv => inv.status === OrganizationInvitationStatus.PENDING || inv.status === 'Pending'
+          inv => inv.status === 'Pending' || inv.status === 'PENDING'
         );
         
         console.log("Invitaciones pendientes filtradas:", pendingInvitations);
@@ -246,9 +247,9 @@ export default {
         
         // Notificar a otros componentes para actualizar el contador inmediatamente
         this.$emit('invitation-processed');
-        
-        // Emitir eventos para actualizar lista de organizaciones
-        if (window && window.dispatchEvent) {          // Emitir evento para actualizar las notificaciones inmediatamente
+          // Emitir eventos para actualizar lista de organizaciones
+        if (window && window.dispatchEvent) {
+          // Emitir evento para actualizar las notificaciones inmediatamente
           window.dispatchEvent(new CustomEvent('refresh-notifications'));
           
           // También programar una segunda actualización después de un momento
@@ -260,14 +261,11 @@ export default {
           // Notificar que hay nuevas organizaciones disponibles
           window.dispatchEvent(new CustomEvent('organizations-updated'));
           
-          // Redireccionar a la organización con un delay para permitir ver la notificación
-          this.redirectTimeout = setTimeout(() => {
-            if (this.$router) {
-              this.$router.push(`/organizations/${invitation.organizationId}`);
-            } else {
-              window.location.href = `/organizations/${invitation.organizationId}`;
-            }
-          }, 1500);
+          // Cerrar el menú de notificaciones para mostrar las organizaciones actualizadas
+          this.$emit('close-menu');
+          
+          // NO redireccionamos al usuario a la organización, solo actualizamos la lista
+          console.log("Invitación aceptada, se actualizará la lista de organizaciones");
         }
       } catch (error) {
         console.error("Error accepting invitation:", error);
@@ -319,8 +317,7 @@ export default {
         }
         
         // Notificar a otros componentes para actualizar el contador inmediatamente
-        this.$emit('invitation-processed');
-          // Disparar evento global inmediatamente
+        this.$emit('invitation-processed');        // Disparar evento global inmediatamente
         if (window && window.dispatchEvent) {
           window.dispatchEvent(new CustomEvent('refresh-notifications'));
           
@@ -329,6 +326,8 @@ export default {
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('refresh-notifications'));
           }, 500);
+          
+          // No es necesario actualizar la lista de organizaciones ya que se rechazó la invitación
         }
       } catch (error) {
         console.error("Error rejecting invitation:", error);

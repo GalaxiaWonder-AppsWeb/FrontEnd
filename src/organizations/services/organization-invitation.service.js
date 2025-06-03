@@ -65,7 +65,48 @@ export const OrganizationInvitationService = {
      * @param {string} invitationData.personId - ID de la persona invitada
      * @param {string} invitationData.invitedBy - ID de quien invita
      * @returns {Promise<Object>} - Promesa con la invitación creada
+     */    /**
+     * Obtiene invitaciones por ID de persona
+     * @param {string} personId - ID de la persona
+     * @returns {Promise<Array>} - Promesa con las invitaciones
      */
+    async getByPersonId(personId) {
+        if (!personId) {
+            console.error('[InvitationService] personId es requerido');
+            return [];
+        }
+        
+        try {
+            console.log(`[InvitationService] Obteniendo invitaciones para persona ID: ${personId}`);
+            
+            // Configuración con parámetros anti-cache y headers apropiados
+            const config = {
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                params: {
+                    _t: new Date().getTime()
+                }
+            };
+            
+            // Llamada al endpoint con queryParams para filtrar por personId y status=Pending
+            const response = await axios.get(`${baseURL}/invitations?personId=${personId}&status=Pending`, config);
+            
+            // Validar respuesta
+            if (!Array.isArray(response.data)) {
+                console.warn('[InvitationService] La respuesta no es un array:', response.data);
+                return [];
+            }
+            
+            console.log(`[InvitationService] Se encontraron ${response.data.length} invitaciones para persona ${personId}`);
+            return response.data;
+        } catch (error) {
+            console.error('[InvitationService] Error al obtener invitaciones por persona:', error);
+            return []; // Devolver array vacío en caso de error para evitar errores en cascada
+        }
+    },
+    
     async createInvitation(invitationData) {
         if (!invitationData || !invitationData.organizationId || !invitationData.personId || !invitationData.invitedBy) {
             throw new Error('Faltan datos requeridos para crear la invitación');
@@ -225,9 +266,17 @@ export const OrganizationInvitationService = {
                     'Accept': 'application/json'
                 }
             };
-            
-            // Actualizar la invitación
+              // Actualizar la invitación
             const updateResponse = await axios.put(`${baseURL}/invitations/${id}`, updateData, config);
+            
+            // Después de actualizar, eliminar la invitación para evitar acumulación en la base de datos
+            try {
+                await axios.delete(`${baseURL}/invitations/${id}`, config);
+                console.log(`[InvitationService] Invitación ${id} eliminada después de ser aceptada`);
+            } catch (deleteError) {
+                console.warn(`[InvitationService] No se pudo eliminar la invitación ${id} después de aceptarla:`, deleteError);
+                // Continuamos aunque no se pueda eliminar, ya que la acción principal se completó
+            }
             
             // Emitir evento para actualizar UI
             if (typeof window !== 'undefined' && window.dispatchEvent) {
@@ -289,9 +338,17 @@ export const OrganizationInvitationService = {
                     'Accept': 'application/json'
                 }
             };
-            
-            // Actualizar la invitación
+              // Actualizar la invitación
             const updateResponse = await axios.put(`${baseURL}/invitations/${id}`, updateData, config);
+            
+            // Después de actualizar, eliminar la invitación para evitar acumulación en la base de datos
+            try {
+                await axios.delete(`${baseURL}/invitations/${id}`, config);
+                console.log(`[InvitationService] Invitación ${id} eliminada después de ser rechazada`);
+            } catch (deleteError) {
+                console.warn(`[InvitationService] No se pudo eliminar la invitación ${id} después de rechazarla:`, deleteError);
+                // Continuamos aunque no se pueda eliminar, ya que la acción principal se completó
+            }
             
             // Emitir evento para actualizar UI
             if (typeof window !== 'undefined' && window.dispatchEvent) {

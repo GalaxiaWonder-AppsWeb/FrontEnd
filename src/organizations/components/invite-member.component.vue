@@ -102,18 +102,52 @@ export default {
         this.currentUserId = null;
         this.error = 'Error loading user information';
       }
-    },
-    async loadPendingInvitations() {
+    },    async loadPendingInvitations() {
       this.loading = true;
       try {
-        const invitations = await OrganizationInvitationService.getByOrgId(this.organizationId);
-        this.pendingInvitations = invitations.filter(inv => inv.status === 'Pending');
+        // Obtener todas las invitaciones para la organización (todos los estados)
+        const invitationsResponse = await fetch(
+          `${import.meta.env.VITE_PROPGMS_API_URL}/invitations?organizationId=${this.organizationId}&_t=${new Date().getTime()}`
+        );
+        
+        if (!invitationsResponse.ok) {
+          throw new Error(`Error al obtener invitaciones: ${invitationsResponse.status}`);
+        }
+        
+        const allInvitations = await invitationsResponse.json();
+        console.log("Todas las invitaciones obtenidas:", allInvitations);
+        
+        // Agregar información de la persona para cada invitación
+        const invitationsWithPersons = [];
+        for (const invitation of allInvitations) {
+          try {
+            const personResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/persons/${invitation.personId}`);
+            if (personResponse.ok) {
+              const person = await personResponse.json();
+              invitationsWithPersons.push({
+                ...invitation,
+                personName: `${person.name} ${person.lastName}`,
+                personEmail: person.email
+              });
+            } else {
+              invitationsWithPersons.push(invitation);
+            }
+          } catch (error) {
+            console.error(`Error al obtener datos de persona para invitación ${invitation.id}:`, error);
+            invitationsWithPersons.push(invitation);
+          }
+        }
+        
+        // Filtrar solo invitaciones pendientes para mostrar en la interfaz
+        this.pendingInvitations = invitationsWithPersons.filter(inv => inv.status === 'Pending');
+        console.log("Invitaciones pendientes:", this.pendingInvitations);
       } catch (e) {
+        console.error("Error al cargar invitaciones:", e);
         this.pendingInvitations = [];
       } finally {
         this.loading = false;
       }
-    },    async searchUsers() {
+    },async searchUsers() {
       this.loading = true;
       try {
         console.log("Buscando usuarios...");
@@ -132,17 +166,23 @@ export default {
         console.log("Miembros obtenidos:", members);
         
         const memberPersonIds = members.map(m => m.personId);
-        console.log("IDs de miembros:", memberPersonIds);
+        console.log("IDs de miembros:", memberPersonIds);        // Obtener solo las invitaciones PENDIENTES para no mostrar personas con invitaciones activas
+        // Esto permite volver a invitar a usuarios que hayan rechazado o aceptado invitaciones previas
+        const pendingInvitationsResponse = await fetch(
+          `${import.meta.env.VITE_PROPGMS_API_URL}/invitations?organizationId=${this.organizationId}&status=Pending&_t=${new Date().getTime()}`
+        );
         
-        // Obtener invitaciones pendientes
-        const pendingPersonIds = this.pendingInvitations.map(inv => inv.personId);
-        console.log("IDs de invitaciones pendientes:", pendingPersonIds);
+        const pendingInvitations = await pendingInvitationsResponse.json();
+        console.log("Invitaciones pendientes para esta organización:", pendingInvitations);
         
-        // Filtrar: no miembros, no invitados, no el propio usuario
+        // Extraer los IDs de personas con invitaciones pendientes únicamente
+        const pendingInvitedPersonIds = pendingInvitations.map(inv => inv.personId);
+        console.log("IDs de personas con invitaciones pendientes:", pendingInvitedPersonIds);
+          // Filtrar: no miembros, no invitados con invitaciones PENDIENTES, no el propio usuario
         this.searchResults = allPersons.filter(person =>
           person.id !== this.currentUserId &&
           !memberPersonIds.includes(person.id) &&
-          !pendingPersonIds.includes(person.id) &&
+          !pendingInvitedPersonIds.includes(person.id) &&
           (
             !this.searchTerm ||
             person.name?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -163,38 +203,68 @@ export default {
         this.loading = true;
         console.log("Invitando usuario:", user);
         
+        // Mostrar mensaje de que se está enviando la invitación
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'info',
+            summary: this.$t('organization.invite.sending'),
+            detail: this.$t('organization.invite.please_wait'),
+            life: 2000
+          });
+        }
+        
         // Validar datos requeridos
         if (!this.organizationId || !user.id || !this.currentUserId) {
           throw new Error('Faltan datos requeridos para crear la invitación');
         }
         
-        // Datos para la invitación en formato compatible con ASP.NET Core
+        // Datos para la invitación en formato compatible con API
         const invitationData = {
           organizationId: this.organizationId,
           personId: user.id,
-          invitedBy: this.currentUserId
-          // Ya no pasamos invitedAt y status, lo hará el servicio
+          invitedBy: this.currentUserId,
+          invitedAt: new Date().toISOString(),
+          status: 'Pending'
         };
         
-        // Usar el método mejorado del servicio de invitaciones
-        const createdInvitation = await OrganizationInvitationService.createInvitation(invitationData);
+        // Usar el método directo de creación para asegurar que se crea correctamente
+        console.log("Enviando petición de invitación directamente a la API:", invitationData);
+        let response;
         
-        // Verificar que la invitación se creó correctamente
-        if (!createdInvitation || !createdInvitation.id) {
-          throw new Error('Error al crear la invitación: respuesta inválida');
+        // Intentar crear la invitación con axios directamente para depuración
+        try {
+          response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/invitations`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(invitationData)
+          });
+          
+          const createdInvitation = await response.json();
+          console.log("Respuesta directa de la API:", createdInvitation);
+          
+          // Verificar que la invitación se creó correctamente
+          if (!createdInvitation || (!createdInvitation.id && !createdInvitation._id)) {
+            throw new Error('Error al crear la invitación: respuesta inválida');
+          }
+          
+          console.log("Invitación creada exitosamente:", createdInvitation);
+        } catch (apiError) {
+          console.error("Error en la llamada directa a la API:", apiError);
+          throw apiError;
         }
         
-        console.log("Invitación creada exitosamente:", createdInvitation);
-          if (this.$toast) {
+        // Mostrar mensaje de éxito
+        if (this.$toast) {
           this.$toast.add({
             severity: 'success',
-            summary: this.$t('organization.invite.sent_title'),
-            detail: this.$t('organization.invite.sent_message', { name: user.name }),
+            summary: this.$t('organization.invite.success_title'),
+            detail: this.$t('organization.invite.success_message', { name: user.name }),
             life: 3000
           });
         }
-        
-        // Refrescar datos locales
+          // Refrescar datos locales
         await this.loadPendingInvitations();
         await this.searchUsers();
         
@@ -203,12 +273,18 @@ export default {
           // Notificar a todos los componentes que necesitan actualizarse
           window.dispatchEvent(new CustomEvent('refresh-notifications'));
           
-          // Programar una segunda actualización para asegurar que todos los componentes se actualicen
+          // Programar múltiples actualizaciones para asegurar que todos los componentes se actualicen
+          // Esto es particularmente útil para componentes que pueden cargar datos de forma asíncrona
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('refresh-notifications'));
           }, 500);
+          
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('refresh-notifications'));
+          }, 2000);
         }
         
+        // Notificar al componente padre que se ha enviado la invitación
         this.$emit('invitationSent');
       } catch (e) {
         console.error("Error al invitar usuario:", e);
@@ -223,8 +299,9 @@ export default {
       } finally {
         this.loading = false;
       }
-    },
-    isUserInvited(personId) {
+    },    isUserInvited(personId) {
+      // Verificar si el usuario ya tiene una invitación pendiente
+      // Nota: this.pendingInvitations ya contiene solo invitaciones con estado "Pending"
       return this.pendingInvitations.some(inv => inv.personId === personId);
     },
     formatDate(dateString) {

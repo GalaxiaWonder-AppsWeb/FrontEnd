@@ -106,7 +106,37 @@ export class AuthService {
 
     isLoggedIn() {
         return !!this.getCurrentUser()
-    }handleError(context, error) {
+    }async updatePassword(userId, newPassword) {
+        try {
+            // Primero obtener el usuario completo
+            const response = await axios.get(`${this.baseUrl}/users/${userId}`, this.httpOptions);
+            const currentUser = response.data;
+            
+            if (!currentUser) {
+                throw new Error('User not found');
+            }
+            
+            // Actualizar solo la contraseña
+            const updatedUser = {
+                ...currentUser,
+                password: newPassword
+            };
+            
+            // Enviar la actualización
+            const updateResponse = await axios.put(
+                `${this.baseUrl}/users/${userId}`,
+                updatedUser,
+                this.httpOptions
+            );
+            
+            console.log('Contraseña actualizada correctamente');
+            return updateResponse.data;
+        } catch (error) {
+            this.handleError('UpdatePassword', error);
+        }
+    }
+
+    handleError(context, error) {
         const msg = error.response?.data || error.message || 'Unexpected error'
         console.error(`[AuthService] ${context} error:`, msg)
         throw new Error(msg)

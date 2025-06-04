@@ -4,8 +4,7 @@ import { OrganizationId } from "../../organizations/model/organization.entity.js
 import { Schedule } from "../model/schedule.entity.js"
 import { ContractingEntityId } from "../../shared/model/contracting-entity-id.js";
 
-export class ProjectAssembler {
-    static toEntityFromResource(resource) {
+export class ProjectAssembler {    static toEntityFromResource(resource) {
         return new Project({
             id: resource.id,
             name: resource.name,
@@ -18,7 +17,9 @@ export class ProjectAssembler {
             team: resource.team,
             organizationId: new OrganizationId(resource.organizationId),
             contractor: new OrganizationMemberId(resource.contractor),
-            contractingEntityId: new ContractingEntityId(resource.contractingEntityId)
+            contractingEntityId: new ContractingEntityId(resource.contractingEntityId),
+            createdBy: resource.createdBy,
+            createdAt: resource.createdAt ? new Date(resource.createdAt) : new Date()
         });
     }
 

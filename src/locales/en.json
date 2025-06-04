@@ -1,4 +1,8 @@
 {
+  "navigation": {
+    "back": "Back",
+    "all_organizations": "All Organizations"
+  },
   "register": {
     "title": "User Register",
     "name": "Name",
@@ -23,9 +27,9 @@
     "submit": "Enter",
     "no-account": "Don't have an account yet?",
     "go-register": "Register here"
-  },
-  "organization": {
+  },  "organization": {
     "title": "Organization",
+    "all": "All Organizations",
     "section": {
       "information":"Information",
       "projects": "Projects",
@@ -103,16 +107,16 @@
     "error_title": "Error",
     "error_accept": "Error accepting invitation",
     "error_reject": "Error rejecting invitation"
-  },
-  "common": {
+  },  "common": {
     "yes": "Yes",
     "no": "No",
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
     "edit": "Edit",
-    "ok": "OK"
-  },  "auth": {
+    "ok": "OK",
+    "create": "Create"
+  },"auth": {
     "logout": "Sign out",
     "logout_success": "Successfully signed out"
   },
@@ -120,6 +124,70 @@
     "dashboard": {
       "organizations": "Organizations",
       "invitations": "Invitations"
+    }
+  },  "profile": {
+    "title": "My Profile",
+    "view": "View Profile",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading profile information...",
+    "personal_information": "Personal Information",
+    "account_information": "Account Information",
+    "name": "Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "email_note": "Email cannot be modified",
+    "phoneNumber": "Phone Number",
+    "profession": "Profession",
+    "userType": "User Type",
+    "password": "Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
+    "change_password": "Change password",
+    "picture_help": "Click on the camera icon to change your profile picture",
+    "success": {
+      "title": "Success",
+      "saved": "Profile updated successfully"
+    },    "error": {
+      "title": "Error",
+      "loading": "Error loading profile",
+      "saving": "Error saving changes",
+      "user_not_found": "User not found",
+      "person_not_found": "Person information not found",
+      "password_mismatch": "Passwords do not match",
+      "password_too_short": "Password must be at least 6 characters",
+      "image_upload": "Error uploading image",
+      "image_too_large": "Image is too large (max 2MB)"
+    },
+    "uploading_image": "Uploading image..."
+  },
+  "projects": {
+    "title": "Projects",
+    "create": "New project",
+    "empty": "No projects available",
+    "empty_member": "No projects available for you",
+    "create_prompt": "Create your first project by clicking \"New project\"!",
+    "loading": "Loading projects...",
+    "error": "Error loading projects",
+    "status": {
+      "active": "Active",
+      "completed": "Completed",
+      "on_hold": "On hold",
+      "cancelled": "Cancelled",
+      "planning": "Planning"
+    },
+    "access_denied": "You don't have permission to view this project",
+    "view_details": "View details",
+    "create_dialog": {
+      "title": "Create new project",
+      "name": "Project name",
+      "name_placeholder": "Enter project name",
+      "description": "Description",
+      "description_placeholder": "Enter project description",
+      "budget": "Budget",
+      "start_date": "Start date",
+      "end_date": "End date"
     }
   }
 }

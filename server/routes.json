@@ -8,10 +8,12 @@
   "/invitations/:id/reject": "/invitations/:id",
   
   "/members/organization/:id": "/members?organizationId=:id",
-  "/members/person/:id": "/members?personId=:id",
-  "/members/organization/:organizationId/person/:personId": "/members?organizationId=:organizationId&personId=:personId",
+  "/members/person/:id": "/members?personId=:id",  "/members/organization/:organizationId/person/:personId": "/members?organizationId=:organizationId&personId=:personId",
   
   "/persons/search/workers": "/persons?userType=Worker&q=:query",
   "/persons/search": "/persons?q=:email",
-  "/persons/:id": "/persons/:id"
+  "/persons/:id": "/persons/:id",
+
+  "/projects/organization/:id": "/projects?organizationId=:id",
+  "/projects/:id": "/projects/:id"
 }

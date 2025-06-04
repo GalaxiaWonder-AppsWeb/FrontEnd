@@ -1,5 +1,6 @@
 <script>
 import { OrganizationMemberType } from '../model/organization-member-type.js';
+import { fileUploadService } from '../../shared/services/file-upload.service';
 
 export default {
   name: "OrganizationMemberCard",
@@ -43,11 +44,26 @@ export default {
       }
       return 'pi pi-user';
     },
-    
-    formatDate(dateString) {
+      formatDate(dateString) {
       if (!dateString) return '';
       const date = new Date(dateString);
       return date.toLocaleDateString();
+    },
+    
+    handleProfileImageError(event) {
+      // Ocultar la imagen si no puede cargarse
+      event.target.style.display = 'none';
+      // Mostrar el contenedor de iniciales
+      const placeholder = event.target.parentElement.querySelector('.member-avatar-placeholder');
+      if (placeholder) {
+        placeholder.style.display = 'flex';
+      } else {
+        // Si no existe el placeholder, lo creamos dinámicamente
+        const div = document.createElement('div');
+        div.className = 'member-avatar-placeholder';
+        div.textContent = this.getInitials(this.member.person?.name, this.member.person?.lastName);
+        event.target.parentElement.appendChild(div);
+      }
     },
     
     // Emite el evento para eliminar un miembro
@@ -69,10 +85,16 @@ export default {
       </div>-->
     </template>
     
-    <template #title>
-      <div class="member-card-header">
-        <div class="member-avatar" :class="getMemberTypeClass(member.type)">
-          {{ getInitials(member.person?.name, member.person?.lastName) }}
+    <template #title>      <div class="member-card-header">        <div class="member-avatar" :class="getMemberTypeClass(member.type)">
+          <img v-if="member.person?.profilePicture" 
+               :src="member.person.profilePicture" 
+               @error="handleProfileImageError"
+               alt="Profile Picture" 
+               class="member-avatar-image" 
+          />
+          <div v-else class="member-avatar-placeholder">
+            {{ getInitials(member.person?.name, member.person?.lastName) }}
+          </div>
         </div>
         <div class="member-info">
           <h3>{{ member.person?.name || 'Usuario' }} {{ member.person?.lastName || 'Desconocido' }}</h3>
@@ -212,6 +234,24 @@ export default {
   transition: all 0.3s ease;
   border: 2px solid rgba(33, 150, 243, 0.2);
   position: relative;
+  overflow: hidden;
+}
+
+.member-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: inherit;
 }
 
 .member-avatar::after {

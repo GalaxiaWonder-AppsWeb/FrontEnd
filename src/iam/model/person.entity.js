@@ -1,13 +1,14 @@
 import { ProfessionalId }  from './professional-id.entity.js'
 
 export class Person {
-    constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null) {
+    constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null, profilePicture = '') {
         this.id = new PersonId()
         this.name = name
         this.lastName = lastName
         this.email = email
         this.phoneNumber = phoneNumber
         this.profession = profession
+        this.profilePicture = profilePicture
 
         if (professionalId !== null && !(professionalId instanceof ProfessionalId)) {
             throw new Error('professionalId must be an instance of ProfessionalId')
@@ -43,9 +44,7 @@ export class Person {
 
     hasProfessionalId() {
         return this.professionalId !== null
-    }
-
-    toJSON() {
+    }    toJSON() {
         return {
             id: this.id.value,
             name: this.name,
@@ -53,7 +52,8 @@ export class Person {
             email: this.email,
             phoneNumber: this.phoneNumber,
             profession: this.profession,
-            professionalId: this.professionalId ? this.professionalId.value : null
+            professionalId: this.professionalId ? this.professionalId.value : null,
+            profilePicture: this.profilePicture || ''
         }
     }
 }

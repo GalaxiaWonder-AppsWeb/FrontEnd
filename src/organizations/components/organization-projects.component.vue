@@ -1,8 +1,12 @@
 <script>
 import { useRoute } from 'vue-router';
+import CreateProject from '../../projects/components/create-project.component.vue';
 
 export default {
   name: "OrganizationProjects",
+  components: {
+    CreateProject
+  },
   data() {
     return {
       route: useRoute(),
@@ -11,7 +15,8 @@ export default {
       currentUser: null,
       userRole: null,
       organizationId: null,
-      error: null
+      error: null,
+      selectedProject: null
     };
   },
   computed: {
@@ -43,16 +48,17 @@ export default {
       return this.userRole === 'Contractor';
     }
   },
-  methods: {    async loadProjects() {
+  methods: {
+    async loadProjects() {
       this.loading = true;
       this.error = null;
-        try {
+      
+      try {
         // Llamada a la API para cargar los proyectos de la organización
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${this.organizationId}/projects`, {
+        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects/organization/${this.organizationId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            // Agregar token de autorización si es necesario
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
@@ -75,9 +81,10 @@ export default {
         this.loading = false;
       }
     },
-      async loadSpecificProject(projectId) {
+    
+    async loadSpecificProject(projectId) {
       try {
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/projects/${projectId}`, {
+        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects/${projectId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -126,23 +133,29 @@ export default {
     getStatusSeverity(status) {
       // Asigna un color basado en el estado del proyecto
       switch (status?.toLowerCase()) {
-        case 'active':
-        case 'activo':
-          return 'success';
-        case 'completed':
-        case 'completado':
+        case 'basic studies':
+        case 'estudios básicos':
           return 'info';
-        case 'on hold':
-        case 'en espera':
+        case 'design in progress':
+        case 'diseño en progreso':
           return 'warning';
-        case 'cancelled':
-        case 'cancelado':
+        case 'under review':
+        case 'en revisión':
+          return 'warning';
+        case 'change requested':
+        case 'cambio solicitado':
           return 'danger';
-        case 'planning':
-        case 'planificación':
-          return 'secondary';
+        case 'change pending':
+        case 'cambio pendiente':
+          return 'danger';
+        case 'rejected':
+        case 'rechazado':
+          return 'danger';
+        case 'approved':
+        case 'aprobado':
+          return 'success';
         default:
-          return null;
+          return 'secondary';
       }
     },
     
@@ -159,26 +172,9 @@ export default {
       }
     },
     
-    createNewProject() {
-      // Verificar permisos antes de permitir crear
-      if (!this.canCreateProject) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Permiso denegado',
-          detail: 'Solo el contratista puede crear nuevos proyectos',
-          life: 3000
-        });
-        return;
-      }
-      
-      // Aquí iría la navegación a la página de creación de proyecto
-      // o la apertura de un modal para crear proyecto
-      this.$toast.add({
-        severity: 'info',
-        summary: 'Crear proyecto',
-        detail: 'Funcionalidad de creación de proyecto en desarrollo',
-        life: 3000
-      });
+    handleProjectCreated() {
+      // Recargar los proyectos después de crear uno nuevo
+      this.loadProjects();
     }
   },
   created() {
@@ -189,13 +185,16 @@ export default {
 }
 </script>
 
-<template>  <div class="projects-container">
+<template>
+  <div class="projects-container">
     <div class="header">
-      <h2>{{ $t('projects.title') }}</h2>      <pv-button v-if="canCreateProject" 
-                icon="pi pi-plus" 
-                :label="$t('projects.create')"
-                class="create-button"
-                @click="createNewProject" />
+      <h2>{{ $t('projects.title') }}</h2>
+      
+      <CreateProject 
+        v-if="canCreateProject"
+        :organizationId="organizationId"
+        @project-created="handleProjectCreated"
+      />
     </div>
     
     <div v-if="loading" class="loading-indicator">
@@ -221,9 +220,10 @@ export default {
         </div>
         <p class="project-description">{{ project.description || 'Sin descripción' }}</p>
         <div class="project-footer">
-          <span class="start-date" v-if="project.startDate">
-            <i class="pi pi-calendar"></i> {{ new Date(project.startDate).toLocaleDateString() }}
-          </span>          <pv-button 
+          <span class="start-date" v-if="project.startingDate">
+            <i class="pi pi-calendar"></i> {{ new Date(project.startingDate).toLocaleDateString() }}
+          </span>
+          <pv-button 
             icon="pi pi-eye" 
             :label="$t('projects.view_details')" 
             text 

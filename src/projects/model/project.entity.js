@@ -18,7 +18,9 @@ export class Project {
                     team = [],
                     organizationId = new OrganizationId(),
                     contractor = new OrganizationMemberId(),
-                    contractingEntityId = new ContractingEntityId()
+                    contractingEntityId = new ContractingEntityId(),
+                    createdBy = null,
+                    createdAt = new Date()
                 }) {
         if (!name || typeof name !== 'string') {
             throw new Error('Legal name is required and must be a non-empty string')
@@ -32,19 +34,20 @@ export class Project {
             throw new Error('Budget is required and must be a number')
         }
 
-
-        this.id = id
-        this.name = name
-        this.description = description
-        this.status = status
-        this.schedule = schedule
-        this.budget = budget
-        this.startingDate = startingDate
-        this.endingDate = endingDate
-        this.team = team
-        this.organizationId = organizationId
-        this.contractor = contractor
-        this.contractingEntityId = contractingEntityId
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.schedule = schedule;
+        this.budget = budget;
+        this.startingDate = startingDate;
+        this.endingDate = endingDate;
+        this.team = team;
+        this.organizationId = organizationId;
+        this.contractor = contractor;
+        this.contractingEntityId = contractingEntityId;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
     }
 
     updateStatus(status) {
@@ -77,8 +80,6 @@ export class Project {
 
         this.team = this.team.filter(member => member.memberId.value !== memberId.value);
     }
-
-
     toJSON() {
         console.log('Valor de this.id antes de serializar:', this.id);
         return {
@@ -90,6 +91,11 @@ export class Project {
             budget: this.budget,
             startingDate: this.startingDate,
             endingDate: this.endingDate,
+            team: this.team,
+            organizationId: this.organizationId?.value ?? this.organizationId,
+            contractor: this.contractor?.value ?? this.contractor,
+            createdBy: this.createdBy,
+            createdAt: this.createdAt
         }
     }
 }

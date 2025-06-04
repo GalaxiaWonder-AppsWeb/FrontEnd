@@ -1,17 +1,49 @@
 <template>
   <div class="toolbar-container">
-    <!-- Parte superior fija -->
-    <pv-toolbar class="toolbar-top">
+    <!-- Parte superior fija -->    <pv-toolbar class="toolbar-top">
       <template #start>
-        <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
-      </template>      <template #end>        <NotificationBell v-if="isAuthenticated" />
-        <pv-button icon="pi pi-user" text rounded severity="info" @click="toggleProfileMenu" class="user-profile-button" />
-        <div v-if="showProfileMenu" class="profile-menu" ref="profileMenu">
-          <div class="profile-info" v-if="currentUser">
+        <div class="title-section">
+          <!-- Botón de navegación hacia atrás, mostrado solo en vistas específicas -->
+          <pv-button 
+            v-if="showBackButton" 
+            icon="pi pi-arrow-left" 
+            class="p-button-text p-button-rounded back-button" 
+            @click="navigateBack"
+            aria-label="Volver"
+            v-tooltip="$t('navigation.back')"
+          />
+          <!-- Enlace para volver a organizaciones cuando estamos en una organización específica -->
+          <pv-button 
+            v-if="inOrganizationView" 
+            icon="pi pi-th-large" 
+            :label="$t('organization.all')" 
+            class="p-button-text organizations-link" 
+            @click="goToOrganizationsList"
+          />
+          <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
+        </div>
+      </template>
+      <template #end>
+        <NotificationBell v-if="isAuthenticated" />        <button @click="toggleProfileMenu" class="user-profile-button">          <img 
+            v-if="currentUser && currentUser.profilePicture" 
+            :src="currentUser.profilePicture" 
+            @error="handleAvatarLoadError"
+            alt="Profile Picture" 
+            class="profile-avatar-image" 
+          />
+          <div v-else class="profile-avatar-placeholder">
+            {{ getUserInitials() }}
+          </div>
+        </button>
+        <div v-if="showProfileMenu" class="profile-menu" ref="profileMenu">          <div class="profile-info" v-if="currentUser">
             <span class="user-name">{{ currentUser.name }} {{ currentUser.lastName }}</span>
             <span class="user-email">{{ currentUser.email }}</span>
           </div>
           <div class="profile-actions">
+            <button class="profile-action" @click="goToProfile">
+              <i class="pi pi-user"></i>
+              {{ $t('profile.view') }}
+            </button>
             <button class="profile-action logout-button" @click="logout">
               <i class="pi pi-sign-out"></i>
               {{ $t('auth.logout') }}
@@ -56,7 +88,8 @@ export default {
   components: {
     LanguageSwitcher,
     NotificationBell
-  },  data() {
+  },
+  data() {
     return {
       route: useRoute(),
       router: useRouter(),
@@ -95,6 +128,14 @@ export default {
   beforeUnmount() {
     document.removeEventListener('click', this.handleClickOutside);
   },  computed: {
+    // Propiedad para determinar si se muestra el botón de regreso
+    showBackButton() {
+      // Mostrar en perfiles y vistas específicas
+      return this.route.path === '/profile' || 
+             this.inOrganizationView || 
+             this.inProjectView;
+    },
+    
     inOrganizationView() {
       return this.route.path.startsWith('/organizations/') && !this.route.path.includes('/projects/');
     },
@@ -155,6 +196,30 @@ export default {
       return user.activeOrganizationRole === role;
     },
     
+    // Método para navegar hacia atrás o a una vista principal según corresponda
+    navigateBack() {
+      if (this.route.path === '/profile') {
+        // Desde el perfil, regresar a la página anterior si existe, o a organizaciones
+        if (window.history.length > 2) {
+          this.router.go(-1);
+        } else {
+          this.router.push('/organizations');
+        }
+      } else if (this.inOrganizationView) {
+        // Desde una organización, volver a la lista de organizaciones
+        this.router.push('/organizations');
+      } else if (this.inProjectView) {
+        // Desde un proyecto, volver a la vista de proyectos de la organización
+        const { orgId } = this.route.params;
+        this.router.push(`/organizations/${orgId}/projects`);
+      }
+    },
+    
+    // Método directo para ir a la lista de organizaciones
+    goToOrganizationsList() {
+      this.router.push('/organizations');
+    },
+    
     goTo(section) {
       const { orgId, projectId } = this.route.params
       let path = ''
@@ -170,8 +235,7 @@ export default {
         path = `/organizations/${orgId}/${section}`
       }
       this.router.push(path)
-    },
-      async checkAuthentication() {
+    },    async checkAuthentication() {
       try {
         // Verificar si el usuario está autenticado
         const isAuth = authService.isAuthenticated();
@@ -188,6 +252,21 @@ export default {
               lastName: "Autenticado",
               email: "usuario@ejemplo.com" 
             };
+          } 
+          else if (this.currentUser.personId && !this.currentUser.profilePicture) {
+            // Si el usuario no tiene foto de perfil en localStorage, intentamos obtenerla
+            try {
+              const personData = await import('../../iam/services/person.service.js')
+                .then(module => module.personService.getById(this.currentUser.personId));
+                
+              if (personData && personData.profilePicture) {
+                // Actualizar el usuario en memoria y en localStorage
+                this.currentUser.profilePicture = personData.profilePicture;
+                localStorage.setItem('user', JSON.stringify(this.currentUser));
+              }
+            } catch (personError) {
+              console.error("Error fetching user profile picture:", personError);
+            }
           }
         }
       } catch (error) {
@@ -232,7 +311,36 @@ export default {
           life: 3000
         });
       }
-    }
+    },    goToProfile() {
+      this.showProfileMenu = false; // Cerrar el menú
+      this.router.push('/profile');
+      
+      // Si estamos en alguna ruta que requiere un layout específico, 
+      // necesitamos recargar para aplicar el layout de usuario
+      if (this.inOrganizationView || this.inProjectView) {
+        setTimeout(() => {
+          window.location.href = '/profile'; 
+        }, 100);
+      }
+    },
+      getUserInitials() {
+      if (!this.currentUser || !this.currentUser.name) return '?';
+      
+      const firstName = this.currentUser.name.charAt(0);
+      const lastName = this.currentUser.lastName ? this.currentUser.lastName.charAt(0) : '';
+      
+      return (firstName + lastName).toUpperCase();
+    },
+    
+    handleAvatarLoadError(event) {
+      // Si la imagen no se puede cargar, mostrar las iniciales
+      event.target.style.display = 'none';
+      // Asegurarnos de que no haya referencias rotas en localStorage
+      if (this.currentUser) {
+        this.currentUser.profilePicture = '';
+        localStorage.setItem('user', JSON.stringify(this.currentUser));
+      }
+    },
   }
 }
 </script>
@@ -358,12 +466,56 @@ export default {
 }
 
 .user-profile-button {
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 }
 
 .user-profile-button:hover {
-  background-color: #f1f5f9 !important;
   transform: scale(1.05);
+  border-color: white;
+}
+
+.profile-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-button {
+  margin-right: 0.5rem;
+}
+
+.organizations-link {
+  margin-right: 1rem;
+  font-size: 0.9rem;
 }
 </style>

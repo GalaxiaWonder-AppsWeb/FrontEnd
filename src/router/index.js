@@ -8,6 +8,7 @@ import OrganizationLayout from '../organizations/components/organization-layout.
 // Auth
 import Login from '../iam/components/login-form.component.vue'
 import Register from '../iam/components/register-form.component.vue'
+import UserProfile from '../iam/components/user-profile.component.vue'
 
 // Organizations
 import OrganizationList from '../organizations/components/organization-list.component.vue'
@@ -28,6 +29,18 @@ const routes = [
         children: [
             { path: 'login', name: 'login', component: Login },
             { path: 'register', name: 'register', component: Register }
+        ]
+    },
+    {
+        path: '/profile',
+        component: UserLayout,
+        children: [
+            {
+                path: '',
+                name: 'user-profile',
+                component: UserProfile,
+                meta: { requiresAuth: true }
+            }
         ]
     },
     {
@@ -60,18 +73,18 @@ const routes = [
                         name: 'organization-information',
                         component: OrganizationInformation,
                         meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder
-                    },
-                    {
+                    },{
+                        // Vista de lista de proyectos
                         path: 'projects',
                         name: 'organization-projects',
                         component: OrganizationProjects,
                         meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder, pero se filtrará en el componente
                     },
                     {
-                        // Asegurar que los proyectos específicos también usen el layout de organización
-                        path: 'projects/:projectId?',
-                        name: 'organization-specific-project',
-                        component: OrganizationProjects,
+                        // Vista de detalle de un proyecto específico
+                        path: 'projects/:projectId',
+                        name: 'organization-project-detail',
+                        component: () => import('../projects/components/project-view.component.vue'),
                         meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder, pero se filtrará en el componente
                     },
                     {
@@ -89,8 +102,7 @@ const routes = [
 
                 ]
             }
-        ]
-    }
+        ]    }
 ]
 
 const router = createRouter({
@@ -100,6 +112,30 @@ const router = createRouter({
 
 // Guardia de navegación para validar permisos basados en roles
 router.beforeEach(async (to, from, next) => {
+    console.log('Navegando a:', to.path, 'Meta:', to.meta);
+    
+    // Verificar si la ruta requiere autenticación
+    if (to.meta.requiresAuth) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            // Si no hay usuario autenticado, redirigir al login
+            console.warn('Se requiere autenticación para acceder a esta ruta');
+            // Guardar la ruta a la que intentaba acceder para redirección después del login
+            sessionStorage.setItem('redirectAfterLogin', to.fullPath);
+            
+            if (window.$toast) {
+                window.$toast.add({
+                    severity: 'warn',
+                    summary: 'Acceso denegado',
+                    detail: 'Debe iniciar sesión para acceder a esta página',
+                    life: 3000
+                });
+            }
+            
+            return next('/login');
+        }
+    }
+    
     // Si la ruta no requiere roles específicos, permitir acceso
     if (!to.meta.allowedRoles) {
         return next();

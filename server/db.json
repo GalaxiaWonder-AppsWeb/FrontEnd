@@ -1,9 +1,10 @@
 {
+  "projects": [],
   "users": [
     {
       "id": "6c16daf4-e93c-488b-bd4b-5f4711d380cf",
       "email": "henry29.2004@hotmail.com",
-      "password": "paolo29",
+      "password": "paolo28",
       "userType": "Worker",
       "createdAt": "2025-05-09T19:10:45.054Z",
       "lastLoginAt": null,

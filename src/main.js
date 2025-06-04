@@ -9,7 +9,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import ConfirmDialog from 'primevue/confirmdialog';
 
 
-import {SelectButton, InputText, Password, Button, Message, Select, Toolbar, Card, Dialog, ProgressSpinner, Tag} from "primevue";
+import {SelectButton, InputText, Password, Button, Message, Select, Toolbar, Card, Dialog, ProgressSpinner, Tag, Calendar, InputNumber} from "primevue";
 
 
 import i18n from "./i18n.js";
@@ -35,10 +35,11 @@ app.component('pv-select-button', SelectButton)
    .component('pv-toolbar', Toolbar)
    .component('pv-card', Card)
    .component('pv-dialog', Dialog)
-   .component('pv-toast', Toast)
-   .component('pv-progress-spinner', ProgressSpinner)
+   .component('pv-toast', Toast)   .component('pv-progress-spinner', ProgressSpinner)
    .component('pv-confirm-dialog', ConfirmDialog)
-   .component('pv-tag', Tag);
+   .component('pv-tag', Tag)
+   .component('pv-calendar', Calendar)
+   .component('pv-input-number', InputNumber);
 
 // Exponer el servicio de toast globalmente para el guardia de navegación
 const toastService = app.config.globalProperties.$toast;

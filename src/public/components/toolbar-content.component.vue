@@ -20,15 +20,15 @@
         </div>
         <LanguageSwitcher />
       </template>
-    </pv-toolbar>
-
-    <!-- Parte inferior: navegación dinámica -->
-    <nav class="toolbar-nav">
+    </pv-toolbar>    <!-- Parte inferior: navegación dinámica -->    <nav class="toolbar-nav">
       <template v-if="inOrganizationView">
+        <!-- Opciones siempre visibles para todos los miembros -->
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.projects')" @click="goTo('projects')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.members')" @click="goTo('members')" />
-        <pv-button text plain :label="$t(sectionTitle + '.section.configurations')" @click="goTo('settings')" />
+        
+        <!-- Opciones solo para Contratista (creador) -->
+        <pv-button v-if="isContractor" text plain :label="$t(sectionTitle + '.section.configurations')" @click="goTo('settings')" />
       </template>
 
       <template v-else-if="inProjectView">
@@ -56,25 +56,45 @@ export default {
   components: {
     LanguageSwitcher,
     NotificationBell
-  },
-  data() {
+  },  data() {
     return {
       route: useRoute(),
       router: useRouter(),
       currentUser: null,
       isAuthenticated: false,
-      showProfileMenu: false
+      showProfileMenu: false,
+      isContractor: false
     }
   },
-  mounted() {
+  async mounted() {
     this.checkAuthentication();
     // Cerrar menú de perfil al hacer clic fuera
     document.addEventListener('click', this.handleClickOutside);
+    
+    // Verificar si el usuario es contratista
+    if (this.inOrganizationView) {
+      this.isContractor = await this.userHasRole('Contractor');
+    }
+  },
+  async created() {
+    // Verificar el rol del usuario cuando se crea el componente
+    if (this.inOrganizationView) {
+      this.isContractor = await this.userHasRole('Contractor');
+    }
+    
+    // Vigilar cambios en la ruta para actualizar el rol
+    this.$watch(
+      () => this.route.params.orgId,
+      async () => {
+        if (this.inOrganizationView) {
+          this.isContractor = await this.userHasRole('Contractor');
+        }
+      }
+    );
   },
   beforeUnmount() {
     document.removeEventListener('click', this.handleClickOutside);
-  },
-  computed: {
+  },  computed: {
     inOrganizationView() {
       return this.route.path.startsWith('/organizations/') && !this.route.path.includes('/projects/');
     },
@@ -84,14 +104,57 @@ export default {
     },
     inOrganizationGeneralView(){
       return this.route.path.includes('/organizations') || this.route.path.includes('/invitations')
-    }
-    ,
+    },
     sectionTitle() {
       if (this.inProjectView) return 'project'
       if (this.inOrganizationView) return 'organization'
       return 'organization'
+    }  },
+  async mounted() {
+    this.checkAuthentication();
+    // Cerrar menú de perfil al hacer clic fuera
+    document.addEventListener('click', this.handleClickOutside);
+    
+    // Verificar si el usuario es contratista
+    if (this.inOrganizationView) {
+      this.isContractor = await this.userHasRole('Contractor');
     }
-  },  methods: {
+  },methods: {    /**
+     * Verifica si el usuario actual tiene el rol especificado en la organización activa
+     * @param {string} role - El rol a verificar (Contractor, Worker)
+     * @returns {boolean} - true si el usuario tiene el rol, false en caso contrario
+     */
+    async userHasRole(role) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        return false;
+      }
+      
+      // Si estamos verificando el rol de Contractor y tenemos un orgId
+      if (role === 'Contractor' && this.inOrganizationView && this.route.params.orgId && user.personId) {
+        try {
+          // Verificar si el usuario es el creador de la organización
+          const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${this.route.params.orgId}`);
+          if (response.ok) {
+            const organization = await response.json();
+            if (organization && organization.createdBy === user.personId) {
+              // Si es el creador, establecer el rol como Contractor en localStorage
+              if (!user.activeOrganizationRole || user.activeOrganizationRole !== 'Contractor') {
+                user.activeOrganizationRole = 'Contractor';
+                localStorage.setItem('user', JSON.stringify(user));
+              }
+              return true;
+            }
+          }
+        } catch (error) {
+          console.error('Error al verificar si el usuario es creador:', error);
+        }
+      }
+      
+      // Verificación normal por activeOrganizationRole
+      return user.activeOrganizationRole === role;
+    },
+    
     goTo(section) {
       const { orgId, projectId } = this.route.params
       let path = ''

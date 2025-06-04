@@ -55,32 +55,36 @@ const routes = [
                             name: 'organization-information',
                             params: { orgId: to.params.orgId }
                         })
-                    },
-                    {
+                    },                    {
                         path: 'information',
                         name: 'organization-information',
-                        component: OrganizationInformation
+                        component: OrganizationInformation,
+                        meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder
                     },
                     {
                         path: 'projects',
                         name: 'organization-projects',
-                        component: OrganizationProjects
+                        component: OrganizationProjects,
+                        meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder, pero se filtrará en el componente
                     },
                     {
                         // Asegurar que los proyectos específicos también usen el layout de organización
                         path: 'projects/:projectId?',
                         name: 'organization-specific-project',
-                        component: OrganizationProjects
+                        component: OrganizationProjects,
+                        meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder, pero se filtrará en el componente
                     },
                     {
                         path: 'members',
                         name: 'organization-members',
-                        component: OrganizationMembers
+                        component: OrganizationMembers,
+                        meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder
                     },
                     {
                         path: 'settings',
                         name: 'organization-settings',
-                        component: OrganizationSettings
+                        component: OrganizationSettings,
+                        meta: { allowedRoles: ['Contractor'] } // Solo el contratista puede acceder
                     },
 
                 ]
@@ -93,5 +97,85 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 })
+
+// Guardia de navegación para validar permisos basados en roles
+router.beforeEach(async (to, from, next) => {
+    // Si la ruta no requiere roles específicos, permitir acceso
+    if (!to.meta.allowedRoles) {
+        return next();
+    }
+    
+    // Obtener el usuario actual
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+        // Si no hay usuario autenticado, redirigir al login con mensaje
+        // Guardar la ruta a la que intentaba acceder para redirección después del login
+        sessionStorage.setItem('redirectAfterLogin', to.fullPath);
+        return next('/login');
+    }    // Si la ruta es parte de una organización, verificar si el usuario es el creador
+    if (to.params.orgId && user.personId) {
+        try {
+            console.log(`Verificando si el usuario es creador de la organización ${to.params.orgId}...`);
+            const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${to.params.orgId}`);
+            if (response.ok) {
+                const organization = await response.json();
+                if (organization && organization.createdBy === user.personId) {
+                    console.log('Usuario es creador de la organización, asignando rol Contractor');
+                    // Si es el creador, establecer el rol como Contractor
+                    user.activeOrganizationRole = 'Contractor';
+                    localStorage.setItem('user', JSON.stringify(user));
+                }
+            }
+        } catch (error) {
+            console.error('Error al verificar si el usuario es creador:', error);
+        }
+    }
+    
+    // Verificar si el usuario tiene el rol necesario para acceder a la ruta
+    const userRole = user.activeOrganizationRole;
+    if (userRole && to.meta.allowedRoles.includes(userRole)) {
+        // El usuario tiene el rol permitido, continuar
+        return next();
+    } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(userRole)) {
+        // El usuario no tiene permiso para acceder a esta ruta
+        
+        // Si intentaba acceder a configuraciones, redirigir a información
+        if (to.name === 'organization-settings') {
+            console.warn('Acceso denegado: Solo el contratista puede acceder a la configuración');
+            // Mostrar mensaje de acceso denegado (usando toast si está disponible en window)
+            if (window.$toast) {
+                window.$toast.add({
+                    severity: 'warn',
+                    summary: 'Acceso denegado',
+                    detail: 'Solo el contratista puede acceder a la configuración',
+                    life: 3000
+                });
+            }
+            return next(`/organizations/${to.params.orgId}/information`);
+        }
+        
+        // Para otras rutas protegidas, redirigir a la página anterior o a información
+        console.warn(`Acceso denegado: El rol ${userRole} no tiene permiso para acceder a ${to.path}`);
+        // Mostrar mensaje de acceso denegado (usando toast si está disponible)
+        if (window.$toast) {
+            window.$toast.add({
+                severity: 'warn',
+                summary: 'Acceso denegado',
+                detail: `No tienes permiso para acceder a esta página`,
+                life: 3000
+            });
+        }
+        
+        // Si venía de una ruta válida, volver a ella, sino ir a información
+        if (from.name) {
+            return next(from.path);
+        } else {
+            return next(`/organizations/${to.params.orgId}/information`);
+        }
+    }
+    
+    // Por defecto, permitir el acceso
+    next();
+});
 
 export default router

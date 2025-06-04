@@ -114,12 +114,34 @@
     "ok": "Aceptar"
   },  "auth": {
     "logout": "Cerrar sesión",
-    "logout_success": "Sesión cerrada correctamente"
+    "logout_success": "Sesión cerrada correctamente",
+    "access_denied": "Acceso denegado",
+    "insufficient_permissions": "No tienes permisos suficientes para acceder a esta página",
+    "contractor_only": "Solo el contratista puede acceder a esta sección",
+    "login_required": "Inicia sesión para acceder a esta página"
   },
   "navigation": {
     "dashboard": {
       "organizations": "Organizaciones",
       "invitations": "Invitaciones"
     }
+  },
+  "projects": {
+    "title": "Proyectos",
+    "create": "Nuevo proyecto",
+    "empty": "No hay proyectos disponibles",
+    "empty_member": "No hay proyectos disponibles para ti",
+    "create_prompt": "¡Crea tu primer proyecto haciendo clic en \"Nuevo Proyecto\"!",
+    "loading": "Cargando proyectos...",
+    "error": "Error al cargar proyectos",
+    "status": {
+      "active": "Activo",
+      "completed": "Completado",
+      "on_hold": "En espera",
+      "cancelled": "Cancelado",
+      "planning": "Planificación"
+    },
+    "access_denied": "No tienes permiso para ver este proyecto",
+    "view_details": "Ver detalles"
   }
 }

@@ -24,8 +24,7 @@ export default {
   },
   components: {
     ToolbarComponent
-  },
-  methods: {    async GetMemberType() {
+  },  methods: {    async GetMemberType() {
       try {
         // Obtener usuario desde localStorage
         const user = JSON.parse(localStorage.getItem("user"));
@@ -45,20 +44,37 @@ export default {
         }
         
         console.log(`Obteniendo rol para personId=${this.personId} en organizationId=${this.organizationId}`);
+          // 1. Primero, verificar si el usuario es el creador de la organización
+        try {
+          console.log(`Consultando organización ${this.organizationId}`);
+          const orgResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${this.organizationId}`);
+          const organization = await orgResponse.json();
+          console.log("Datos de la organización:", organization);
+          
+          if (organization && organization.createdBy === this.personId) {
+            console.log(`¡Usuario es creador de la organización! Asignando rol Contractor`);
+            user.activeOrganizationRole = "Contractor";
+            localStorage.setItem("user", JSON.stringify(user));
+            console.log("Credenciales actualizadas (como creador):", user);
+            return; // Terminamos aquí al encontrar que es el creador
+          }
+        } catch (orgError) {
+          console.error("Error al consultar datos de la organización:", orgError);
+        }
         
-        // Usar el servicio personalizado en lugar del estándar
+        // 2. Si no es el creador, buscar en la tabla de miembros
         const res = await organizationMemberServiceCustom.getByPersonAndOrgIdCustom({
           personId: this.personId,
           organizationId: this.organizationId
         });
         
-        console.log("Respuesta del servicio personalizado:", res);
+        console.log("Respuesta del servicio de miembros:", res);
         
         // Verificar que res contiene datos antes de acceder a sus propiedades
         if (res && res.length > 0 && res[0] && res[0].type) {
           user.activeOrganizationRole = res[0].type;
           localStorage.setItem("user", JSON.stringify(user));
-          console.log("Credenciales actualizadas:", user);
+          console.log("Credenciales actualizadas (desde tabla de miembros):", user);
         } else {
           console.warn("No se pudo obtener el tipo de miembro, respuesta incompleta:", res);
           // Establecer un rol por defecto si no hay respuesta válida

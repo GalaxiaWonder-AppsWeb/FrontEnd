@@ -240,14 +240,34 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  background-color: #1a365d;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 5px solid #60a5fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.project-header h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.75rem;
+  font-weight: 600;
 }
 
 .info-card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: #334155;
+  border: 1px solid #3b82f6;
+  border-radius: 10px;
+  padding: 1.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   margin-bottom: 2rem;
+  color: #f8fafc;
+}
+
+.info-card h2 {
+  color: #ffffff;
+  border-bottom: 2px solid #60a5fa;
+  padding-bottom: 0.5rem;
 }
 
 .info-grid {
@@ -260,17 +280,32 @@ export default {
 .info-item {
   display: flex;
   flex-direction: column;
+  background-color: #1e293b;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #475569;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.info-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
 .label {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   margin-bottom: 0.5rem;
-  color: #666;
+  color: #4b5563;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
 }
 
 .value {
   font-size: 1.1rem;
+  color: #ffffff;
+  word-break: break-word;
 }
 
 .feature-placeholder {

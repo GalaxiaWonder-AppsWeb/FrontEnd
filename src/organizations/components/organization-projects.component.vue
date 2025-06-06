@@ -280,18 +280,22 @@ export default {
 }
 
 .project-card {
-  border: 1px solid #ddd;
+  border: 1px solid #3b82f6;
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background-color: #1a365d;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
+  color: #ffffff;
 }
 
 .project-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+  background-color: #2c4a7c;
+  border-color: #60a5fa;
 }
 
 .project-header {
@@ -301,10 +305,19 @@ export default {
   margin-bottom: 0.75rem;
 }
 
+.project-header h3 {
+  color: #ffffff;
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.25rem;
+}
+
 .project-description {
   flex-grow: 1;
   margin-bottom: 1rem;
-  color: #555;
+  color: #e2e8f0;
+  line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .project-footer {
@@ -312,13 +325,16 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 0.75rem;
 }
 
 .start-date {
   font-size: 0.85rem;
-  color: #666;
+  color: #505050;
   display: flex;
   align-items: center;
+  font-weight: 500;
   gap: 0.25rem;
 }
 </style>

@@ -7,6 +7,46 @@ import axios from 'axios'
 class OrganizationMemberService extends BaseService {
     constructor() {
         super('/members');
+    }    // Método para obtener miembros por el ID de la organización
+    async getByOrgId(organizationId) {
+        try {
+            if (!organizationId) {
+                console.error("Se requiere organizationId");
+                return [];
+            }
+            
+            console.log(`Buscando miembros de la organización con ID=${organizationId}`);
+            
+            // URL base viene de BaseService, añadimos organizationId como parámetro de consulta
+            const url = `${this.url}?organizationId=${organizationId}`;
+            console.log(`URL de petición: ${url}`);
+            
+            // Configuración con headers anti-cache
+            const config = {
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
+                }
+            };
+            
+            const response = await axios.get(url, config);
+            console.log("Respuesta de miembros:", response.data);
+            
+            // Para mantener compatibilidad con el formato anterior
+            // donde se esperaba response.data o directamente response
+            if (response.data) {
+                return {
+                    data: Array.isArray(response.data) ? response.data : [],
+                    status: response.status
+                };
+            } else {
+                console.warn("No se encontraron miembros para esta organización");
+                return [];
+            }
+        } catch (error) {
+            console.error("Error en getByOrgId:", error);
+            return [];
+        }
     }
     
     // Método personalizado para obtener miembro por personId y organizationId
@@ -105,15 +145,32 @@ class OrganizationMemberService extends BaseService {
     }
 }
 
-// Exportamos una instancia del servicio personalizado
-export const organizationMemberServiceCustom = new OrganizationMemberService();
+// Creamos una instancia del servicio personalizado
+const memberServiceInstance = new OrganizationMemberService();
 
-// Mantenemos la versión original para compatibilidad
-export const organizationMemberService = createService('/members', {
+// Creamos el servicio base con createService para operaciones básicas
+const baseService = createService('/members', {
     create:         { verb: HttpVerb.POST },
     delete:         { verb: HttpVerb.DELETE, path: ':id' },
-    getByOrgId:     { verb: HttpVerb.GET, path: 'organization/:id', fullPath: true },
-    getByPersonId:  { verb: HttpVerb.GET, path: 'person/:id', fullPath: true },
-    getByPersonAndOrgId:  { verb: HttpVerb.GET, path: 'organization/:organizationId/person/:personId', fullPath: true },
     updateType:     { verb: HttpVerb.PATCH, path: ':id/type', fullPath: true }
-})
+});
+
+// Combinamos ambos enfoques para tener lo mejor de ambos mundos
+export const organizationMemberService = {
+    ...baseService,
+    // Sobrescribimos los métodos que necesitan usar parámetros de consulta
+    getByOrgId: (params) => {
+        const id = params.id || params;
+        return memberServiceInstance.getByOrgId(id);
+    },
+    getByPersonId: (params) => {
+        const id = params.id || params;
+        return axios.get(`${memberServiceInstance.url}?personId=${id}`).then(res => res.data);
+    },
+    getByPersonAndOrgId: (params) => {
+        return axios.get(`${memberServiceInstance.url}?organizationId=${params.organizationId}&personId=${params.personId}`).then(res => res.data);
+    }
+};
+
+// Mantenemos la versión anterior para compatibilidad con código existente
+export const organizationMemberServiceCustom = memberServiceInstance;

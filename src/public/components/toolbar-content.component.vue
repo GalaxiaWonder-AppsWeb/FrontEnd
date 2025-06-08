@@ -61,12 +61,11 @@
         
         <!-- Opciones solo para Contratista (creador) -->
         <pv-button v-if="isContractor" text plain :label="$t(sectionTitle + '.section.configurations')" @click="goTo('settings')" />
-      </template>
-
-      <template v-else-if="inProjectView">
-        <pv-button text plain :label="$t('project.information')" @click="goTo('information')" />
-        <pv-button text plain :label="$t('project.schedule')" @click="goTo('schedule')" />
-        <pv-button text plain :label="$t('project.change-management')" @click="goTo('change-management')" />
+      </template>      <template v-else-if="inProjectView">
+        <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
+        <pv-button text plain :label="$t(sectionTitle + '.section.schedule')" @click="goTo('schedule')" />
+        <pv-button text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
+        <pv-button v-if="isCoordinator" text plain :label="$t(sectionTitle + '.section.settings')" @click="goTo('settings')" />
       </template>
 
       <template v-else-if="inOrganizationGeneralView">
@@ -88,15 +87,15 @@ export default {
   components: {
     LanguageSwitcher,
     NotificationBell
-  },
-  data() {
+  },  data() {
     return {
       route: useRoute(),
       router: useRouter(),
       currentUser: null,
       isAuthenticated: false,
       showProfileMenu: false,
-      isContractor: false
+      isContractor: false,
+      isCoordinator: false
     }
   },
   async mounted() {
@@ -108,11 +107,14 @@ export default {
     if (this.inOrganizationView) {
       this.isContractor = await this.userHasRole('Contractor');
     }
-  },
-  async created() {
+  },  async created() {
     // Verificar el rol del usuario cuando se crea el componente
     if (this.inOrganizationView) {
       this.isContractor = await this.userHasRole('Contractor');
+    }
+    
+    if (this.inProjectView) {
+      this.isCoordinator = await this.userHasProjectRole('Coordinator');
     }
     
     // Vigilar cambios en la ruta para actualizar el rol
@@ -121,6 +123,16 @@ export default {
       async () => {
         if (this.inOrganizationView) {
           this.isContractor = await this.userHasRole('Contractor');
+        }
+      }
+    );
+    
+    // Vigilar cambios en la ruta para actualizar el rol de proyecto
+    this.$watch(
+      () => this.route.params.projectId,
+      async () => {
+        if (this.inProjectView) {
+          this.isCoordinator = await this.userHasProjectRole('Coordinator');
         }
       }
     );
@@ -145,12 +157,11 @@ export default {
     },
     inOrganizationGeneralView(){
       return this.route.path.includes('/organizations') || this.route.path.includes('/invitations')
-    },
-    sectionTitle() {
-      if (this.inProjectView) return 'project'
+    },    sectionTitle() {
+      if (this.inProjectView) return 'projects'
       if (this.inOrganizationView) return 'organization'
       return 'organization'
-    }  },
+    }},
   async mounted() {
     this.checkAuthentication();
     // Cerrar menú de perfil al hacer clic fuera
@@ -194,6 +205,31 @@ export default {
       
       // Verificación normal por activeOrganizationRole
       return user.activeOrganizationRole === role;
+    },
+    
+    /**
+     * Verifica si el usuario actual tiene el rol especificado en el proyecto activo
+     * @param {string} role - El rol a verificar (Coordinator, Specialist)
+     * @returns {boolean} - true si el usuario tiene el rol, false en caso contrario
+     */
+    async userHasProjectRole(role) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        return false;
+      }
+      
+      // Si el usuario es Contractor en la organización, automáticamente es Coordinator en el proyecto
+      if (user.activeOrganizationRole === 'Contractor' && role === 'Coordinator') {
+        // Establecer el rol de proyecto en localStorage si no está ya
+        if (!user.activeProjectRole || user.activeProjectRole !== 'Coordinator') {
+          user.activeProjectRole = 'Coordinator';
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+        return true;
+      }
+      
+      // Verificación por activeProjectRole
+      return user.activeProjectRole === role;
     },
     
     // Método para navegar hacia atrás o a una vista principal según corresponda

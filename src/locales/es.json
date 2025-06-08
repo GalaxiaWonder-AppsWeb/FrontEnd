@@ -145,8 +145,7 @@
       "planning": "Planificación"
     },
     "access_denied": "No tienes permiso para ver este proyecto",
-    "view_details": "Ver detalles",
-    "create_dialog": {
+    "view_details": "Ver detalles",    "create_dialog": {
       "title": "Crear nuevo proyecto",
       "name": "Nombre del proyecto",
       "name_placeholder": "Ingrese el nombre del proyecto",
@@ -155,6 +154,43 @@
       "budget": "Presupuesto",
       "start_date": "Fecha de inicio",
       "end_date": "Fecha de finalización"
+    },
+    "section": {
+      "information": "Información",
+      "schedule": "Calendario",
+      "change-management": "Gestión de Cambios",
+      "settings": "Configuraciones"
+    },
+    "information": "Información del Proyecto",
+    "settings": {
+      "title": "Configuración del Proyecto",
+      "description": "Descripción del Proyecto",
+      "description_placeholder": "Ingrese una descripción detallada del proyecto",
+      "status": "Estado del Proyecto",
+      "status_placeholder": "Seleccione el estado del proyecto",
+      "update": "Actualizar Proyecto",
+      "danger_zone": "Zona de Peligro",
+      "delete": "Eliminar Proyecto",
+      "delete_dialog": {
+        "title": "Confirmar Eliminación",
+        "message": "¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer."
+      },
+      "success": {
+        "title": "Éxito",
+        "updated": "Proyecto actualizado exitosamente",
+        "deleted": "Proyecto eliminado exitosamente"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "No se pudo cargar la información del proyecto",
+        "updating_title": "Error",
+        "updating_message": "No se pudo actualizar el proyecto",
+        "deleting_title": "Error",
+        "deleting_message": "No se pudo eliminar el proyecto",
+        "empty_description": "La descripción del proyecto no puede estar vacía",
+        "no_status": "Debe seleccionar un estado para el proyecto"
+      },
+      "no_changes": "No hay cambios para guardar"
     }
   },"profile": {
     "title": "Mi Perfil",

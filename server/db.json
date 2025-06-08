@@ -1,19 +1,21 @@
 {
   "projects": [
     {
-      "id": "68daca78-251d-4a63-a0a8-2d4e5ccbe8f9",
-      "name": "test1",
-      "description": "test1",
-      "status": "BASIC STUDIES",
+      "name": "project1",
+      "description": "hola esto es un proyecto1",
+      "status": "REJECTED",
+      "schedule": {
+        "milestones": []
+      },
       "budget": 1000,
-      "startingDate": "2025-06-04T19:34:33.032Z",
+      "startingDate": "2025-06-08T01:29:14.775Z",
       "endingDate": "2025-12-17T05:00:00.000Z",
-      "schedule": {},
       "team": [],
       "organizationId": "9a245bff-d048-450d-b0b5-e9e66df3ea27",
-      "createdAt": "2025-06-04T19:34:44.958Z",
+      "contractor": "4094434c-56e9-4d09-9b0f-aa4e3435f406",
       "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "contractor": "b81b7ae5-9039-4349-817e-f819d18a432c"
+      "createdAt": "2025-06-08T01:29:31.280Z",
+      "id": "e0ae8c6d-c0f4-4039-9fb2-52d460853693"
     }
   ],
   "users": [

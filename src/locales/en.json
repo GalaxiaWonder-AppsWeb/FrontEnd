@@ -161,8 +161,7 @@
       "image_too_large": "Image is too large (max 2MB)"
     },
     "uploading_image": "Uploading image..."
-  },
-  "projects": {
+  },  "projects": {
     "title": "Projects",
     "create": "New project",
     "empty": "No projects available",
@@ -188,6 +187,43 @@
       "budget": "Budget",
       "start_date": "Start date",
       "end_date": "End date"
-    }
+    },
+    "section": {
+      "information": "Information",
+      "schedule": "Schedule",
+      "change-management": "Change Management",
+      "settings": "Settings"
+    },
+    "information": "Project Information",
+    "settings": {
+      "title": "Project Settings",
+      "description": "Project Description",
+      "description_placeholder": "Enter a detailed description of the project",
+      "status": "Project Status",
+      "status_placeholder": "Select project status",
+      "update": "Update Project",
+      "danger_zone": "Danger Zone",
+      "delete": "Delete Project",
+      "delete_dialog": {
+        "title": "Confirm Deletion",
+        "message": "Are you sure you want to delete this project? This action cannot be undone."
+      },
+      "success": {
+        "title": "Success",
+        "updated": "Project successfully updated",
+        "deleted": "Project successfully deleted"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "Could not load project information",
+        "updating_title": "Error",
+        "updating_message": "Could not update project",
+        "deleting_title": "Error",
+        "deleting_message": "Could not delete project",
+        "empty_description": "Project description cannot be empty",
+        "no_status": "Project status must be selected"
+      }
+    },
+    "no_changes": "No changes to save"
   }
 }

@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AuthLayoutComponent from '../iam/components/auth-layout.component.vue'
 import UserLayout from '../organizations/components/user-layout.component.vue'
 import OrganizationLayout from '../organizations/components/organization-layout.component.vue'
+import ProjectLayout from '../projects/components/project-layout.component.vue'
 
 // Auth
 import Login from '../iam/components/login-form.component.vue'
@@ -17,6 +18,12 @@ import OrganizationProjects from '../organizations/components/organization-proje
 import OrganizationMembers from '../organizations/components/organization-members.component.vue'
 import OrganizationSettings from '../organizations/components/organization-setting.component.vue'
 import OrganizationInvitations from "../organizations/components/organization-invitations.component.vue";
+
+// Projects
+import ProjectList from '../projects/components/project-list.component.vue'
+import ProjectInformation from '../projects/components/project-information.component.vue'
+import ProjectMembers from '../projects/components/project-members.component.vue'
+import ProjectSettings from '../projects/components/project-setting.component.vue'
 
 const routes = [
     {
@@ -83,9 +90,30 @@ const routes = [
                     {
                         // Vista de detalle de un proyecto específico
                         path: 'projects/:projectId',
-                        name: 'organization-project-detail',
-                        component: () => import('../projects/components/project-view.component.vue'),
-                        meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder, pero se filtrará en el componente
+                        component: ProjectLayout,
+                        meta: { allowedRoles: ['Contractor', 'Worker'] }, // Todos pueden acceder, pero se filtrará en el componente
+                        children: [
+                            {
+                                // Redirección predeterminada
+                                path: '',
+                                redirect: to => ({
+                                    name: 'project-information',
+                                    params: { orgId: to.params.orgId, projectId: to.params.projectId }
+                                })
+                            },                            {
+                                // Vista principal de información del proyecto
+                                path: 'information',
+                                name: 'project-information',
+                                component: ProjectInformation,
+                                meta: { allowedRoles: ['Coordinator', 'Specialist'] } // Todos pueden acceder
+                            },
+                            {                        // Nueva vista de configuración del proyecto
+                                path: 'settings',
+                                name: 'project-settings',
+                                component: ProjectSettings,
+                                meta: { allowedRoles: ['Coordinator'] } // Solo el coordinador puede acceder
+                            }
+                        ]
                     },
                     {
                         path: 'members',
@@ -166,16 +194,29 @@ router.beforeEach(async (to, from, next) => {
             console.error('Error al verificar si el usuario es creador:', error);
         }
     }
+      // Verificar si la ruta es de un proyecto
+    const isProjectRoute = to.path.includes('/projects/') && to.params.projectId;
     
-    // Verificar si el usuario tiene el rol necesario para acceder a la ruta
-    const userRole = user.activeOrganizationRole;
+    // Determinar qué rol usar para la verificación
+    let userRole;
+    if (isProjectRoute) {
+        // Si es contratista de la organización, asignar automáticamente rol de coordinador para el proyecto
+        if (user.activeOrganizationRole === 'Contractor') {
+            user.activeProjectRole = 'Coordinator';
+            localStorage.setItem('user', JSON.stringify(user));
+        }
+        userRole = user.activeProjectRole;
+    } else {
+        userRole = user.activeOrganizationRole;
+    }
+    
     if (userRole && to.meta.allowedRoles.includes(userRole)) {
         // El usuario tiene el rol permitido, continuar
         return next();
     } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(userRole)) {
         // El usuario no tiene permiso para acceder a esta ruta
         
-        // Si intentaba acceder a configuraciones, redirigir a información
+        // Si intentaba acceder a configuraciones de organización, redirigir a información
         if (to.name === 'organization-settings') {
             console.warn('Acceso denegado: Solo el contratista puede acceder a la configuración');
             // Mostrar mensaje de acceso denegado (usando toast si está disponible en window)
@@ -190,6 +231,20 @@ router.beforeEach(async (to, from, next) => {
             return next(`/organizations/${to.params.orgId}/information`);
         }
         
+        // Si intentaba acceder a configuraciones de proyecto, redirigir a información del proyecto
+        if (to.name === 'project-settings') {
+            console.warn('Acceso denegado: Solo el coordinador puede acceder a la configuración del proyecto');
+            if (window.$toast) {
+                window.$toast.add({
+                    severity: 'warn',
+                    summary: 'Acceso denegado',
+                    detail: 'Solo el coordinador puede acceder a la configuración del proyecto',
+                    life: 3000
+                });
+            }
+            return next(`/organizations/${to.params.orgId}/projects/${to.params.projectId}/information`);
+        }
+        
         // Para otras rutas protegidas, redirigir a la página anterior o a información
         console.warn(`Acceso denegado: El rol ${userRole} no tiene permiso para acceder a ${to.path}`);
         // Mostrar mensaje de acceso denegado (usando toast si está disponible)
@@ -199,14 +254,18 @@ router.beforeEach(async (to, from, next) => {
                 summary: 'Acceso denegado',
                 detail: `No tienes permiso para acceder a esta página`,
                 life: 3000
-            });
-        }
+            });        }
         
         // Si venía de una ruta válida, volver a ella, sino ir a información
         if (from.name) {
             return next(from.path);
         } else {
-            return next(`/organizations/${to.params.orgId}/information`);
+            // Redirigir según el contexto (proyecto u organización)
+            if (isProjectRoute) {
+                return next(`/organizations/${to.params.orgId}/projects/${to.params.projectId}/information`);
+            } else {
+                return next(`/organizations/${to.params.orgId}/information`);
+            }
         }
     }
     

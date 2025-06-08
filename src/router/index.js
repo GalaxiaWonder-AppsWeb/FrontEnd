@@ -107,6 +107,14 @@ const routes = [
                                 component: ProjectInformation,
                                 meta: { allowedRoles: ['Coordinator', 'Specialist'] } // Todos pueden acceder
                             },
+                            {
+                                // Vista de miembros del proyecto
+                                path: 'working-team',
+                                name: 'project-members',
+                                component: ProjectMembers,
+                                meta: { allowedRoles: ['Coordinator', 'Specialist'] } // Todos pueden acceder
+
+                            },
                             {                        // Nueva vista de configuración del proyecto
                                 path: 'settings',
                                 name: 'project-settings',

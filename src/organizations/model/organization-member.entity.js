@@ -41,7 +41,8 @@ export class OrganizationMember {
 }
 
 export class OrganizationMemberId {
-    constructor() {
-        this.value = crypto.randomUUID()
+    constructor(value) {
+        // Si no se proporciona un valor, genera un UUID
+        this.value = value || crypto.randomUUID()
     }
 }

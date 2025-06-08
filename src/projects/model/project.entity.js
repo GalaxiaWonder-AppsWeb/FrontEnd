@@ -79,9 +79,18 @@ export class Project {
         }
 
         this.team = this.team.filter(member => member.memberId.value !== memberId.value);
-    }
-    toJSON() {
+    }    toJSON() {
         console.log('Valor de this.id antes de serializar:', this.id);
+        console.log('Valor de contractor antes de serializar:', this.contractor);
+        
+        // Asegurarnos de que el valor de contractor se serialice correctamente
+        let contractorValue = null;
+        if (this.contractor) {
+            contractorValue = typeof this.contractor === 'object' && this.contractor.value !== undefined 
+                ? this.contractor.value 
+                : this.contractor;
+        }
+        
         return {
             id: this.id?.value ?? null,
             name: this.name,
@@ -93,7 +102,8 @@ export class Project {
             endingDate: this.endingDate,
             team: this.team,
             organizationId: this.organizationId?.value ?? this.organizationId,
-            contractor: this.contractor?.value ?? this.contractor,
+            contractor: contractorValue,
+            contractingEntityId: this.contractingEntityId?.value ?? this.contractingEntityId,
             createdBy: this.createdBy,
             createdAt: this.createdAt
         }

@@ -177,6 +177,10 @@ export default {
         if (!this.status) {
           throw new Error(this.$t('projects.settings.error.no_status'));
         }
+          console.log('Datos originales del proyecto:', this.originalProject);
+        console.log('Contratista original:', this.originalProject.contractor);        // Obtener el valor original del contratista
+        const contractorOriginalId = this.originalProject.contractor?.value || this.originalProject.contractor;
+        console.log('ID del contratista original:', contractorOriginalId);
         
         // Crear el proyecto actualizado con los nuevos valores
         const updatedProject = new Project({
@@ -190,18 +194,31 @@ export default {
           schedule: this.originalProject.schedule,
           team: this.originalProject.team,
           organizationId: this.originalProject.organizationId,
-          contractor: this.originalProject.contractor,
+          // Pasar el ID del contratista directamente como valor primitivo
+          contractor: contractorOriginalId,
           contractingEntityId: this.originalProject.contractingEntityId,
           createdBy: this.originalProject.createdBy,
           createdAt: this.originalProject.createdAt
         });
         
         console.log('Actualizando proyecto:', updatedProject.toJSON());
+        console.log('Contratista en el proyecto actualizado:', updatedProject.contractor);        // Preparar el objeto para la actualización
+        const projectData = updatedProject.toJSON();
+        
+        // Asegurarnos de que el ID del contratista se mantiene exactamente igual que en el servidor
+        // Obtener directamente del objeto original sin procesamiento
+        const rawContractorValue = this.originalProject.contractor?.value || this.originalProject.contractor;
+        console.log('Valor original del contratista (sin procesar):', rawContractorValue);
+        
+        // Asignar el valor original directamente
+        projectData.contractor = rawContractorValue;
+        
+        console.log('Datos que serán enviados al servidor:', projectData);
         
         // Enviar la actualización al servidor
         const res = await projectService.update({
           id: this.projectId,
-          ...updatedProject.toJSON()
+          ...projectData
         });
           this.message = this.$t('projects.settings.success.updated');
         this.messageClass = 'confirm-message';

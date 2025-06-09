@@ -44,18 +44,19 @@ export default {
         }
         
         console.log(`Obteniendo rol para personId=${this.personId} en organizationId=${this.organizationId}`);
-          // 1. Primero, verificar si el usuario es el creador de la organización
+        // 1. Primero, verificar si el usuario es el creador de la organización
         try {
           console.log(`Consultando organización ${this.organizationId}`);
-          const orgResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${this.organizationId}`);
-          const organization = await orgResponse.json();
-          console.log("Datos de la organización:", organization);
+          
+          // Importar el servicio de organización que ahora usa caché
+          const { organizationService } = await import('../services/organization.service.js');
+          const organization = await organizationService.getById(this.organizationId);
           
           if (organization && organization.createdBy === this.personId) {
             console.log(`¡Usuario es creador de la organización! Asignando rol Contractor`);
             user.activeOrganizationRole = "Contractor";
             localStorage.setItem("user", JSON.stringify(user));
-            console.log("Credenciales actualizadas (como creador):", user);
+            console.log("Credenciales actualizadas (como creador)");
             return; // Terminamos aquí al encontrar que es el creador
           }
         } catch (orgError) {

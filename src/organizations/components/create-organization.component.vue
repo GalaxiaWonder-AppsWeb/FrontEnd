@@ -179,7 +179,7 @@ export default {
 .form-group label {
   font-weight: 600;
   width: 8rem;
-  color: #000000;
+  color: #ffffff;
 }
 
 

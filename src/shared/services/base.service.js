@@ -5,10 +5,16 @@ const propGmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:
 
 export class BaseService {
     constructor(resourceEndpoint) {
-        this.url = `${propGmsApiUrl}${resourceEndpoint}`;
+        // Asegurarse de que la URL base no termine con / y resourceEndpoint comience con /
+        const baseUrl = propGmsApiUrl.endsWith('/') ? propGmsApiUrl.slice(0, -1) : propGmsApiUrl;
+        const endpoint = resourceEndpoint.startsWith('/') ? resourceEndpoint : `/${resourceEndpoint}`;
+        
+        this.url = `${baseUrl}${endpoint}`;
         console.log(`BaseService initialized with URL: ${this.url}`);
     }    get(path = '', params = null) {
-        const cleanUrl = `${this.url}/${path}`.replace(/\/+$/, '');
+        // Asegurarse de combinar URL base y path correctamente sin dobles barras
+        const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
+        const cleanUrl = cleanPath ? `${this.url}/${cleanPath}` : this.url;
         console.log(`GET request to: ${cleanUrl}`, params);
         return axios.get(cleanUrl, { params })
             .then(response => {
@@ -43,10 +49,10 @@ export class BaseService {
                 
                 throw error;
             });
-    }
-
-    post(path = '', data) {
-        const cleanUrl = `${this.url}/${path}`.replace(/\/+$/, '');
+    }    post(path = '', data) {
+        // Asegurarse de combinar URL base y path correctamente sin dobles barras
+        const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
+        const cleanUrl = cleanPath ? `${this.url}/${cleanPath}` : this.url;
         console.log(`POST request to: ${cleanUrl}`, data);
         return axios.post(cleanUrl, data)
             .then(response => {
@@ -55,10 +61,16 @@ export class BaseService {
             })
             .catch(error => {
                 console.error(`Error in POST request to ${cleanUrl}:`, error);
+                if (error.response) {
+                    console.error('Status:', error.response.status);
+                    console.error('Response data:', error.response.data);
+                }
                 throw error;
             });
     }    put(path = '', data) {
-        const cleanUrl = `${this.url}/${path}`.replace(/\/+$/, '');
+        // Asegurarse de combinar URL base y path correctamente sin dobles barras
+        const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
+        const cleanUrl = cleanPath ? `${this.url}/${cleanPath}` : this.url;
         console.log(`PUT request to: ${cleanUrl}`, data);
         return axios.put(cleanUrl, data)
             .then(response => {
@@ -67,12 +79,17 @@ export class BaseService {
             })
             .catch(error => {
                 console.error(`Error in PUT request to ${cleanUrl}:`, error);
+                if (error.response) {
+                    console.error('Status:', error.response.status);
+                    console.error('Response data:', error.response.data);
+                }
                 throw error;
             });
     }
-    
-    patch(path = '', data) {
-        const cleanUrl = `${this.url}/${path}`.replace(/\/+$/, '');
+      patch(path = '', data) {
+        // Asegurarse de combinar URL base y path correctamente sin dobles barras
+        const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
+        const cleanUrl = cleanPath ? `${this.url}/${cleanPath}` : this.url;
         console.log(`PATCH request to: ${cleanUrl}`, data);
         return axios.patch(cleanUrl, data)
             .then(response => {
@@ -81,12 +98,16 @@ export class BaseService {
             })
             .catch(error => {
                 console.error(`Error in PATCH request to ${cleanUrl}:`, error);
+                if (error.response) {
+                    console.error('Status:', error.response.status);
+                    console.error('Response data:', error.response.data);
+                }
                 throw error;
             });
-    }
-
-    delete(path = '') {
-        const cleanUrl = `${this.url}/${path}`.replace(/\/+$/, '');
+    }delete(path = '') {
+        // Asegurarse de combinar URL base y path correctamente sin dobles barras
+        const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
+        const cleanUrl = cleanPath ? `${this.url}/${cleanPath}` : this.url;
         console.log(`DELETE request to: ${cleanUrl}`);
         return axios.delete(cleanUrl)
             .then(response => {
@@ -95,6 +116,10 @@ export class BaseService {
             })
             .catch(error => {
                 console.error(`Error in DELETE request to ${cleanUrl}:`, error);
+                if (error.response) {
+                    console.error('Status:', error.response.status);
+                    console.error('Response data:', error.response.data);
+                }
                 throw error;
             });
     }

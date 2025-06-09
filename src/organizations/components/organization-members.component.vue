@@ -62,10 +62,20 @@ export default {
         console.error("Error loading current user:", error);
         this.currentUserId = null;
       }
-    },
-    async checkIfCreator() {
+    },    async checkIfCreator() {
       try {
-        // Obtener la organización y comparar el creador
+        // Si ya tenemos el rol de usuario desde localStorage, evitamos la petición
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user.activeOrganizationRole === 'Contractor') {
+            this.isCreator = true;
+            return; // Evitamos la petición innecesaria
+          }
+        }
+        
+        // Si no tenemos el rol guardado, obtenemos la organización 
+        // (ahora con caché gracias a las modificaciones en organization.service.js)
         const org = await import('../services/organization.service.js').then(m => m.organizationService.getById(this.organizationId));
         const createdBy = org?.createdBy || (org?.data && org.data.createdBy);
         this.isCreator = createdBy === this.currentUserId;
@@ -73,7 +83,7 @@ export default {
         console.error("Error al verificar el creador de la organización:", error);
         this.isCreator = false;
       }
-    },    async loadMembers() {
+    },async loadMembers() {
       try {
         this.loading = true;
         this.error = null;

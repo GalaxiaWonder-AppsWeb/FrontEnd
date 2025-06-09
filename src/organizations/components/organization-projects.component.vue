@@ -48,14 +48,14 @@ export default {
       return this.userRole === 'Contractor';
     }
   },
-  methods: {
-    async loadProjects() {
+  methods: {    async loadProjects() {
       this.loading = true;
       this.error = null;
       
       try {
         // Llamada a la API para cargar los proyectos de la organización
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects/organization/${this.organizationId}`, {
+        // Usar parámetros de consulta en lugar de ruta específica para compatibilidad con routes.json simplificado
+        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects?organizationId=${this.organizationId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import { createService } from '../../shared/services/create.service.js'
 import { HttpVerb } from '../../shared/services/http-verb.js'
 import { BaseService } from '../../shared/services/base.service.js'
+import { OrganizationMemberType } from '../model/organization-member-type.js'
 import axios from 'axios'
 
 // Definimos una clase extendida para añadir funciones personalizadas
@@ -138,9 +139,8 @@ class OrganizationMemberService extends BaseService {
         }
         return createdMember;
     }
-    
-    // Método especializado para crear un miembro contratista (creador de la organización)
-    async createContractorMember(personId, organizationId, type = 'Contractor') {
+      // Método especializado para crear un miembro contratista (creador de la organización)
+    async createContractorMember(personId, organizationId, type = OrganizationMemberType.CONTRACTOR) {
         //console.log("createContractorMember - Creando contratista:", { personId, organizationId, type });
         
         // Preparar datos para la creación del miembro

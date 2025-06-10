@@ -89,7 +89,32 @@
       "userType": "Worker"
     }
   ],
-  "organizations": [],
-  "members": [],
+  "organizations": [
+    {
+      "id": "0f1ca872-c167-40ee-a062-ada5b7843520",
+      "legalName": "test",
+      "commercialName": "test",
+      "ruc": "20454949491",
+      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "createdAt": "2025-06-10T02:10:42.750Z",
+      "status": "Active"
+    }
+  ],
+  "members": [
+    {
+      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
+      "organizationId": "0f1ca872-c167-40ee-a062-ada5b7843520",
+      "type": "Contractor",
+      "joinedAt": "2025-06-10T02:10:42.832Z",
+      "id": 1
+    },
+    {
+      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
+      "organizationId": "0f1ca872-c167-40ee-a062-ada5b7843520",
+      "type": "Worker",
+      "joinedAt": "2025-06-10T04:07:50.667Z",
+      "id": 2
+    }
+  ],
   "invitations": []
 }

@@ -24,7 +24,9 @@
         </div>
       </template>
       <template #end>
-        <NotificationBell v-if="isAuthenticated" />        <button @click="toggleProfileMenu" class="user-profile-button">          <img 
+        <pv-button icon="pi pi-bell" text rounded severity="warning" />       
+        <button @click="toggleProfileMenu" class="user-profile-button">          
+          <img 
             v-if="currentUser && currentUser.profilePicture" 
             :src="currentUser.profilePicture" 
             @error="handleAvatarLoadError"
@@ -82,14 +84,14 @@
 <script>
 import { useRoute, useRouter } from 'vue-router'
 import LanguageSwitcher from './language-switcher.component.vue'
-import NotificationBell from '../../organizations/components/notification-bell.component.vue'
+//import NotificationBell from '../../organizations/components/notification-bell.component.vue'
 import { authService } from '../../iam/services/auth.service.js'
 
 export default {
   name: 'ToolbarComponent',
   components: {
     LanguageSwitcher,
-    NotificationBell
+    //NotificationBell
   },  data() {
     return {
       route: useRoute(),

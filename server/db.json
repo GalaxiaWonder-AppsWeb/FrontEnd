@@ -45,6 +45,15 @@
       "createdAt": "2025-06-03T17:11:33.412Z",
       "lastLoginAt": null,
       "personId": "80a667a4-0971-4bde-b872-7a9019392ad4"
+    },
+    {
+      "id": 1,
+      "email": "google@example.com",
+      "password": "google123",
+      "userType": "Worker",
+      "createdAt": "2025-06-10T02:10:42.750Z",
+      "lastLoginAt": null,
+      "personId": 1
     }
   ],
   "persons": [
@@ -87,6 +96,16 @@
       "profession": "Ingeniero Civil",
       "professionalId": null,
       "userType": "Worker"
+    },
+    {
+      "id": 1,
+      "name": "Test User",
+      "lastName": "Test Lastname",
+      "email": "google@example.com",
+      "phoneNumber": "123456789",
+      "profession": "Software Engineer",
+      "professionalId": null,
+      "userType": "Worker"
     }
   ],
   "organizations": [
@@ -97,6 +116,42 @@
       "ruc": "20454949491",
       "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
       "createdAt": "2025-06-10T02:10:42.750Z",
+      "status": "Active"
+    },
+    {
+      "id": 1,
+      "legalName": "orgGoogle",
+      "commercialName": "orgGoogle",
+      "ruc": "20454949491",
+      "createdBy": 1,
+      "createdAt": "2025-06-12T01:34:15.239Z",
+      "status": "Active"
+    },
+    {
+      "id": 2,
+      "legalName": "orgGoogle1",
+      "commercialName": "orgGoogle1",
+      "ruc": "20454949491",
+      "createdBy": 1,
+      "createdAt": "2025-06-12T01:36:26.144Z",
+      "status": "Active"
+    },
+    {
+      "id": 3,
+      "legalName": "orgGoogle2",
+      "commercialName": "orgGoogle2",
+      "ruc": "20454949491",
+      "createdBy": 1,
+      "createdAt": "2025-06-12T01:41:16.518Z",
+      "status": "Active"
+    },
+    {
+      "id": 4,
+      "legalName": "orgGoogle3",
+      "commercialName": "orgGoogle3",
+      "ruc": "20454949491",
+      "createdBy": 1,
+      "createdAt": "2025-06-12T01:42:16.518Z",
       "status": "Active"
     }
   ],
@@ -112,8 +167,15 @@
       "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
       "organizationId": "0f1ca872-c167-40ee-a062-ada5b7843520",
       "type": "Worker",
-      "joinedAt": "2025-06-10T04:07:50.667Z",
+      "joinedAt": "2025-06-11T21:43:34.625Z",
       "id": 2
+    },
+    {
+      "personId": 1,
+      "organizationId": 4,
+      "type": "Contractor",
+      "joinedAt": "2025-06-12T01:42:16.518Z",
+      "id": 3
     }
   ],
   "invitations": []

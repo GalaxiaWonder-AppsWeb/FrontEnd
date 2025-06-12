@@ -217,12 +217,11 @@ export default {
         if (!this.organizationId || !user.id || !this.currentUserId) {
           throw new Error('Faltan datos requeridos para crear la invitación');
         }
-        
-        // Datos para la invitación en formato compatible con API
+          // Datos para la invitación en formato compatible con API
         const invitationData = {
-          organizationId: this.organizationId,
-          personId: user.id,
-          invitedBy: this.currentUserId,
+          organizationId: Number(this.organizationId),
+          personId: Number(user.id),
+          invitedBy: Number(this.currentUserId),
           invitedAt: new Date().toISOString(),
           status: 'Pending'
         };

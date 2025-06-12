@@ -4,9 +4,6 @@ import {Project} from "../model/project.entity.js";
 import {ProjectStatus} from "../model/project-status.js";
 import {projectService} from "../services/project.service.js";
 import {Schedule} from "../model/schedule.entity.js";
-import {OrganizationId} from "../../organizations/model/organization.entity.js";
-import {OrganizationMemberId} from "../../organizations/model/organization-member.entity.js";
-import {ContractingEntityId} from "../../shared/model/contracting-entity-id.js";
 
 export default {
   name: "CreateProject",
@@ -35,7 +32,8 @@ export default {
       message: ''
     }
   },
-  methods: {    async loadOrganizationData() {
+  methods: {    
+    async loadOrganizationData() {
       try {
         // Obtener información de la organización para identificar al creador
         const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/organizations/${this.organizationId}`, {
@@ -89,7 +87,6 @@ export default {
         
         // Create project
         const newProject = {
-          id: crypto.randomUUID(),
           name: this.form.name,
           description: this.form.description,
           status: ProjectStatus.BASIC_STUDIES,

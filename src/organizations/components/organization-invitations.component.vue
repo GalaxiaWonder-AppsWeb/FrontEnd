@@ -210,11 +210,10 @@ export default {
         // Actualizar el estado de la invitación a ACCEPTED utilizando el método mejorado
         console.log("Actualizando invitación con ID:", invitation.id);
         await OrganizationInvitationService.accept(invitation.id);
-        
-        // 2. Crear el miembro de la organización
+          // 2. Crear el miembro de la organización
         const newMember = {
-          personId: this.currentUserId,
-          organizationId: invitation.organizationId,
+          personId: Number(this.currentUserId),
+          organizationId: Number(invitation.organizationId),
           type: 'Worker', // Por defecto, los invitados se unen como trabajadores
           joinedAt: new Date().toISOString()
         };

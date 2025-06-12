@@ -8,7 +8,9 @@ import axios from 'axios'
 class OrganizationMemberService extends BaseService {
     constructor() {
         super('/members');
-    }    // Método para obtener miembros por el ID de la organización
+    }
+    
+    // Método para obtener miembros por el ID de la organización
     async getByOrgId(organizationId) {
         try {
             if (!organizationId) {
@@ -20,7 +22,7 @@ class OrganizationMemberService extends BaseService {
             
             // URL base viene de BaseService, añadimos organizationId como parámetro de consulta
             const url = `${this.url}?organizationId=${organizationId}`;
-            //console.log(`URL de petición: ${url}`);
+            console.log(`URL de petición: ${url}`);
             
             // Configuración con headers anti-cache
             const config = {
@@ -49,8 +51,7 @@ class OrganizationMemberService extends BaseService {
             return [];
         }
     }
-    
-    // Método personalizado para obtener miembro por personId y organizationId
+      // Método personalizado para obtener miembro por personId y organizationId
     async getByPersonAndOrgIdCustom(params) {
         try {
             if (!params.personId || !params.organizationId) {
@@ -58,9 +59,13 @@ class OrganizationMemberService extends BaseService {
                 return [];
             }
             
-            //console.log(`Buscando miembro con personId=${params.personId} y organizationId=${params.organizationId}`);
+            // Convertir IDs a números para consistencia
+            const personId = typeof params.personId === 'number' ? params.personId : Number(params.personId);
+            const organizationId = typeof params.organizationId === 'number' ? params.organizationId : Number(params.organizationId);
             
-            const url = `${this.url}?organizationId=${params.organizationId}&personId=${params.personId}`;
+            //console.log(`Buscando miembro con personId=${personId} y organizationId=${organizationId}`);
+            
+            const url = `${this.url}?organizationId=${organizationId}&personId=${personId}`;
             //console.log(`URL de petición: ${url}`);
             
             const response = await axios.get(url);
@@ -76,14 +81,16 @@ class OrganizationMemberService extends BaseService {
             //console.error("Error en getByPersonAndOrgIdCustom:", error);
             return [];
         }
-    }      // Crear miembro y actualizar la organización
+    }
+    
+    // Crear miembro y actualizar la organización
     async createMember(memberData) {
         //console.log("OrganizationMemberService.createMember - datos recibidos:", memberData);
         
         // 1. Extraer el ID de la organización, que podría ser un valor directo o un objeto
         const orgId = memberData.organizationId && memberData.organizationId.value 
-            ? memberData.organizationId.value 
-            : memberData.organizationId;
+            ? Number(memberData.organizationId.value) 
+            : Number(memberData.organizationId);
             
         //console.log("OrganizationMemberService.createMember - ID de organización:", orgId);
         
@@ -102,7 +109,7 @@ class OrganizationMemberService extends BaseService {
             const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
             
             // Obtener la organización
-            c//onsole.log(`OrganizationMemberService.createMember - obteniendo organización: ${apiBaseUrl}/organizations/${orgId}`);
+            //console.log(`OrganizationMemberService.createMember - obteniendo organización: ${apiBaseUrl}/organizations/${orgId}`);
             
             const config = {
                 headers: {
@@ -139,14 +146,15 @@ class OrganizationMemberService extends BaseService {
         }
         return createdMember;
     }
-      // Método especializado para crear un miembro contratista (creador de la organización)
+    
+    // Método especializado para crear un miembro contratista (creador de la organización)
     async createContractorMember(personId, organizationId, type = OrganizationMemberType.CONTRACTOR) {
         //console.log("createContractorMember - Creando contratista:", { personId, organizationId, type });
         
         // Preparar datos para la creación del miembro
         const memberData = {
-            personId: typeof personId === 'object' ? personId.value : personId,
-            organizationId: typeof organizationId === 'object' ? organizationId.value : organizationId,
+            personId: typeof personId === 'object' ? Number(personId.value) : Number(personId),
+            organizationId: typeof organizationId === 'object' ? Number(organizationId.value) : Number(organizationId),
             type: type,
             joinedAt: new Date().toISOString()
         };
@@ -181,9 +189,10 @@ import { CacheService } from '../../shared/services/cache.service.js';
 // Combinamos ambos enfoques para tener lo mejor de ambos mundos
 export const organizationMemberService = {
     ...baseService,
+    
     // Sobrescribimos los métodos que necesitan usar parámetros de consulta con caché
     getByOrgId: (params) => {
-        const id = params.id || params;
+        const id = Number(params.id || params);
         const cacheKey = `members_org_${id}`;
         
         return CacheService.getData(
@@ -191,8 +200,9 @@ export const organizationMemberService = {
             () => memberServiceInstance.getByOrgId(id)
         );
     },
+    
     getByPersonId: (params) => {
-        const id = params.id || params;
+        const id = Number(params.id || params);
         const cacheKey = `members_person_${id}`;
         
         return CacheService.getData(
@@ -200,25 +210,37 @@ export const organizationMemberService = {
             () => axios.get(`${memberServiceInstance.url}?personId=${id}`).then(res => res.data)
         );
     },
+    
     getByPersonAndOrgId: (params) => {
-        const cacheKey = `members_org_${params.organizationId}_person_${params.personId}`;
+        const orgId = Number(params.organizationId);
+        const personId = Number(params.personId);
+        const cacheKey = `members_org_${orgId}_person_${personId}`;
         
         return CacheService.getData(
             cacheKey,
-            () => axios.get(`${memberServiceInstance.url}?organizationId=${params.organizationId}&personId=${params.personId}`).then(res => res.data)
+            () => axios.get(`${memberServiceInstance.url}?organizationId=${orgId}&personId=${personId}`).then(res => res.data)
         );
     },
     
     // Al crear, actualizar o eliminar, invalidamos la caché relacionada
     create: async (data) => {
+        // Asegurar que los IDs son numéricos
+        if (data.organizationId) {
+            data.organizationId = Number(data.organizationId);
+        }
+        if (data.personId) {
+            data.personId = Number(data.personId);
+        }
+        
         const result = await baseService.create(data);
+        console.log("Miembro creado:", result);
         // Invalidar caché de miembros para esta organización
         CacheService.invalidate(`members_org_${data.organizationId}`);
         return result;
     },
     
     delete: async (params) => {
-        const id = params.id || params;
+        const id = Number(params.id || params);
         // Primero necesitamos obtener el miembro para conocer su orgId
         try {
             const member = await axios.get(`${memberServiceInstance.url}/${id}`).then(res => res.data);

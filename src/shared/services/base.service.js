@@ -78,11 +78,12 @@ export class BaseService {
      * @returns {Promise<Object>} - Promesa con la respuesta
      */
     get(path = '', params = null) {
+        console.log('FALLE ACA NO??');
         const cleanUrl = this._buildUrl(path);
-        console.log(`GET request to: ${cleanUrl}`, params);
+        console.log(`123GET request to: ${cleanUrl}`, params);
         
         return axios.get(cleanUrl, { params })
-            .then(response => this._handleSuccess('GET', cleanUrl, response))
+            .then(response => this._handleSuccess('GETTER', cleanUrl, response))
             .catch(error => this._handleError('GET', cleanUrl, error, { params }));
     }
 

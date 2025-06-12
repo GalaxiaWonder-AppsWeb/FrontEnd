@@ -179,6 +179,7 @@ router.beforeEach(async (to, from, next) => {
     
     // Obtener el usuario actual
     const user = JSON.parse(localStorage.getItem("user"));
+    console.log('Usuario actual:', user);
     if (!user) {
         // Si no hay usuario autenticado, redirigir al login con mensaje
         // Guardar la ruta a la que intentaba acceder para redirección después del login
@@ -189,8 +190,10 @@ router.beforeEach(async (to, from, next) => {
         try {
             console.log(`Verificando si el usuario es creador de la organización ${to.params.orgId}...`);
             const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${to.params.orgId}`);
+            console.log('Respuesta de la API:', response);
             if (response.ok) {
                 const organization = await response.json();
+                console.log('Organización obtenida:', organization);
                 if (organization && organization.createdBy === user.personId) {
                     console.log('Usuario es creador de la organización, asignando rol Contractor');
                     // Si es el creador, establecer el rol como Contractor

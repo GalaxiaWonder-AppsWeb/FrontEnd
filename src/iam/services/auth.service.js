@@ -34,11 +34,13 @@ export class AuthService {
             throw new Error('Invalid person object')
         }
 
-        try {
-            const existingUser = await this.findUserByEmail(account.email)
+        try {            const existingUser = await this.findUserByEmail(account.email)
             if (existingUser) {
                 throw new Error('User already exists')
             }
+            
+            console.log("Datos de cuenta a registrar:", account.toJSON());
+            console.log("Datos de persona a registrar:", person.toJSON());
 
             const personRes = await axios.post(
                 `${this.baseUrl}/persons`,
@@ -46,7 +48,7 @@ export class AuthService {
                 this.httpOptions
             )
 
-            account.personId = personRes.data.id
+            account.personId = Number(personRes.data.id)
 
             const createRes = await axios.post(
                 `${this.baseUrl}/users`,

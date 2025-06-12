@@ -8,7 +8,7 @@ export const organizationMemberService = {
             const response = await axios.get(`http://localhost:3000/members`, {
                 params: { organizationId }
             });
-            console.log(response);
+            console.log('PAPI QUE RICO HUELES',response);
             return response.data;
         } catch (error) {
             console.error('Error al obtener los miembros:', error);

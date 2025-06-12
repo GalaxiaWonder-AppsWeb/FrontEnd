@@ -1,21 +1,19 @@
-import {OrganizationId} from "./organization.entity.js";
-import {PersonId} from "../../iam/model/person.entity.js";
 import {OrganizationInvitationStatus} from "./organization-invitation-status.js";
 
 export class OrganizationInvitation {
     constructor({
-        organizationInvitationId = new OrganizationInvitationId(),
-        organizationId = new OrganizationId(),
-        personId = new PersonId(),
-        invitedBy = new PersonId(),
+        id = null,
+        organizationId = null,
+        personId = null,
+        invitedBy = null,
         invitedAt = new Date(),
         acceptedAt = null,
         status = OrganizationInvitationStatus.PENDING
                 }) {
-        this.id = organizationInvitationId
-        this.organizationId = organizationId
-        this.personId = personId
-        this.invitedBy = invitedBy
+        this.id = typeof id === 'number' ? id : null
+        this.organizationId = typeof organizationId === 'number' ? organizationId : null
+        this.personId = typeof personId === 'number' ? personId : null
+        this.invitedBy = typeof invitedBy === 'number' ? invitedBy : null
         this.invitedAt = invitedAt
         this.acceptedAt = acceptedAt
         this.status = status
@@ -23,10 +21,10 @@ export class OrganizationInvitation {
 
     toJSON() {
         return {
-            id: this.id?.value ?? null,
-            organizationId: this.organizationId?.value ?? null,
-            personId: this.personId?.value ?? null,
-            invitedBy: this.invitedBy?.value ?? null,
+            id: this.id,
+            organizationId: this.organizationId,
+            personId: this.personId,
+            invitedBy: this.invitedBy,
             invitedAt: this.invitedAt,
             acceptedAt: this.acceptedAt,
             status: this.status
@@ -51,11 +49,5 @@ export class OrganizationInvitation {
 
     isPending() {
         return this.status === OrganizationInvitationStatus.PENDING
-    }
-}
-
-export class OrganizationInvitationId {
-    constructor() {
-        this.value = crypto.randomUUID()
     }
 }

@@ -88,7 +88,7 @@ export default {
         this.loading = true;
         this.error = null;
         
-        console.log(`Cargando miembros para organización ${this.organizationId}`);
+        console.log(`123Cargando miembros para organización ${this.organizationId}`);
         
         // Obtener los miembros de la organización
         const response = await organizationMemberService.getByOrgId(this.organizationId);

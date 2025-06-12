@@ -64,7 +64,8 @@
         <!-- Opciones solo para Contratista (creador) -->
         <pv-button v-if="isContractor" text plain :label="$t(sectionTitle + '.section.configurations')" @click="goTo('settings')" />
       
-      </template>      <template v-else-if="inProjectView">
+      </template>      
+      <template v-else-if="inProjectView">
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.schedule')" @click="goTo('schedule')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />

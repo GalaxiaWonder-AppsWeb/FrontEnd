@@ -81,7 +81,7 @@
 <script>
 import { projectService } from '../services/project.service.js';
 import { ProjectAssembler } from '../services/project.assembler.js';
-import { Project, ProjectId } from '../model/project.entity.js';
+import { Project } from '../model/project.entity.js';
 import { ProjectStatus } from '../model/project-status.js';
 import { ProjectStatusLabels } from '../services/project-status-labels.js';
 import { useRoute, useRouter } from 'vue-router';
@@ -156,7 +156,8 @@ export default {
       } catch (err) {
         console.error('Error loading project:', err);
         this.message = err.message;
-        this.messageClass = 'error-message';        this.$toast.add({
+        this.messageClass = 'error-message';        
+        this.$toast.add({
           severity: 'error',
           summary: this.$t('projects.settings.error.loading_title'),
           detail: this.$t('projects.settings.error.loading_message'),
@@ -179,12 +180,12 @@ export default {
         }
           console.log('Datos originales del proyecto:', this.originalProject);
         console.log('Contratista original:', this.originalProject.contractor);        // Obtener el valor original del contratista
-        const contractorOriginalId = this.originalProject.contractor?.value || this.originalProject.contractor;
+        const contractorOriginalId = this.originalProject.contractor || this.originalProject.contractor;
         console.log('ID del contratista original:', contractorOriginalId);
         
         // Crear el proyecto actualizado con los nuevos valores
         const updatedProject = new Project({
-          id: new ProjectId(this.projectId),
+          id: this.projectId,
           name: this.originalProject.name,
           description: this.description,
           status: this.status,
@@ -207,7 +208,7 @@ export default {
         
         // Asegurarnos de que el ID del contratista se mantiene exactamente igual que en el servidor
         // Obtener directamente del objeto original sin procesamiento
-        const rawContractorValue = this.originalProject.contractor?.value || this.originalProject.contractor;
+        const rawContractorValue = this.originalProject.contractor || this.originalProject.contractor;
         console.log('Valor original del contratista (sin procesar):', rawContractorValue);
         
         // Asignar el valor original directamente

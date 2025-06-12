@@ -1,16 +1,15 @@
 import {Ruc} from './ruc.js'
-import {PersonId} from '../../iam/model/person.entity.js'
 import {OrganizationStatus} from "./organization-status.js";
 import {OrganizationInvitationStatus} from "./organization-invitation-status.js";
 import {OrganizationInvitation} from "./organization-invitation.entity.js";
 
 export class Organization {
     constructor({
-                    id = new OrganizationId(),
+                    id = null,
                     legalName = '',
                     commercialName = '',
                     ruc = new Ruc(),
-                    createdBy = new PersonId(),
+                    createdBy = null,
                     createdAt = new Date(),
                     status = OrganizationStatus.ACTIVE,
                     members = [],
@@ -24,11 +23,11 @@ export class Organization {
             throw new Error('RUC must be a valid Ruc instance with a value')
         }
 
-        if (!(createdBy instanceof PersonId) || !createdBy.value) {
-            throw new Error('createdBy must be a valid PersonId instance with a value')
+        if (typeof createdBy !== 'number') {
+            throw new Error('createdBy must be a valid person ID (number)')
         }
 
-        this.id = id
+        this.id = typeof id === 'number' ? id : null
         this.legalName = legalName
         this.commercialName = commercialName
         this.ruc = ruc
@@ -58,12 +57,12 @@ export class Organization {
     }
 
     removeMemberByPersonId(personId) {
-        this.members = this.members.filter(m => m.personId.value !== personId.value)
+        this.members = this.members.filter(m => m.personId !== personId)
     }
 
     invitePerson(personId, invitedBy) {
         const alreadyInvited = this.invitations.some(i =>
-            i.personId.value === personId.value && i.status === OrganizationInvitationStatus.PENDING
+            i.personId === personId && i.status === OrganizationInvitationStatus.PENDING
         )
         if (alreadyInvited) {
             throw new Error('Person already has a pending invitation')
@@ -86,20 +85,13 @@ export class Organization {
     toJSON() {
         console.log('Valor de this.id antes de serializar:', this.id);
         return {
-            id: this.id?.value ?? null,
+            id: this.id,
             legalName: this.legalName,
             commercialName: this.commercialName,
             ruc: this.ruc?.value ?? null,
-            createdBy: this.createdBy?.value ?? null,
+            createdBy: this.createdBy,
             createdAt: this.createdAt,
             status: this.status
         }
-    }
-}
-
-export class OrganizationId {
-    constructor(value) {
-        // Si no se proporciona un valor, genera un UUID
-        this.value = value || crypto.randomUUID();
     }
 }

@@ -2,7 +2,6 @@
 import {Button as PvButton, InputText as PvInputText} from "primevue";
 import {Organization} from "../model/organization.entity.js";
 import {Ruc} from "../model/ruc.js";
-import {PersonId} from "../../iam/model/person.entity.js";
 import {OrganizationStatus} from "../model/organization-status.js";
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationMember} from "../model/organization-member.entity.js";
@@ -23,7 +22,8 @@ export default {
       }
     };
   },
-  methods:{    async CreateOrganization() {
+  methods:{    
+    async CreateOrganization() {
       try {
         // 1. Crear la organización
         console.log("Creando organización con datos:", {
@@ -32,12 +32,11 @@ export default {
           ruc: document.getElementById('ruc')?.value,
           userId: this.user
         });
-        
-        const org = new Organization({
+          const org = new Organization({
           legalName: document.getElementById('legalName')?.value,
           commercialName: document.getElementById('commercialName')?.value,
           ruc: new Ruc(document.getElementById('ruc')?.value),
-          createdBy: new PersonId(this.user.personId),
+          createdBy: Number(this.user.personId),
           status: OrganizationStatus.ACTIVE
         });
         
@@ -50,11 +49,12 @@ export default {
         
         // 3. Guardar el ID de la organización y mostrar mensaje
         this.organizationId = res.id;
+        console.log("ID de organización guardado123:", this.organizationId);
         this.message = `Organización creada: ${res.legalName}`;
         
         // 4. Vincular al creador como contratista
         console.log("Vinculando contratista", this.user.personId, "con organización", this.organizationId);
-        await this.LinkContractor(new PersonId(this.user.personId), res.id);
+        await this.LinkContractor(this.user.personId, res.id);
         
         // 5. Notificar creación exitosa
         this.$emit('organization-created', this.organizationId);
@@ -87,12 +87,19 @@ export default {
       const value = event.target.value
       const numeric = value.replace(/\D/g, '')
       event.target.value = numeric
-    },    async LinkContractor(person, organization) {
+    },    
+    async LinkContractor(person, organization) {
+      const personId = Number(person);
+      const orgId = Number(organization);
+      console.log("Datos convertidos:", { personId, orgId });
+      const res = await organizationMemberServiceCustom.createContractorMember(
+        personId,
+        orgId,
+        OrganizationMemberType.CONTRACTOR
+      );
+      
       try {
-        console.log("Vinculando contratista:", { 
-          person: person instanceof Object ? person.value : person, 
-          organization: organization instanceof Object ? organization.value : organization 
-        });
+        console.log("Vinculando contratista:", { person, organization });
         
         // Usar el método especializado para crear contratista
         const res = await organizationMemberServiceCustom.createContractorMember(

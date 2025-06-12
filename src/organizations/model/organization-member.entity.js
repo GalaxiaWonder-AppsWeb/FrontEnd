@@ -1,18 +1,16 @@
-import {PersonId} from '../../iam/model/person.entity.js'
-import {OrganizationId} from "./organization.entity.js";
 import {OrganizationMemberType} from "./organization-member-type.js";
 
 export class OrganizationMember {
     constructor({
-                    id = new OrganizationMemberId(),
-                    personId = new PersonId(),
-                    organizationId = new OrganizationId(),
+                    id = null,
+                    personId = null,
+                    organizationId = null,
                     type = OrganizationMemberType.CONTRACTOR,
                     joinedAt = new Date()
                 }) {
-        this.id = id
-        this.personId = personId
-        this.organizationId = organizationId
+        this.id = typeof id === 'number' ? id : null
+        this.personId = typeof personId === 'number' ? personId : null
+        this.organizationId = typeof organizationId === 'number' ? organizationId : null
         this.type = type
         this.joinedAt = joinedAt
     }
@@ -31,18 +29,11 @@ export class OrganizationMember {
 
     toJSON() {
         return {
-            id: this.id?.value ?? null,
-            personId: this.personId?.value ?? null,
-            organizationId: this.organizationId?.value ?? null,
+            id: this.id,
+            personId: this.personId,
+            organizationId: this.organizationId,
             type: this.type,
             joinedAt: this.joinedAt
         }
-    }
-}
-
-export class OrganizationMemberId {
-    constructor(value) {
-        // Si no se proporciona un valor, genera un UUID
-        this.value = value || crypto.randomUUID()
     }
 }

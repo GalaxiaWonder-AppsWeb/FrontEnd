@@ -97,5 +97,7 @@ export default {
 </template>
 
 <style scoped>
-
+.organization-items {
+  padding-top: 80px;
+}
 </style>

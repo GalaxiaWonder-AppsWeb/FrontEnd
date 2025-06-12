@@ -9,8 +9,9 @@ class PersonService extends BaseService {
             const url = `${this.url}/${personId}`;
             console.log("URL construida en getById:", url);
             console.log(`GET request to URL ${this.url}/${personId}`);
-            
-            const response = await this.get(personId);
+
+            const response = await this.get(`${personId}`);
+            console.log('FALLE ACA?', response);
             
             if (response && response.data) {
                 return response.data;

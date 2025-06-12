@@ -114,10 +114,11 @@ export const OrganizationInvitationService = {
         
         try {
             console.log('[InvitationService] Creando invitación:', invitationData);
-            
-            // Preparar datos para la invitación
+              // Preparar datos para la invitación
             const newInvitation = {
-                ...invitationData,
+                organizationId: Number(invitationData.organizationId),
+                personId: Number(invitationData.personId),
+                invitedBy: Number(invitationData.invitedBy),
                 status: 'Pending',
                 invitedAt: new Date().toISOString()
             };
@@ -223,21 +224,22 @@ export const OrganizationInvitationService = {
      * Compatible con ASP.NET Core API
      * @param {string} id - El ID de la invitación
      * @returns {Promise<Object>} - Promesa con la invitación actualizada
-     */
-    async accept(id) {
+     */    async accept(id) {
         if (!id) {
             throw new Error('El ID de invitación es requerido');
         }
         
+        // Asegurarnos de que id sea un número
+        const numericId = Number(id);
+        
         try {
-            console.log(`[InvitationService] Aceptando invitación con ID: ${id}`);
-            
-            // En ASP.NET Core, tendríamos un endpoint dedicado como:
+            console.log(`[InvitationService] Aceptando invitación con ID: ${numericId}`);
+              // En ASP.NET Core, tendríamos un endpoint dedicado como:
             // PUT /api/invitations/{id}/accept
             // Por ahora simulamos ese comportamiento
             
             // Primero obtenemos la invitación actual para validar que existe
-            const response = await axios.get(`${baseURL}/invitations/${id}`, {
+            const response = await axios.get(`${baseURL}/invitations/${numericId}`, {
                 headers: { 'Accept': 'application/json' }
             });
             
@@ -265,14 +267,13 @@ export const OrganizationInvitationService = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
-            };
-              // Actualizar la invitación
-            const updateResponse = await axios.put(`${baseURL}/invitations/${id}`, updateData, config);
+            };              // Actualizar la invitación
+            const updateResponse = await axios.put(`${baseURL}/invitations/${numericId}`, updateData, config);
             
             // Después de actualizar, eliminar la invitación para evitar acumulación en la base de datos
             try {
-                await axios.delete(`${baseURL}/invitations/${id}`, config);
-                console.log(`[InvitationService] Invitación ${id} eliminada después de ser aceptada`);
+                await axios.delete(`${baseURL}/invitations/${numericId}`, config);
+                console.log(`[InvitationService] Invitación ${numericId} eliminada después de ser aceptada`);
             } catch (deleteError) {
                 console.warn(`[InvitationService] No se pudo eliminar la invitación ${id} después de aceptarla:`, deleteError);
                 // Continuamos aunque no se pueda eliminar, ya que la acción principal se completó
@@ -296,20 +297,21 @@ export const OrganizationInvitationService = {
      * Compatible con ASP.NET Core API
      * @param {string} id - El ID de la invitación
      * @returns {Promise<Object>} - Promesa con la invitación actualizada
-     */
-    async reject(id) {
+     */    async reject(id) {
         if (!id) {
             throw new Error('El ID de invitación es requerido');
         }
         
+        // Asegurarnos de que id sea un número
+        const numericId = Number(id);
+        
         try {
-            console.log(`[InvitationService] Rechazando invitación con ID: ${id}`);
-            
-            // En ASP.NET Core, tendríamos un endpoint dedicado como:
+            console.log(`[InvitationService] Rechazando invitación con ID: ${numericId}`);
+              // En ASP.NET Core, tendríamos un endpoint dedicado como:
             // PUT /api/invitations/{id}/reject
             
             // Primero obtenemos la invitación actual para validar que existe
-            const response = await axios.get(`${baseURL}/invitations/${id}`, {
+            const response = await axios.get(`${baseURL}/invitations/${numericId}`, {
                 headers: { 'Accept': 'application/json' }
             });
             
@@ -337,16 +339,14 @@ export const OrganizationInvitationService = {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
-            };
-              // Actualizar la invitación
-            const updateResponse = await axios.put(`${baseURL}/invitations/${id}`, updateData, config);
+            };              // Actualizar la invitación
+            const updateResponse = await axios.put(`${baseURL}/invitations/${numericId}`, updateData, config);
             
             // Después de actualizar, eliminar la invitación para evitar acumulación en la base de datos
             try {
-                await axios.delete(`${baseURL}/invitations/${id}`, config);
-                console.log(`[InvitationService] Invitación ${id} eliminada después de ser rechazada`);
-            } catch (deleteError) {
-                console.warn(`[InvitationService] No se pudo eliminar la invitación ${id} después de rechazarla:`, deleteError);
+                await axios.delete(`${baseURL}/invitations/${numericId}`, config);
+                console.log(`[InvitationService] Invitación ${numericId} eliminada después de ser rechazada`);            } catch (deleteError) {
+                console.warn(`[InvitationService] No se pudo eliminar la invitación ${numericId} después de rechazarla:`, deleteError);
                 // Continuamos aunque no se pueda eliminar, ya que la acción principal se completó
             }
             

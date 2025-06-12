@@ -14,18 +14,19 @@ const baseService = createService('/organizations', {
 });
 
 // Crear versión con caché
-export const organizationService = {
-    // Mantener métodos originales
+export const organizationService = {    // Mantener métodos originales
     ...baseService,
     
     // Sobreescribir getById para usar caché
     getById: async (params) => {
         const id = params.id || params;
-        const cacheKey = `organization_${id}`;
+        // Asegurar que id se maneja como número para consistencia
+        const numericId = typeof id === 'number' ? id : Number(id);
+        const cacheKey = `organization_${numericId}`;
         
         return CacheService.getData(
             cacheKey,
-            () => baseService.getById(id)
+            () => baseService.getById(numericId)
         );
     },
     

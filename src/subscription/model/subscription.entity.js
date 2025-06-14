@@ -1,23 +1,21 @@
 import { SubscriptionStatus } from './subscription-status.js'
-import { PersonId } from '../../iam/model/person.entity.js'
-import { SubscriptionPlanId } from './subscription-plan.entity.js'
 
 export class Subscription {
     constructor({
-                    id = new SubscriptionId(),
+                    id = null,
                     startDate = new Date(),
                     endDate = new Date(),
                     status = SubscriptionStatus.ACTIVE,
-                    personId = new PersonId(),
-                    subscriptionPlan = new SubscriptionPlanId(),
+                    personId = null,
+                    subscriptionPlan = null,
                     isAutoRenew = false
                 }) {
-        this.id = id
+        this.id = typeof id === 'number' ? id : null
         this.startDate = new Date(startDate)
         this.endDate = new Date(endDate)
         this.status = status
-        this.personId = personId
-        this.subscriptionPlan = subscriptionPlan
+        this.personId = typeof personId === 'number' ? personId : null
+        this.subscriptionPlan = typeof subscriptionPlan === 'number' ? subscriptionPlan : null
         this.isAutoRenew = isAutoRenew
     }
 
@@ -46,19 +44,13 @@ export class Subscription {
 
     toJSON() {
         return {
-            id: this.id?.value,
+            id: this.id,
             startDate: this.startDate,
             endDate: this.endDate,
             status: this.status,
-            personId: this.personId?.value,
-            subscriptionPlan: this.subscriptionPlan?.value,
+            personId: this.personId,
+            subscriptionPlan: this.subscriptionPlan,
             isAutoRenew: this.isAutoRenew
         }
-    }
-}
-
-export class SubscriptionId {
-    constructor() {
-        this.value = crypto.randomUUID()
     }
 }

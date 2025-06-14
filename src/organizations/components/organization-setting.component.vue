@@ -48,7 +48,7 @@
 
 <script>
 import { organizationService } from '../services/organization.service.js'
-import { Organization, OrganizationId } from '../model/organization.entity.js'
+import { Organization } from '../model/organization.entity.js'
 import { OrganizationAssembler } from '../services/organization.assembler.js'
 import { Ruc } from "../model/ruc.js";
 import { organizationMemberService } from '../services/organization-member.service.js'
@@ -97,8 +97,9 @@ export default {
     },
     async handleUpdate() {
       try {
+
         const updatedOrg = new Organization({
-          id: new OrganizationId(this.organizationId),
+          id: parseInt(this.organizationId),
           legalName: this.legalName,
           commercialName: this.commercialName,
           ruc: new Ruc(this.originalOrg.ruc),
@@ -107,7 +108,6 @@ export default {
         })
         const res = await organizationService.update(updatedOrg.toJSON())
         this.message = `Organización actualizada`
-        console.log('Actualizado:', res)
       } catch (err) {
         console.error('Error al actualizar organización')
         this.message = err.message

@@ -24,7 +24,8 @@ export default {
   },
   components: {
     ToolbarComponent
-  },  methods: {    async GetMemberType() {
+  },  methods: {    
+    async GetMemberType() {
       try {
         // Obtener usuario desde localStorage
         const user = JSON.parse(localStorage.getItem("user"));
@@ -32,11 +33,13 @@ export default {
           console.warn("No hay usuario autenticado o falta personId");
           return;
         }
-        
-        // Asignar personId desde el usuario
-        this.personId = user.personId;
-        // Obtener el ID de la organización desde la URL
-        this.organizationId = this.route.params.orgId;
+        console.log('XDDDDD')
+        console.log(user.personId);
+          // Asignar personId desde el usuario y asegurarnos de que sea número
+        this.personId = typeof user.personId === 'number' ? user.personId : Number(user.personId);
+          // Obtener el ID de la organización desde la URL y convertirlo a número
+        this.organizationId = typeof this.route.params.orgId === 'number' ? 
+          this.route.params.orgId : Number(this.route.params.orgId);
         
         if (!this.organizationId) {
           console.warn("No se pudo obtener el ID de la organización desde la URL");
@@ -44,28 +47,36 @@ export default {
         }
         
         console.log(`Obteniendo rol para personId=${this.personId} en organizationId=${this.organizationId}`);
-          // 1. Primero, verificar si el usuario es el creador de la organización
+        // 1. Primero, verificar si el usuario es el creador de la organización
         try {
           console.log(`Consultando organización ${this.organizationId}`);
-          const orgResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${this.organizationId}`);
-          const organization = await orgResponse.json();
-          console.log("Datos de la organización:", organization);
+            // Importar el servicio de organización que ahora usa caché
+          const { organizationService } = await import('../services/organization.service.js');
+          const organization = await organizationService.getById(this.organizationId);
+            // Manejar la comparación de IDs ya sea como strings o como números
+          const orgCreatedBy = organization ? organization.createdBy : null;
+          const currentPersonId = this.personId;
           
-          if (organization && organization.createdBy === this.personId) {
+          console.log(`Comparando createdBy=${orgCreatedBy} (${typeof orgCreatedBy}) con personId=${currentPersonId} (${typeof currentPersonId})`);
+          
+          // Comparación que funciona independientemente de si los IDs son strings o números
+          const isCreator = organization && ((orgCreatedBy == currentPersonId) || 
+            (String(orgCreatedBy) === String(currentPersonId)));
+          
+          if (isCreator) {
             console.log(`¡Usuario es creador de la organización! Asignando rol Contractor`);
             user.activeOrganizationRole = "Contractor";
             localStorage.setItem("user", JSON.stringify(user));
-            console.log("Credenciales actualizadas (como creador):", user);
+            console.log("Credenciales actualizadas (como creador)");
             return; // Terminamos aquí al encontrar que es el creador
           }
         } catch (orgError) {
           console.error("Error al consultar datos de la organización:", orgError);
         }
-        
-        // 2. Si no es el creador, buscar en la tabla de miembros
+          // 2. Si no es el creador, buscar en la tabla de miembros
         const res = await organizationMemberServiceCustom.getByPersonAndOrgIdCustom({
-          personId: this.personId,
-          organizationId: this.organizationId
+          personId: Number(this.personId),
+          organizationId: Number(this.organizationId)
         });
         
         console.log("Respuesta del servicio de miembros:", res);

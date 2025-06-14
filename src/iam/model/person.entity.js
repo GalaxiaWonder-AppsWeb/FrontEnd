@@ -1,8 +1,8 @@
 import { ProfessionalId }  from './professional-id.entity.js'
 
-export class Person {
-    constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null, profilePicture = '') {
-        this.id = new PersonId()
+export class Person {    constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null, profilePicture = '', id = null) {
+        // Aseguramos que id sea numérico o null
+        this.id = typeof id === 'number' ? id : null
         this.name = name
         this.lastName = lastName
         this.email = email
@@ -44,9 +44,11 @@ export class Person {
 
     hasProfessionalId() {
         return this.professionalId !== null
-    }    toJSON() {
+    }    
+      toJSON() {
         return {
-            id: this.id.value,
+            // Solo incluir id si no es null (el backend asignará uno)
+            ...(this.id !== null && { id: this.id }),
             name: this.name,
             lastName: this.lastName,
             email: this.email,
@@ -57,14 +59,3 @@ export class Person {
         }
     }
 }
-
-export class PersonId {
-    constructor(id = null) {
-        if (id && typeof id === 'string') {
-            this.value = id
-        } else {
-            this.value = crypto.randomUUID()
-        }
-    }
-}
-

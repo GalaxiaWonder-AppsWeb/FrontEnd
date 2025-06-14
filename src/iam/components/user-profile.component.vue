@@ -397,9 +397,10 @@ export default {
           profession: this.formData.profession,
           profilePicture: this.formData.profilePicture
         };
+
         
         // Actualizar la persona en el backend
-        await personService.update(updatedPerson.id, updatedPerson);
+        await personService.update(String(updatedPerson.id), updatedPerson);
         
         // Si hay cambio de contraseña, actualizarla
         if (this.formData.password) {

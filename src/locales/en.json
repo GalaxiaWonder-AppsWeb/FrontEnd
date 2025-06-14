@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "logout": "Sign out",
+    "logout_success": "Successfully signed out"
+  },
   "navigation": {
     "back": "Back",
     "all_organizations": "All Organizations"
@@ -69,6 +73,7 @@
     },    "invite": {
       "title": "Invite Members",
       "search": "Search workers by name or email",
+      "email_placeholder": "Enter email address",
       "button": "Invite",
       "no_results": "No workers found with that search criteria",
       "pending": "Pending invitations",
@@ -80,11 +85,16 @@
       "error_message": "Could not send invitation",
       "sending": "Sending invitation",
       "please_wait": "Please wait...",
+      "invalid_email": "Please enter a valid email address",
+      "email_not_found": "No user found with this email address",
+      "user_already_member": "This user is already a member of this organization",
+      "email_verified": "Email verified",
       "status": {
         "pending": "Pending",
         "accepted": "Accepted",
-        "rejected": "Rejected"      }
-    },    "edit-organization": {
+        "rejected": "Rejected"      
+      }
+    },"edit-organization": {
       "title": "Edit organization",
       "legal-name": "Legal Name",
       "commercial-name": "Commercial Name",
@@ -116,9 +126,6 @@
     "edit": "Edit",
     "ok": "OK",
     "create": "Create"
-  },"auth": {
-    "logout": "Sign out",
-    "logout_success": "Successfully signed out"
   },
   "navigation": {
     "dashboard": {
@@ -161,8 +168,7 @@
       "image_too_large": "Image is too large (max 2MB)"
     },
     "uploading_image": "Uploading image..."
-  },
-  "projects": {
+  },  "projects": {
     "title": "Projects",
     "create": "New project",
     "empty": "No projects available",
@@ -188,6 +194,44 @@
       "budget": "Budget",
       "start_date": "Start date",
       "end_date": "End date"
-    }
+    },
+    "section": {
+      "information": "Information",
+      "schedule": "Schedule",
+      "change-management": "Change Management",
+      "settings": "Settings",
+      "working-team": "Working Team"
+    },
+    "information": "Project Information",
+    "settings": {
+      "title": "Project Settings",
+      "description": "Project Description",
+      "description_placeholder": "Enter a detailed description of the project",
+      "status": "Project Status",
+      "status_placeholder": "Select project status",
+      "update": "Update Project",
+      "danger_zone": "Danger Zone",
+      "delete": "Delete Project",
+      "delete_dialog": {
+        "title": "Confirm Deletion",
+        "message": "Are you sure you want to delete this project? This action cannot be undone."
+      },
+      "success": {
+        "title": "Success",
+        "updated": "Project successfully updated",
+        "deleted": "Project successfully deleted"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "Could not load project information",
+        "updating_title": "Error",
+        "updating_message": "Could not update project",
+        "deleting_title": "Error",
+        "deleting_message": "Could not delete project",
+        "empty_description": "Project description cannot be empty",
+        "no_status": "Project status must be selected"
+      }
+    },
+    "no_changes": "No changes to save"
   }
 }

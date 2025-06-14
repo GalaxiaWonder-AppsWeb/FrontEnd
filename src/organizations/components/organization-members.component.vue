@@ -62,10 +62,20 @@ export default {
         console.error("Error loading current user:", error);
         this.currentUserId = null;
       }
-    },
-    async checkIfCreator() {
+    },    async checkIfCreator() {
       try {
-        // Obtener la organización y comparar el creador
+        // Si ya tenemos el rol de usuario desde localStorage, evitamos la petición
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user.activeOrganizationRole === 'Contractor') {
+            this.isCreator = true;
+            return; // Evitamos la petición innecesaria
+          }
+        }
+        
+        // Si no tenemos el rol guardado, obtenemos la organización 
+        // (ahora con caché gracias a las modificaciones en organization.service.js)
         const org = await import('../services/organization.service.js').then(m => m.organizationService.getById(this.organizationId));
         const createdBy = org?.createdBy || (org?.data && org.data.createdBy);
         this.isCreator = createdBy === this.currentUserId;
@@ -73,12 +83,12 @@ export default {
         console.error("Error al verificar el creador de la organización:", error);
         this.isCreator = false;
       }
-    },    async loadMembers() {
+    },async loadMembers() {
       try {
         this.loading = true;
         this.error = null;
         
-        console.log(`Cargando miembros para organización ${this.organizationId}`);
+        console.log(`123Cargando miembros para organización ${this.organizationId}`);
         
         // Obtener los miembros de la organización
         const response = await organizationMemberService.getByOrgId(this.organizationId);
@@ -196,7 +206,7 @@ export default {
 <template>
   <div class="organization-members-container">
     <div class="members-header">
-      <h2>{{ $t('organization.section.members') }}</h2>
+      <h2 class="members-title">{{ $t('organization.section.members') }}</h2>
       <pv-button 
         v-if="isCreator" 
         icon="pi pi-user-plus" 
@@ -250,11 +260,17 @@ export default {
   margin-bottom: 2rem;
 }
 
+.members-title {
+  color: black;
+  font-size: 1.5rem;
+}
+
 .loading-container, .error-message, .empty-message {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 3rem 0;
+  color: black;
 }
 
 .error-message {

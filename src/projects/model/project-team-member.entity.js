@@ -1,16 +1,15 @@
-import {OrganizationMemberId} from '../../organizations/model/organization-member.entity.js'
 import {ProjectRole} from "./project-role.js";
 import {Specialty} from "./specialty.js";
 
 export class ProjectTeamMember {
     constructor({
-                    id = new ProjectTeamMemberId(),
+                    id = null,
                     role,
                     specialty,
-                    memberId = new OrganizationMemberId()
+                    memberId = null
                 } = {}) {
-        if (!(id instanceof ProjectTeamMemberId)) {
-            throw new Error('Id must be a valid ProjectTeamMemberId instance.');
+        if (typeof id !== 'number' && id !== null) {
+            throw new Error('id must be a number or null.');
         }
 
         if (!Object.values(ProjectRole).includes(role)) {
@@ -33,8 +32,8 @@ export class ProjectTeamMember {
             }
         }
 
-        if (!(memberId instanceof OrganizationMemberId) || !memberId.value) {
-            throw new Error('MemberId must be a valid OrganizationMemberId instance with a value.');
+        if (typeof memberId !== 'number') {
+            throw new Error('memberId must be a numeric value.');
         }
 
         this.id = id;
@@ -46,22 +45,10 @@ export class ProjectTeamMember {
     toJSON() {
         console.log('Valor de this.id antes de serializar:', this.id);
         return {
-            id: this.id.value,
+            id: this.id,
             role: this.role,
             specialty: this.specialty,
-            memberId: this.memberId.value
-        };
-    }
-}
-
-export class ProjectTeamMemberId {
-    constructor(value) {
-        this.value = value || crypto.randomUUID();
-    }
-
-    toJSON() {
-        return {
-            value: this.value
+            memberId: this.memberId
         };
     }
 }

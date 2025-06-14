@@ -1,26 +1,14 @@
-import {ProjectTeamMemberId} from "./project-team-member.entity.js";
 
 export class TaskSubmission {
     constructor({
-                    id = new TaskSubmissionId(),
+                    id = null,
                     submittedAt = new Date(),
                     notes = '',
                     reviewedAt = new Date(),
-                    reviewedBy = new ProjectTeamMemberId(),
+                    reviewedBy = null,
                     reviewedNotes = '',
-                    submittedBy = new ProjectTeamMemberId()
+                    submittedBy = null
                 }) {
-        if (!(id instanceof TaskSubmissionId) || !id.value) {
-            throw new Error('id must be a valid TaskSubmissionId instance with a value')
-        }
-
-        if (!(submittedBy instanceof ProjectTeamMemberId) || !submittedBy.value) {
-            throw new Error('submittedBy must be a valid ProjectTeamMemberId instance with a value')
-        }
-
-        if (!(reviewedBy instanceof ProjectTeamMemberId) || !reviewedBy.value) {
-            throw new Error('reviewedBy must be a valid ProjectTeamMemberId instance with a value')
-        }
 
         if (!(submittedAt instanceof Date)) {
             throw new Error('submittedAt must be a valid Date instance')
@@ -38,31 +26,24 @@ export class TaskSubmission {
             throw new Error('reviewedNotes must be a string')
         }
 
-        this.id = id
+        this.id = typeof id === 'number' ? id : null
         this.submittedAt = submittedAt
         this.notes = notes
         this.reviewedAt = reviewedAt
-        this.reviewedBy = reviewedBy
+        this.reviewedBy = typeof reviewedBy === 'number' ? reviewedBy : null
         this.reviewedNotes = reviewedNotes
-        this.submittedBy = submittedBy
+        this.submittedBy = typeof submittedBy === 'number' ? submittedBy : null;
     }
 
     toJSON() {
         return {
-            id: this.id?.value ?? null,
+            id: this.id,
             submittedAt: this.submittedAt,
             notes: this.notes,
             reviewedAt: this.reviewedAt,
-            reviewedBy: this.reviewedBy?.value ?? null,
+            reviewedBy: this.reviewedBy,
             reviewedNotes: this.reviewedNotes,
-            submittedBy: this.submittedBy?.value ?? null
+            submittedBy: this.submittedBy
         }
-    }
-}
-
-export class TaskSubmissionId {
-    constructor(value) {
-        // Si no se proporciona un valor, genera un UUID
-        this.value = value || crypto.randomUUID();
     }
 }

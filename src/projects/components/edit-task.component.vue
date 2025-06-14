@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, computed } from 'vue';
+import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { Task } from '../model/task.entity.js';
 import { TaskStatus } from '../model/task-status.js';
 import { Specialty } from '../model/specialty.js';
@@ -10,8 +10,8 @@ const props = defineProps({
     type: Boolean,
     required: true
   },
-  milestoneId: {
-    type: Number,
+  task: {
+    type: Object,
     required: true
   }
 });
@@ -19,111 +19,117 @@ const props = defineProps({
 // Register the Dropdown component for use in this component only
 const PvDropdown = Dropdown;
 
-const emit = defineEmits(['update:visible', 'create', 'cancel']);
+const emit = defineEmits(['update:visible', 'save', 'cancel']);
 
 // Form data
 const formData = reactive({
+  id: null,
   name: '',
-  specialty: Specialty.ARCHITECTURE,
-  startingDate: new Date(),
-  dueDate: new Date(new Date().setDate(new Date().getDate() + 7)),
+  specialty: null,
+  status: null,
+  startingDate: null,
+  dueDate: null,
+  responsible: null
 });
 
 // Form validation
 const errors = reactive({
   name: null,
+  specialty: null,
   dates: null
 });
 
-// Reset form to initial state
-const resetForm = () => {
-  formData.name = '';
-  formData.specialty = Specialty.ARCHITECTURE;
-  formData.startingDate = new Date();
-  formData.dueDate = new Date(new Date().setDate(new Date().getDate() + 7));
-  
-  // Clear errors
-  errors.name = null;
-  errors.dates = null;
-};
+// Initialize form data when task changes
+watch(() => props.task, (newTask) => {
+  if (newTask) {
+    formData.id = newTask.id;
+    formData.name = newTask.name;
+    formData.specialty = newTask.specialty;
+    formData.status = newTask.status;
+    formData.startingDate = newTask.startingDate instanceof Date 
+      ? new Date(newTask.startingDate) 
+      : new Date(newTask.startingDate);
+    formData.dueDate = newTask.dueDate instanceof Date 
+      ? new Date(newTask.dueDate) 
+      : new Date(newTask.dueDate);
+    formData.responsible = newTask.responsible;
+  }
+}, { immediate: true });
 
-// Specialties for dropdown
-const specialties = Object.keys(Specialty).map(key => ({
-  label: Specialty[key],
-  value: Specialty[key]
-}));
+// Available options for specialty and status
+const specialties = computed(() => 
+  Object.entries(Specialty).map(([key, value]) => ({ label: value, value }))
+);
 
-// Validate form
+const statuses = computed(() => 
+  Object.entries(TaskStatus).map(([key, value]) => ({ label: value, value }))
+);
+
+// Validate the form
 const validateForm = () => {
-  let isValid = true;
+  let valid = true;
   
   // Validate name
   if (!formData.name || formData.name.trim() === '') {
     errors.name = 'Task name is required';
-    isValid = false;
+    valid = false;
   } else {
     errors.name = null;
   }
   
+  // Validate specialty
+  if (!formData.specialty) {
+    errors.specialty = 'Please select a specialty';
+    valid = false;
+  } else {
+    errors.specialty = null;
+  }
+  
   // Validate dates
   if (!formData.startingDate || !formData.dueDate) {
-    errors.dates = 'Start and due dates are required';
-    isValid = false;
+    errors.dates = 'Both start and due dates are required';
+    valid = false;
   } else if (formData.dueDate < formData.startingDate) {
     errors.dates = 'Due date cannot be earlier than start date';
-    isValid = false;
+    valid = false;
   } else {
     errors.dates = null;
   }
   
-  return isValid;
+  return valid;
 };
 
-// Create task
-const createTask = () => {
-  if (!validateForm()) {
-    return;
-  }
-    try {
+// Handle save button click
+const handleSave = () => {
+  if (!validateForm()) return;
+  
+  try {
     const task = new Task({
+      id: formData.id,
       name: formData.name,
       specialty: formData.specialty,
-      status: TaskStatus.DRAFT,
+      status: formData.status || TaskStatus.DRAFT,
       startingDate: formData.startingDate,
       dueDate: formData.dueDate,
-      milestoneId: props.milestoneId,
-      responsible: null
+      responsible: formData.responsible || 0 // This is temporary until we implement the assign responsible
     });
     
-    emit('create', task);
-    resetForm();
+    emit('save', task);
   } catch (error) {
     console.error('Error creating task:', error);
+    // Handle specific validation errors if needed
   }
 };
 
-// Cancel and close dialog
-const cancelCreate = () => {
-  resetForm();
+// Close the dialog
+const handleCancel = () => {
   emit('cancel');
 };
 
-// Update visible property
+// Update visibility
 const updateVisible = (value) => {
   emit('update:visible', value);
 };
-
-// Min date for end date (can't be before start date)
-const minDueDate = computed(() => {
-  return formData.startingDate || new Date();
-});
-
-// Reset form when dialog opens
-watch(() => props.visible, (newValue) => {
-  if (newValue === true) {
-    resetForm();
-  }
-});
 </script>
 
 <template>
@@ -133,7 +139,7 @@ watch(() => props.visible, (newValue) => {
     :modal="true"
     :closable="false"
     :style="{ width: '500px' }"
-    header="Create New Task"
+    :header="task.id ? 'Edit Task' : 'Create New Task'"
   >
     <div class="form-container">
       <div class="form-field">
@@ -141,12 +147,12 @@ watch(() => props.visible, (newValue) => {
         <pv-input-text 
           id="name" 
           v-model="formData.name" 
-          class="w-full" 
           :class="{ 'p-invalid': errors.name }"
-          autofocus
+          class="w-full" 
         />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
-      </div>        <div class="form-field">
+      </div>
+        <div class="form-field">
         <label for="specialty">Specialty*</label>
         <PvDropdown 
           id="specialty" 
@@ -154,21 +160,33 @@ watch(() => props.visible, (newValue) => {
           :options="specialties" 
           optionLabel="label" 
           optionValue="value"
-          placeholder="Select a specialty" 
-          class="w-full"
+          :class="{ 'p-invalid': errors.specialty }"
+          class="w-full" 
+        />
+        <small v-if="errors.specialty" class="p-error">{{ errors.specialty }}</small>
+      </div>
+        <div class="form-field" v-if="task.id">
+        <label for="status">Status</label>
+        <PvDropdown 
+          id="status" 
+          v-model="formData.status" 
+          :options="statuses" 
+          optionLabel="label" 
+          optionValue="value"
+          class="w-full" 
         />
       </div>
       
-      <div class="form-dates">
+      <div class="dates-container">
         <div class="form-field">
           <label for="startingDate">Start Date*</label>
           <pv-calendar 
             id="startingDate" 
             v-model="formData.startingDate" 
-            dateFormat="dd/mm/yy" 
-            showIcon 
-            class="w-full" 
+            :showIcon="true"
             :class="{ 'p-invalid': errors.dates }"
+            class="w-full"
+            dateFormat="dd/mm/yy"
           />
         </div>
         
@@ -177,11 +195,10 @@ watch(() => props.visible, (newValue) => {
           <pv-calendar 
             id="dueDate" 
             v-model="formData.dueDate" 
-            dateFormat="dd/mm/yy" 
-            showIcon 
-            class="w-full" 
+            :showIcon="true"
             :class="{ 'p-invalid': errors.dates }"
-            :minDate="minDueDate"
+            class="w-full"
+            dateFormat="dd/mm/yy"
           />
         </div>
       </div>
@@ -190,8 +207,8 @@ watch(() => props.visible, (newValue) => {
     
     <template #footer>
       <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
-        <pv-button label="Create" icon="pi pi-check" @click="createTask" />
+        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="handleCancel" />
+        <pv-button label="Save" icon="pi pi-check" @click="handleSave" />
       </div>
     </template>
   </pv-dialog>
@@ -201,7 +218,7 @@ watch(() => props.visible, (newValue) => {
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .form-field {
@@ -210,7 +227,7 @@ watch(() => props.visible, (newValue) => {
   gap: 0.5rem;
 }
 
-.form-dates {
+.dates-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;

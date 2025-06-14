@@ -84,6 +84,7 @@ export default {
 </script>
 
 <template>
+  <CreateOrganization @organization-created="handleOrganizationsUpdated" />
   <div class="organization-items" v-if="organizations.length">
     <OrganizationItem
         v-for="(item, index) in organizations"
@@ -93,7 +94,7 @@ export default {
   </div>  <div v-else>
     <p>{{ $t('organization.no-organizations') }}</p>
   </div>
-  <CreateOrganization @organization-created="handleOrganizationsUpdated" />
+  
 </template>
 
 <style scoped>

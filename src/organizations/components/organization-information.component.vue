@@ -15,26 +15,26 @@ export default {
   methods: {
     async loadInformation() {
       try {
-        console.log("ORGANIZATION ID: ", this.orgId);
 
         // 1. Obtener información de la organización
         const organizationData = await this.api.getById({ id: this.orgId });
+        
         this.organization = OrganizationAssembler.toEntityFromResource(organizationData);
-        console.log("ORGANIZATION:", this.organization);
+        
 
         // 2. Obtener el ID del contratista (createdBy)
         let contractorId = null;
         
         // Verificar que createdBy exista y tenga la propiedad value
-        if (this.organization && this.organization.createdBy && this.organization.createdBy.value) {
-          contractorId = this.organization.createdBy.value;
+        if (this.organization && this.organization.createdBy && this.organization.createdBy) {
+          contractorId = this.organization.createdBy;
         } 
         // Si createdBy es directamente una cadena de texto (por ejemplo, en formato JSON directo de la API)
-        else if (this.organization && this.organization.createdBy && typeof this.organization.createdBy === 'string') {
+        else if (this.organization && this.organization.createdBy && typeof this.organization.createdBy === 'number') {
           contractorId = this.organization.createdBy;
         }
         
-        console.log("CONTRATISTA ID:", contractorId);
+        
         // 3. Hacer una llamada al endpoint /persons/:id para obtener el nombre completo
         if (contractorId) {
           try {

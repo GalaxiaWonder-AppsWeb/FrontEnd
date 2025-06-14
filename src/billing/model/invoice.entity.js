@@ -1,19 +1,18 @@
-import { PersonId } from '../../iam/model/person.entity.js'
 import { PaymentStatus } from './payment-status.js'
 import { Money } from '../../shared/model/money.js'
 import { BillingItem } from './billing-item.entity.js'
 
 export class Invoice {
     constructor({
-                    id = new InvoiceId(),
-                    payer = new PersonId(),
+                    id = null,
+                    payer = null,
                     status = PaymentStatus.PENDING,
                     issuedDate = new Date(),
                     dueDate = new Date(),
                     items = []
                 }) {
-        this.id = id
-        this.payer = payer
+        this.id = typeof id === 'number' ? id : null
+        this.payer = typeof payer === 'number' ? payer : null
         this.status = status
         this.issuedDate = issuedDate
         this.dueDate = dueDate
@@ -47,19 +46,13 @@ export class Invoice {
 
     toJSON() {
         return {
-            id: this.id?.value,
-            payer: this.payer?.value,
+            id: this.id,
+            payer: this.payer,
             status: this.status,
             issuedDate: this.issuedDate,
             dueDate: this.dueDate,
             totalAmount: this.totalAmount.toJSON(),
             items: this.items.map(i => i.toJSON())
         }
-    }
-}
-
-export class InvoiceId {
-    constructor() {
-        this.value = crypto.randomUUID()
     }
 }

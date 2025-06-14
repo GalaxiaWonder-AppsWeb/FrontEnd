@@ -1,4 +1,4 @@
 export const ProjectRole = {
-    COORDINATOR: 'Coordinator',
-    SPECIALIST: 'Specialist',
+    COORDINATOR: 'COORDINATOR',
+    SPECIALIST: 'SPECIALIST',
 }

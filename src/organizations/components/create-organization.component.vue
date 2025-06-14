@@ -92,12 +92,12 @@ export default {
       const personId = Number(person);
       const orgId = Number(organization);
       console.log("Datos convertidos:", { personId, orgId });
-      const res = await organizationMemberServiceCustom.createContractorMember(
+      /*const res = await organizationMemberServiceCustom.createContractorMember(
         personId,
         orgId,
         OrganizationMemberType.CONTRACTOR
       );
-      
+*/
       try {
         console.log("Vinculando contratista:", { person, organization });
         

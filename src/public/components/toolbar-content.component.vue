@@ -10,7 +10,7 @@
             class="p-button-text p-button-rounded back-button" 
             @click="navigateBack"
             aria-label="Volver"
-            v-tooltip="$t('navigation.back')"
+            v-tooltip="$t('navigation-toolbar.back')"
           />
           <!-- Enlace para volver a organizaciones cuando estamos en una organización específica -->
           <pv-button 
@@ -37,14 +37,15 @@
             {{ getUserInitials() }}
           </div>
         </button>
-        <div v-if="showProfileMenu" class="profile-menu" ref="profileMenu">          <div class="profile-info" v-if="currentUser">
+        <div v-if="showProfileMenu" class="profile-menu" ref="profileMenu">          
+          <div class="profile-info" v-if="currentUser">
             <span class="user-name">{{ currentUser.name }} {{ currentUser.lastName }}</span>
             <span class="user-email">{{ currentUser.email }}</span>
           </div>
           <div class="profile-actions">
             <button class="profile-action" @click="goToProfile">
               <i class="pi pi-user"></i>
-              {{ $t('profile.view') }}
+              <span class="profile-view">{{ $t('profile.view') }}</span>
             </button>
             <button class="profile-action logout-button" @click="logout">
               <i class="pi pi-sign-out"></i>
@@ -68,8 +69,9 @@
       <template v-else-if="inProjectView">
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.schedule')" @click="goTo('schedule')" />
-        <pv-button text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.working-team')" @click="goTo('working-team')" />
+
+        <pv-button text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
         
         <pv-button v-if="isCoordinator" text plain :label="$t(sectionTitle + '.section.settings')" @click="goTo('settings')" />
       </template>
@@ -457,13 +459,13 @@ export default {
 
 .user-name {
   font-weight: 600;
-  color: var(--text-color);
+  color: #000000;
   margin-bottom: 3px;
 }
 
 .user-email {
   font-size: 0.85rem;
-  color: var(--text-color-secondary);
+  color: #000000;
 }
 
 .profile-actions {
@@ -485,6 +487,7 @@ export default {
   transition: all 0.2s ease-in-out;
   border-radius: 4px;
   margin: 0 4px;
+  color: black
 }
 
 .profile-action:hover {

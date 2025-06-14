@@ -2,42 +2,40 @@
   <div class="invite-member-container">
     <h3>{{ $t('organization.invite.title') }}</h3>
     
-    <div class="search-section">
+    <!-- Replace search section with email input -->
+    <div class="email-input-section">
       <span class="p-input-icon-left">
-        <i class="pi pi-search" />
+        <i class="pi pi-envelope" />
         <pv-input-text 
-          v-model="searchTerm" 
-          :placeholder="$t('organization.invite.search')" 
-          @input="searchUsers" 
+          v-model="emailToCheck" 
+          :placeholder="$t('organization.invite.email_placeholder')" 
+          @blur="verifyEmailWhenComplete"
+          :class="{'p-invalid': !!emailError}"
           class="w-full" />
       </span>
+      <small v-if="emailError" class="p-error">{{ emailError }}</small>
+      
+      <!-- Show invite button when user is verified -->
+      <div v-if="verifiedUser" class="verified-user mt-2">
+        <div class="user-info">
+          <div class="user-name">{{ verifiedUser.name }} {{ verifiedUser.lastName }}</div>
+          <div class="user-email">{{ verifiedUser.email }}</div>
+        </div>
+        <pv-button 
+          icon="pi pi-user-plus" 
+          :label="$t('organization.invite.button')" 
+          @click="inviteUser(verifiedUser)" 
+          :disabled="isUserInvited(verifiedUser.id)" 
+          :class="{'p-button-outlined': isUserInvited(verifiedUser.id)}" />
+      </div>
     </div>
 
     <div v-if="loading" class="loading-container">
       <pv-progress-spinner style="width:50px;height:50px" />
     </div>
 
-    <div v-else-if="error" class="error-message">
+    <div v-if="error && !emailError" class="error-message">
       {{ error }}
-    </div>
-
-    <div v-else-if="searchResults.length === 0 && searchTerm" class="no-results">
-      {{ $t('organization.invite.no_results') }}
-    </div>
-
-    <div v-else-if="searchResults.length > 0" class="search-results">
-      <div v-for="user in searchResults" :key="user.id" class="user-item">
-        <div class="user-info">
-          <div class="user-name">{{ user.name }} {{ user.lastName }}</div>
-          <div class="user-email">{{ user.email }}</div>
-        </div>
-        <pv-button 
-          icon="pi pi-user-plus" 
-          :label="$t('organization.invite.button')" 
-          @click="inviteUser(user)" 
-          :disabled="isUserInvited(user.id)"
-          :class="{'p-button-outlined': isUserInvited(user.id)}" />
-      </div>
     </div>
 
     <div class="pending-invitations" v-if="pendingInvitations.length > 0">
@@ -67,12 +65,13 @@ export default {
   data() {
     return {
       route: useRoute(),
-      searchTerm: '',
-      searchResults: [],
+      emailToCheck: '',
+      emailError: '',
+      verifiedUser: null,
       pendingInvitations: [],
       loading: false,
       error: null,
-      currentUserId: null // Se debe obtener el usuario actual de la sesión
+      currentUserId: null
     }
   },
   computed: {
@@ -83,8 +82,6 @@ export default {
   mounted() {
     this.loadCurrentUser();
     this.loadPendingInvitations();
-    // Cargar usuarios automáticamente al abrir la ventana
-    this.searchUsers();
   },
   methods: {
     async loadCurrentUser() {
@@ -147,58 +144,72 @@ export default {
       } finally {
         this.loading = false;
       }
-    },async searchUsers() {
-      this.loading = true;
+    },    /**
+     * Verifies the email when the input field loses focus
+     * This ensures exactly one API call when the email is fully entered
+     */
+    async verifyEmailWhenComplete() {
+      // Clear previous verification results
+      this.verifiedUser = null;
+      this.emailError = '';
+      
+      // Don't do anything if the field is empty
+      if (!this.emailToCheck.trim()) {
+        return;
+      }
+      
+      // Validate email format before making API call
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(this.emailToCheck)) {
+        this.emailError = this.$t('organization.invite.invalid_email');
+        return;
+      }
+      
+      // Now that we have a valid email format, verify if it's a registered user
       try {
-        console.log("Buscando usuarios...");
+        this.loading = true;
+        this.error = null;
         
-        // Obtener todos los usuarios registrados directamente del endpoint
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/persons`);
-        if (!response.ok) {
-          throw new Error('No se pudo obtener la lista de personas');
+        // This will make exactly ONE GET request to verify if the email exists
+        const result = await personService.searchByEmail(this.emailToCheck);
+        
+        if (!result || result.length === 0) {
+          this.emailError = this.$t('organization.invite.email_not_found');
+          return;
         }
-        const allPersons = await response.json();
-        console.log("Personas obtenidas:", allPersons);
         
-        // Obtener miembros actuales de la organización
-        const membersResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/members?organizationId=${this.organizationId}`);
+        const user = result[0]; // Assume the first result is the matched user
+        
+        // Check if the user is already a member of the organization
+        const membersResponse = await fetch(
+          `${import.meta.env.VITE_PROPGMS_API_URL}/members?organizationId=${this.organizationId}`
+        );
         const members = await membersResponse.json();
-        console.log("Miembros obtenidos:", members);
-        
         const memberPersonIds = members.map(m => m.personId);
-        console.log("IDs de miembros:", memberPersonIds);        // Obtener solo las invitaciones PENDIENTES para no mostrar personas con invitaciones activas
-        // Esto permite volver a invitar a usuarios que hayan rechazado o aceptado invitaciones previas
-        const pendingInvitationsResponse = await fetch(
-          `${import.meta.env.VITE_PROPGMS_API_URL}/invitations?organizationId=${this.organizationId}&status=Pending&_t=${new Date().getTime()}`
-        );
         
-        const pendingInvitations = await pendingInvitationsResponse.json();
-        console.log("Invitaciones pendientes para esta organización:", pendingInvitations);
+        if (memberPersonIds.includes(user.id)) {
+          this.emailError = this.$t('organization.invite.user_already_member');
+          return;
+        }
         
-        // Extraer los IDs de personas con invitaciones pendientes únicamente
-        const pendingInvitedPersonIds = pendingInvitations.map(inv => inv.personId);
-        console.log("IDs de personas con invitaciones pendientes:", pendingInvitedPersonIds);
-          // Filtrar: no miembros, no invitados con invitaciones PENDIENTES, no el propio usuario
-        this.searchResults = allPersons.filter(person =>
-          person.id !== this.currentUserId &&
-          !memberPersonIds.includes(person.id) &&
-          !pendingInvitedPersonIds.includes(person.id) &&
-          (
-            !this.searchTerm ||
-            person.name?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-            person.lastName?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-            person.email?.toLowerCase().includes(this.searchTerm.toLowerCase())
-          )
-        );
-        
-        console.log("Resultados de búsqueda:", this.searchResults);
-      } catch (e) {
-        console.error("Error al buscar usuarios:", e);
-        this.searchResults = [];
+        // Set the verified user to display info and invite button
+        this.verifiedUser = user;
+          // Show success message
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'info',
+            summary: this.$t('organization.invite.email_verified'),
+            life: 2000
+          });
+        }
+      } catch (error) {
+        console.error('Error verifying email:', error);
+        this.emailError = this.$t('organization.invite.error_search');
       } finally {
         this.loading = false;
       }
-    },    async inviteUser(user) {
+    },
+    async inviteUser(user) {
       try {
         this.loading = true;
         console.log("Invitando usuario:", user);
@@ -262,10 +273,11 @@ export default {
             detail: this.$t('organization.invite.success_message', { name: user.name }),
             life: 3000
           });
-        }
-          // Refrescar datos locales
+        }        // Refrescar datos locales
         await this.loadPendingInvitations();
-        await this.searchUsers();
+        // Reset the email input and verification state
+        this.emailToCheck = '';
+        this.verifiedUser = null;
         
         // Disparar eventos para actualizar notificaciones en toda la aplicación
         if (window && window.dispatchEvent) {
@@ -332,42 +344,30 @@ export default {
   gap: 1.5rem;
 }
 
-.search-section {
-  margin-bottom: 1rem;
+.email-input-section {
+  margin-bottom: 1.5rem;
 }
 
-.search-results {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.user-item {
+.verified-user {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1rem;
-  background-color: var(--surface-card);
+  padding: 0.75rem;
+  background-color: var(--surface-hover);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 0.5rem;
 }
 
-.user-info {
-  display: flex;
-  flex-direction: column;
+.mt-2 {
+  margin-top: 0.5rem;
 }
 
-.user-name {
-  font-weight: 600;
-  color: var(--text-color);
+.p-error {
+  display: block;
+  margin-top: 0.25rem;
 }
 
-.user-email {
-  color: var(--text-color-secondary);
-  font-size: 0.875rem;
-}
-
-.loading-container, .error-message, .no-results {
+.loading-container, .error-message {
   display: flex;
   justify-content: center;
   align-items: center;

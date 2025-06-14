@@ -1,4 +1,8 @@
 {
+  "auth": {
+    "logout": "Sign out",
+    "logout_success": "Successfully signed out"
+  },
   "navigation": {
     "back": "Back",
     "all_organizations": "All Organizations"
@@ -69,6 +73,7 @@
     },    "invite": {
       "title": "Invite Members",
       "search": "Search workers by name or email",
+      "email_placeholder": "Enter email address",
       "button": "Invite",
       "no_results": "No workers found with that search criteria",
       "pending": "Pending invitations",
@@ -80,11 +85,16 @@
       "error_message": "Could not send invitation",
       "sending": "Sending invitation",
       "please_wait": "Please wait...",
+      "invalid_email": "Please enter a valid email address",
+      "email_not_found": "No user found with this email address",
+      "user_already_member": "This user is already a member of this organization",
+      "email_verified": "Email verified",
       "status": {
         "pending": "Pending",
         "accepted": "Accepted",
-        "rejected": "Rejected"      }
-    },    "edit-organization": {
+        "rejected": "Rejected"      
+      }
+    },"edit-organization": {
       "title": "Edit organization",
       "legal-name": "Legal Name",
       "commercial-name": "Commercial Name",
@@ -116,9 +126,6 @@
     "edit": "Edit",
     "ok": "OK",
     "create": "Create"
-  },"auth": {
-    "logout": "Sign out",
-    "logout_success": "Successfully signed out"
   },
   "navigation": {
     "dashboard": {

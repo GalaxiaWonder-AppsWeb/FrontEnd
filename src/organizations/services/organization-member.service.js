@@ -11,6 +11,36 @@ class OrganizationMemberService extends BaseService {
     }
     
     // Método para obtener miembros por el ID de la organización
+    async getByOrganizationId(organizationId) {
+        try {
+            if (!organizationId) {
+                console.error("Se requiere organizationId");
+                return [];
+            }
+            
+            const url = `${this.url}?organizationId=${organizationId}`;
+            
+            const config = {
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
+                }
+            };
+            
+            const response = await axios.get(url, config);
+            
+            if (response.data) {
+                return response.data;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error("Error in getByOrganizationId:", error);
+            return [];
+        }
+    }
+    
+    // Método para obtener miembros por el ID de la organización
     async getByOrgId(organizationId) {
         try {
             if (!organizationId) {

@@ -14,7 +14,7 @@ export default {
       default: false
     },
     currentUserId: {
-      type: String,
+      type: [String, Number],
       default: null
     }
   },

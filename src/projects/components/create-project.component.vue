@@ -94,7 +94,8 @@ export default {
           startingDate: this.form.startingDate,
           endingDate: this.form.endingDate,
           schedule: {},
-          team: [],          organizationId: this.organizationId,
+          team: [],          
+          organizationId: parseInt(this.organizationId),
           createdAt: new Date(),
           createdBy: this.user?.personId || null, // El usuario actual que está creando el proyecto
           contractor: this.creatorId // El creador de la organización

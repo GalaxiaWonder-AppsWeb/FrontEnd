@@ -1,19 +1,18 @@
 import {Specialty} from "./specialty.js";
 import {TaskStatus} from "./task-status.js";
-import {ProjectTeamMemberId} from "./project-team-member.entity.js";
 import {TaskSubmission} from "./task-submission.entity.js";
 import {ScheduleItem} from "./schedule-item.js";
 
-export class Task extends ScheduleItem {
-    constructor({
-                    id = new TaskId(),
+export class Task extends ScheduleItem {    constructor({
+                    id = null,
                     name = '',
                     specialty,
                     status = TaskStatus.DRAFT,
                     startingDate = new Date(),
                     dueDate = new Date(),
                     //submission = new TaskSubmission(),
-                    responsible = new ProjectTeamMemberId(),
+                    responsible = null,
+                    milestoneId = null,
                 }) {
 
         super();
@@ -40,20 +39,19 @@ export class Task extends ScheduleItem {
 
         if (dueDate < startingDate) {
             throw new Error('Due date cannot be earlier than starting date');
+        }        // El responsible puede ser null para tareas nuevas
+        if (responsible !== null && typeof responsible !== 'number') {
+            throw new Error('Responsible must be null or a number');
         }
 
-        if (!(responsible instanceof ProjectTeamMemberId) || !responsible.value) {
-            throw new Error('Responsible must be a valid ProjectTeamMemberId instance with a value');
-        }
-
-        this.id = id;
+        this.id = typeof id === 'number' ? id : null;
         this.name = name;
         this.specialty = specialty;
-        this.status = status;
-        this.startingDate = startingDate;
+        this.status = status;        this.startingDate = startingDate;
         this.dueDate = dueDate;
         //this.submission = submission;
-        this.responsible = responsible;
+        this.responsible = typeof responsible === 'number' ? responsible : null;
+        this.milestoneId = milestoneId;
     }
 
     getStartingDate() {
@@ -65,8 +63,8 @@ export class Task extends ScheduleItem {
     }
 
     assignResponsible(responsible) {
-        if (!(responsible instanceof ProjectTeamMemberId) || !responsible.value) {
-            throw new Error('Responsible must be a valid ProjectTeamMemberId instance with a value');
+        if (typeof responsible !== 'number') {
+            throw new Error('Responsible must be a valid number');
         }
         this.responsible = responsible;
     }
@@ -76,30 +74,17 @@ export class Task extends ScheduleItem {
             throw new Error(`Status must be one of the valid TaskStatus values: ${Object.values(TaskStatus).join(', ')}`);
         }
         this.status = newStatus;
-    }
-
-    toJSON() {
+    }    toJSON() {
         return {
-            id: this.id?.value ?? null,
+            id: this.id,
             name: this.name,
             specialty: this.specialty,
             status: this.status,
             startingDate: this.startingDate,
             dueDate: this.dueDate,
             //submission: this.submission,
-            responsible: this.responsible?.value ?? null
-        };
-    }
-}
-
-export class TaskId {
-    constructor(value) {
-        this.value = value || crypto.randomUUID();
-    }
-
-    toJSON() {
-        return {
-            value: this.value
+            responsible: this.responsible,
+            milestoneId: this.milestoneId
         };
     }
 }

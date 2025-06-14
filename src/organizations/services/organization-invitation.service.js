@@ -54,6 +54,43 @@ export const OrganizationInvitationService = {
         } catch (error) {
             console.error('[InvitationService] Error al obtener invitaciones por organización:', error);
             return []; // Devolver array vacío en caso de error para evitar errores en cascada
+        }    },
+    
+    /**
+     * Verifica si un email existe en el sistema antes de invitarlo
+     * @param {string} email - El email a verificar
+     * @returns {Promise<Object|null>} - Datos del usuario si existe, o null
+     */
+    async verifyEmailExists(email) {
+        if (!email) {
+            console.error('[InvitationService] email es requerido');
+            return null;
+        }
+        
+        try {
+            // Configuración con anti-cache
+            const config = {
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
+                },
+                params: {
+                    _t: new Date().getTime()
+                }
+            };
+            
+            // Intentar obtener persona por email
+            const response = await axios.get(`${baseURL}/persons?email=${encodeURIComponent(email)}`, config);
+            
+            // Validar respuesta y formatearla para el componente
+            if (Array.isArray(response.data) && response.data.length > 0) {
+                return response.data[0]; // Devolver el primer resultado
+            }
+            
+            return null; // No se encontró ningún usuario con ese email
+        } catch (error) {
+            console.error('[InvitationService] Error al verificar email:', error);
+            return null;
         }
     },
     

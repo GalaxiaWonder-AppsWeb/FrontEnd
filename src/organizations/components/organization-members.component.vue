@@ -206,7 +206,7 @@ export default {
 <template>
   <div class="organization-members-container">
     <div class="members-header">
-      <h2>{{ $t('organization.section.members') }}</h2>
+      <h2 class="members-title">{{ $t('organization.section.members') }}</h2>
       <pv-button 
         v-if="isCreator" 
         icon="pi pi-user-plus" 
@@ -260,11 +260,17 @@ export default {
   margin-bottom: 2rem;
 }
 
+.members-title {
+  color: black;
+  font-size: 1.5rem;
+}
+
 .loading-container, .error-message, .empty-message {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 3rem 0;
+  color: black;
 }
 
 .error-message {

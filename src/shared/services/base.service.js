@@ -20,6 +20,7 @@ export class BaseService {
      */
     _buildUrl(path) {
         const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
+        console.log(`Building URL with path: ${cleanPath}`);
         return cleanPath ? `${this.url}/${cleanPath}` : this.url;
     }
 

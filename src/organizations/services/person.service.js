@@ -104,18 +104,43 @@ class PersonService extends BaseService {
                 console.error("Error searching workers:", error);
                 throw error;
             });
-    }
-
-    // Método para buscar personas por email
-    searchByEmail(email) {
-        const url = `${this.url}/search?email=${encodeURIComponent(email)}`;
+    }    // Método para buscar personas por email
+    async searchByEmail(email) {
+        if (!email) {
+            console.warn('Email no proporcionado');
+            return [];
+        }
+        
         console.log(`Searching person with email: ${email}`);
-        return this.http.get(url)
-            .then(response => response.data)
-            .catch(error => {
-                console.error("Error searching by email:", error);
-                throw error;
-            });
+        
+        try {
+            // Intentar primero con la URL de búsqueda especializada
+            const url = `${this.url}/search?email=${encodeURIComponent(email)}`;
+            try {
+                const response = await this.http.get(url);
+                if (response && response.data) {
+                    return response.data;
+                }
+            } catch (err) {
+                console.warn(`Error en endpoint de búsqueda especializado: ${err.message}, intentando alternativas`);
+            }
+            
+            // Si no funciona, intentar con filtrado de la API Rest
+            const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
+            const response = await fetch(`${apiUrl}/persons?email=${encodeURIComponent(email)}`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data; // La API devuelve un array de resultados
+            }
+            
+            // Si no hay resultados, devolver array vacío
+            return [];
+        } catch (error) {
+            console.error("Error searching by email:", error);
+            // No relanzo el error para simplificar el manejo en el componente
+            return [];
+        }
     }
 }
 

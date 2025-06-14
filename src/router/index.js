@@ -24,6 +24,7 @@ import ProjectList from '../projects/components/project-list.component.vue'
 import ProjectInformation from '../projects/components/project-information.component.vue'
 import ProjectMembers from '../projects/components/project-members.component.vue'
 import ProjectSettings from '../projects/components/project-setting.component.vue'
+import Schedule from '../projects/components/schedule.component.vue'
 
 const routes = [
     {
@@ -80,7 +81,8 @@ const routes = [
                         name: 'organization-information',
                         component: OrganizationInformation,
                         meta: { allowedRoles: ['Contractor', 'Worker'] } // Todos pueden acceder
-                    },{
+                    },
+                    {
                         // Vista de lista de proyectos
                         path: 'projects',
                         name: 'organization-projects',
@@ -106,6 +108,14 @@ const routes = [
                                 name: 'project-information',
                                 component: ProjectInformation,
                                 meta: { allowedRoles: ['Coordinator', 'Specialist'] } // Todos pueden acceder
+                            },
+                            {
+                                // Vista de calendarios del proyecto
+                                path: 'schedule',
+                                name: 'schedule',
+                                component: Schedule,
+                                meta: { allowedRoles: ['Coordinator', 'Specialist'] } // Todos pueden acceder
+
                             },
                             {
                                 // Vista de miembros del proyecto

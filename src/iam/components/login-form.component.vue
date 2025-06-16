@@ -70,6 +70,8 @@ export default {
     }
   },
   created() {
+    console.log("API URL:", import.meta.env.VITE_PROPGMS_API_URL);
+
     localStorage.clear()
     this.router = useRouter()
     this.authService = new AuthService()

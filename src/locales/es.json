@@ -4,6 +4,13 @@
     "all_organizations": "Todas las Organizaciones"
   },
   "register": {
+    "errors": {
+      "email-taken": "Este correo electrónico ya está en uso",
+      "invalid-phone": "Número de teléfono inválido",
+      "missing-role": "Debes seleccionar un rol",
+      "missing-profession": "La profesión es obligatoria para trabajadores"
+    },
+    "checking-email": "Verificando correo electrónico...",
     "title": "Registro de Usuario",
     "name": "Nombre",
     "last-name": "Apellido",

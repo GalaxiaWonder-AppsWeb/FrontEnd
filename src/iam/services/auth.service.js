@@ -7,6 +7,18 @@ import {UserType} from "../model/user-type.js";
 
 const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL
 
+function toSignUpPayload(account, person) {
+    return {
+        username: account.email,
+        password: account.password,
+        userType: account.userType === 'Worker' ? 1 : 2, // Usa el ID numérico esperado por el backend
+        firstName: person.name,
+        lastName: person.lastName,
+        email: person.email,
+        phone: person.phoneNumber
+    }
+}
+
 export class AuthService {
     constructor() {
         this.baseUrl = propgmsApiUrl
@@ -26,15 +38,30 @@ export class AuthService {
     }
 
     async register(account, person) {
-        if (!(account instanceof UserAccount)) {
-            throw new Error('Invalid account object')
-        }
+        try {
+            const payload = {
+                username: account.email,
+                password: account.password,
+                userType: account.userType === 'Worker' ? 0 : 1, // o usa tu mapping real
+                firstName: person.name,
+                lastName: person.lastName,
+                email: person.email,
+                phone: person.phoneNumber
+            };
 
-        if (!(person instanceof Person)) {
-            throw new Error('Invalid person object')
-        }
+            const response = await axios.post(
+                `${this.baseUrl}/api/v1/authentication/sign-up`,
+                payload,
+                this.httpOptions
+            );
 
-        try {            const existingUser = await this.findUserByEmail(account.email)
+            return response.data;
+        } catch (error) {
+            this.handleError('Register', error);
+        }
+        /*
+        try {
+            const existingUser = await this.findUserByEmail(account.email)
             if (existingUser) {
                 throw new Error('User already exists')
             }
@@ -60,6 +87,7 @@ export class AuthService {
         } catch (error) {
             this.handleError('Register', error)
         }
+        */
     }
 
     async login(credentials) {
@@ -67,6 +95,28 @@ export class AuthService {
             throw new Error('Invalid credentials object')
         }
 
+        try {
+            console.log('Login URL:', `${this.baseUrl}/api/v1/authentication/sign-in`); // 👈 Verificación útil
+
+            const response = await axios.post(
+                `${this.baseUrl}/api/v1/authentication/sign-in`,
+                {
+                    email: credentials.email,
+                    password: credentials.password
+                },
+                this.httpOptions
+            );
+
+            const user = response.data;
+            this.storeUser(user);
+            console.log('[DEBUG] User returned by backend:', user);
+            return user;
+        } catch (error) {
+            this.handleError('Login', error);
+        }
+
+        
+        /*
         try {
             console.log(propgmsApiUrl);
             console.log(credentials);
@@ -88,7 +138,9 @@ export class AuthService {
         } catch (error) {
             this.handleError('Login', error)
         }
-    }    logout() {
+            */
+    }
+    logout() {
         localStorage.removeItem('user');
         return Promise.resolve(true);
     }
@@ -139,9 +191,20 @@ export class AuthService {
     }
 
     handleError(context, error) {
-        const msg = error.response?.data || error.message || 'Unexpected error'
-        console.error(`[AuthService] ${context} error:`, msg)
-        throw new Error(msg)
+        const data = error?.response?.data;
+
+        let msg = 'Unexpected error';
+
+        if (typeof data === 'string') {
+            msg = data;
+        } else if (data && typeof data === 'object') {
+            msg = data.error || data.message || JSON.stringify(data);
+        } else if (error?.message) {
+            msg = error.message;
+        }
+
+        console.error(`[AuthService] ${context} error:`, msg);
+        throw new Error(msg);
     }
 
     async getAllPersons() {

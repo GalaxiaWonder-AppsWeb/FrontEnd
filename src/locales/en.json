@@ -8,6 +8,13 @@
     "all_organizations": "All Organizations"
   },
   "register": {
+    "errors": {
+      "email-taken": "This email is already in use",
+      "invalid-phone": "Invalid phone number",
+      "missing-role": "You must select a role",
+      "missing-profession": "Profession is required for workers"
+    },
+    "checking-email": "Checking email...",
     "title": "User Register",
     "name": "Name",
     "last-name": "Last Name",

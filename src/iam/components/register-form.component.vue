@@ -6,6 +6,8 @@
 
 
     <h1 class="form-title">{{ $t('register.title') }}</h1>
+    <p v-if="message" :class="['message', messageType]">{{ message }}</p>
+
 
     <!-- Name and Lastname -->
     <div class="field-row">
@@ -28,8 +30,8 @@
             v-model="phoneNumber"
             type="tel"
             inputmode="numeric"
-            pattern="[0-9]*"
-            maxlength="9"
+            pattern="^\+51[0-9]{9}$"
+            maxlength="12"
             required
         />
 
@@ -98,14 +100,16 @@ export default {
       role: '', // If u want an empty field use it like this, but always use enum values later for security
       message: '',
       messageType: 'success',
-      authService: new AuthService()
+      authService: new AuthService(),
     }
   },
   methods: {
     async handleRegister() {
+      console.log('Register button clicked')
+
       this.message = ''
 
-      const phoneRegex = /^\d{9}$/;
+      const phoneRegex = /^\+51[0-9]{9}$/;
 
       if (!phoneRegex.test(this.phoneNumber)) {
         this.message = this.$t('register.errors.invalid-phone');
@@ -125,6 +129,8 @@ export default {
         this.messageType = 'error';
         return;
       }
+
+
 
       try {
         const person = new Person(
@@ -150,6 +156,7 @@ export default {
         this.message = `${result.email} ${this.$t('register.successful-register')}`
         this.messageType = 'success'
 
+
         this.name = ''
         this.lastName = ''
         this.phoneNumber = ''
@@ -157,9 +164,17 @@ export default {
         this.email = ''
         this.password = ''
         this.role = ''
+
+        this.$router.push('/login')
       } catch (error) {
-        this.message = error.message
-        this.messageType = 'error'
+
+          if (error?.message?.includes('already taken')) {
+            this.message = this.$t('register.errors.email-taken');
+          } else {
+            this.message = error?.message || 'Unexpected error';
+          }
+
+          this.messageType = 'error';
       }
     }
   },
@@ -173,6 +188,25 @@ export default {
 }
 </script>
 <style scoped>
+.message {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.message.success {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
 .register-card {
   max-width: 540px;
   margin: 3rem auto;

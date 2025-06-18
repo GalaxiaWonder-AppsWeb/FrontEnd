@@ -56,7 +56,7 @@
 <script>
 import { useRoute } from 'vue-router';
 import { OrganizationInvitationService } from '../services/organization-invitation.service.js';
-import { personService } from '../services/person.service.js';
+import { personService } from '../../shared/services/person.service.js';
 import { OrganizationInvitationStatus } from '../model/organization-invitation-status.js';
 import { authService } from '../../iam/services/auth.service.js';
 
@@ -182,7 +182,7 @@ export default {
         
         // Check if the user is already a member of the organization
         const membersResponse = await fetch(
-          `${import.meta.env.VITE_PROPGMS_API_URL}/members?organizationId=${this.organizationId}`
+          `${import.meta.env.VITE_PROPGMS_API_URL}/organization-members?organizationId=${this.organizationId}`
         );
         const members = await membersResponse.json();
         const memberPersonIds = members.map(m => m.personId);

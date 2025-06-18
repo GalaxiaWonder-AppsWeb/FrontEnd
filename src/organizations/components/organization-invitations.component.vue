@@ -56,7 +56,7 @@
 <script>
 import { OrganizationInvitationService } from '../services/organization-invitation.service.js';
 import { organizationService } from '../services/organization.service.js';
-import { personService } from '../services/person.service.js';
+import { personService } from '../../shared/services/person.service.js';
 import { organizationMemberService } from '../services/organization-member.service.js';
 import { OrganizationInvitationStatus } from '../model/organization-invitation-status.js';
 import { authService } from '../../iam/services/auth.service.js';

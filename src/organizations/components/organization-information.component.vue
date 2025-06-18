@@ -1,7 +1,7 @@
 <script>
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationAssembler} from "../services/organization.assembler.js";
-import {personService} from "../services/person.service.js";
+import {personService} from "../../shared/services/person.service.js";
 export default {
   name: "OrganizationInformation",
   data() {

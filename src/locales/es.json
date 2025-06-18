@@ -129,7 +129,8 @@
       "organizations": "Organizaciones",
       "invitations": "Invitaciones"
     }
-  },  "projects": {
+  },  
+  "projects": {
     "title": "Proyectos",
     "create": "Nuevo proyecto",
     "empty": "No hay proyectos disponibles",
@@ -163,6 +164,34 @@
       "working-team": "Equipo de Trabajo"
     },
     "information": "Información del Proyecto",
+    "working-team": {
+      "title": "Equipo de Trabajo",
+      "add-member": {
+        "title": "Agregar Miembro",
+        "subtitle": "Agregar miembros al equipo del proyecto",
+        "first-step": "Paso 1: Selecciona miembros para agregar al proyecto",
+        "first-step-placeholder": "Buscar por nombre o correo electrónico",
+        "first-step-select": "Seleccionando...",
+        "first-step-button": "Continuar con la asignación de roles",
+        "second-step": {
+          "title": "Paso 2: Asignar roles y especialidades",
+          "description": "Para cada miembro, asigna un rol. Si el rol es Especialista, debes asignar una especialidad",
+          "table": {
+            "name": "Nombre",
+            "role": "Rol",
+            "specialty": "Especialidad",
+            "status": "Estado"
+          },
+          "back-button": "Volver a selección",
+          "button": "Agregar miembros al proyecto"
+        },
+        "no-members": "No hay miembros disponibles"
+      },
+      "role": "Rol",
+      "specialty": "Especialidad",
+      "no-members": "No hay miembros en este proyecto",
+      "reload-data": "Recargar Datos"
+    },
     "settings": {
       "title": "Configuración del Proyecto",
       "description": "Descripción del Proyecto",

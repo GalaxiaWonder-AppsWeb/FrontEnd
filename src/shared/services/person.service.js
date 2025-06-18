@@ -1,13 +1,24 @@
-import { BaseService } from "../../shared/services/base.service.js";
+import { BaseService } from "./base.service.js";
 
+/**
+ * Servicio consolidado para la gestión de personas
+ * Combina las funcionalidades de los servicios de los directorios IAM y Organizations
+ */
 class PersonService extends BaseService {
     constructor() {
-        super("/persons"); // El endpoint "persons" será utilizado como base
-    }    // Método para obtener una persona por su ID
+        super("/persons");
+        console.log('PersonService: Usando endpoint base', this.url);
+    }
+    
+    /**
+     * Obtiene una persona por su ID con manejo de errores robusto
+     * @param {number|string} personId - ID de la persona a buscar
+     * @returns {Promise<Object|null>} - Datos de la persona o null
+     */
     async getById(personId) {
         try {
             console.log(`Obteniendo persona con id ${personId}`);
-            if (!personId) {
+            if (!personId && personId !== 0) {
                 console.warn('ID de persona no proporcionado');
                 return null;
             }
@@ -94,7 +105,22 @@ class PersonService extends BaseService {
         }
     }
 
-    // Método para buscar trabajadores por término de búsqueda (nombre o email)
+    /**
+     * Actualiza los datos de una persona
+     * @param {number|string} personId - ID de la persona
+     * @param {Object} personData - Datos actualizados de la persona
+     * @returns {Promise} - Respuesta de la actualización
+     */
+    update(personId, personData) {
+        console.log(`Updating person with ID ${personId}:`, personData);
+        return this.put(personId, personData);
+    }
+
+    /**
+     * Busca trabajadores por término de búsqueda (nombre o email)
+     * @param {string} query - Término de búsqueda
+     * @returns {Promise<Array>} - Resultados de la búsqueda
+     */
     searchWorkers(query) {
         const url = `${this.url}/search/workers?query=${encodeURIComponent(query)}`;
         console.log(`Searching workers with query: ${query}`);
@@ -104,7 +130,13 @@ class PersonService extends BaseService {
                 console.error("Error searching workers:", error);
                 throw error;
             });
-    }    // Método para buscar personas por email
+    }
+    
+    /**
+     * Busca personas por email
+     * @param {string} email - Email a buscar
+     * @returns {Promise<Array>} - Resultados de la búsqueda
+     */
     async searchByEmail(email) {
         if (!email) {
             console.warn('Email no proporcionado');
@@ -114,23 +146,13 @@ class PersonService extends BaseService {
         console.log(`Searching person with email: ${email}`);
         
         try {
-            // Intentar primero con la URL de búsqueda especializada
-            const url = `${this.url}/search?email=${encodeURIComponent(email)}`;
-            try {
-                const response = await this.http.get(url);
-                if (response && response.data) {
-                    return response.data;
-                }
-            } catch (err) {
-                console.warn(`Error en endpoint de búsqueda especializado: ${err.message}, intentando alternativas`);
-            }
-            
-            // Si no funciona, intentar con filtrado de la API Rest
+            // Intentar con filtrado de la API Rest
             const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
             const response = await fetch(`${apiUrl}/persons?email=${encodeURIComponent(email)}`);
             
             if (response.ok) {
                 const data = await response.json();
+                console.log('Datos obtenidos de la API:', data);
                 return data; // La API devuelve un array de resultados
             }
             
@@ -144,5 +166,5 @@ class PersonService extends BaseService {
     }
 }
 
-// Exportar una instancia del servicio para usarlo en cualquier lugar
+// Exportar una instancia única del servicio para usar en toda la aplicación
 export const personService = new PersonService();

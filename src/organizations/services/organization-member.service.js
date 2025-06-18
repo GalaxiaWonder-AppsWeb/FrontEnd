@@ -7,7 +7,7 @@ import axios from 'axios'
 // Definimos una clase extendida para añadir funciones personalizadas
 class OrganizationMemberService extends BaseService {
     constructor() {
-        super('/members');
+        super('/organization-members');
     }
     
     // Método para obtener miembros por el ID de la organización
@@ -207,7 +207,7 @@ class OrganizationMemberService extends BaseService {
 const memberServiceInstance = new OrganizationMemberService();
 
 // Creamos el servicio base con createService para operaciones básicas
-const baseService = createService('/members', {
+const baseService = createService('/organization-members', {
     create:         { verb: HttpVerb.POST },
     delete:         { verb: HttpVerb.DELETE, path: ':id' },
     updateType:     { verb: HttpVerb.PATCH, path: ':id/type', fullPath: true }

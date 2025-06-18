@@ -1,97 +1,6 @@
 {
-  "projects": [
-    {
-      "name": "projGoogle",
-      "description": "projGoogle",
-      "status": "BASIC STUDIES",
-      "budget": 1000,
-      "startingDate": "2025-06-13T11:55:41.013Z",
-      "endingDate": "2025-12-13T11:55:41.013Z",
-      "schedule": {},
-      "team": [],
-      "organizationId": "4",
-      "createdAt": "2025-06-13T11:56:02.754Z",
-      "createdBy": 1,
-      "contractor": 1,
-      "id": 1
-    },
-    {
-      "name": "projGoogle2",
-      "description": "projGoogle2",
-      "status": "BASIC STUDIES",
-      "budget": 1000,
-      "startingDate": "2025-06-13T11:57:06.441Z",
-      "endingDate": "2025-12-13T11:57:06.441Z",
-      "schedule": {},
-      "team": [],
-      "organizationId": 4,
-      "createdAt": "2025-06-13T11:57:26.311Z",
-      "createdBy": 1,
-      "contractor": 1,
-      "id": 2
-    },
-    {
-      "name": "projGoogle3",
-      "description": "projGoogle3",
-      "status": "BASIC STUDIES",
-      "budget": 1000,
-      "startingDate": "2025-06-13T14:58:34.967Z",
-      "endingDate": "2025-12-13T14:58:34.967Z",
-      "schedule": {},
-      "team": [],
-      "organizationId": 4,
-      "createdAt": "2025-06-13T14:59:06.327Z",
-      "createdBy": 1,
-      "contractor": 1,
-      "id": 3
-    }
-  ],
+  "projects": [],
   "users": [
-    {
-      "id": "6c16daf4-e93c-488b-bd4b-5f4711d380cf",
-      "email": "henry29.2004@hotmail.com",
-      "password": "paolo28",
-      "userType": "Worker",
-      "createdAt": "2025-05-09T19:10:45.054Z",
-      "lastLoginAt": null,
-      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c"
-    },
-    {
-      "id": "fa05a5a9-9f3a-4375-a17c-26278a96ca03",
-      "email": "ramon2002@gmail.com",
-      "password": "ramon20",
-      "userType": "Worker",
-      "createdAt": "2025-05-09T23:33:40.299Z",
-      "lastLoginAt": null,
-      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6"
-    },
-    {
-      "id": "8a5db41f-c5d8-4e7a-95c4-36f1d7b47281",
-      "email": "maria.lopez@example.com",
-      "password": "maria123",
-      "userType": "Worker",
-      "createdAt": "2025-05-20T14:22:10.124Z",
-      "lastLoginAt": null,
-      "personId": "c4b19f8d-e2a7-4f3b-b9c8-d5a67e254321"
-    },
-    {
-      "id": "p4f8d8b-86d9-494c-b90e-a4277c80c0c2",
-      "email": "fernando.lopez@example.com",
-      "password": "fernando123",
-      "userType": "Worker",
-      "createdAt": "2025-05-20T14:22:10.124Z",
-      "lastLoginAt": null,
-      "personId": "v4f8d8b-86d9-494c-b90e-a4277c80c0c2"
-    },
-    {
-      "id": "e34d3c49-8ff2-4f7d-ab53-91613d8007e0",
-      "email": "testeo1@gmail.com",
-      "password": "ASDFGH123",
-      "userType": "Worker",
-      "createdAt": "2025-06-03T17:11:33.412Z",
-      "lastLoginAt": null,
-      "personId": "80a667a4-0971-4bde-b872-7a9019392ad4"
-    },
     {
       "id": 1,
       "email": "google@example.com",
@@ -109,49 +18,18 @@
       "createdAt": "2025-06-10T02:10:42.750Z",
       "lastLoginAt": null,
       "personId": 2
+    },
+    {
+      "email": "fabri@example.com",
+      "password": "fabri123",
+      "userType": "Worker",
+      "createdAt": "2025-06-18T01:04:42.411Z",
+      "lastLoginAt": null,
+      "personId": 3,
+      "id": 3
     }
   ],
   "persons": [
-    {
-      "id": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "name": "Henry",
-      "lastName": "Reaño",
-      "email": "henry29.2004@hotmail.com",
-      "phoneNumber": "964419415",
-      "profession": "Ingeniero de Software",
-      "professionalId": null,
-      "userType": "Worker"
-    },
-    {
-      "id": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
-      "name": "Ramon",
-      "lastName": "Garcia",
-      "email": "ramon2002@gmail.com",
-      "phoneNumber": "974511222",
-      "profession": "Topografo",
-      "professionalId": null,
-      "userType": "Worker"
-    },
-    {
-      "id": "c4b19f8d-e2a7-4f3b-b9c8-d5a67e254321",
-      "name": "Maria",
-      "lastName": "Lopez",
-      "email": "maria.lopez@example.com",
-      "phoneNumber": "987654321",
-      "profession": "Arquitecta",
-      "professionalId": null,
-      "userType": "Worker"
-    },
-    {
-      "id": "v4f8d8b-86d9-494c-b90e-a4277c80c0c2",
-      "name": "Fernando",
-      "lastName": "Lopez",
-      "email": "fernando.lopez@example.com",
-      "phoneNumber": "987654321",
-      "profession": "Ingeniero Civil",
-      "professionalId": null,
-      "userType": "Worker"
-    },
     {
       "id": 1,
       "name": "Test Use",
@@ -172,177 +50,22 @@
       "profession": "Data Scientist",
       "professionalId": null,
       "userType": "Worker"
-    }
-  ],
-  "organizations": [
-    {
-      "id": "0f1ca872-c167-40ee-a062-ada5b7843520",
-      "legalName": "test",
-      "commercialName": "test",
-      "ruc": "20454949491",
-      "createdBy": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "createdAt": "2025-06-10T02:10:42.750Z",
-      "status": "Active"
     },
     {
-      "id": 4,
-      "legalName": "orgGoogle3",
-      "commercialName": "orgGoogle3",
-      "ruc": "20454949491",
-      "createdBy": 1,
-      "createdAt": "2025-06-12T01:42:16.518Z",
-      "status": "Active"
-    },
-    {
-      "id": 1,
-      "legalName": "orgGoogle4",
-      "commercialName": "orgGoogle4",
-      "ruc": "20454949491",
-      "createdBy": 1,
-      "createdAt": "2025-06-12T04:12:07.138Z",
-      "status": "Active"
-    },
-    {
-      "id": 2,
-      "legalName": "orgGoogle5",
-      "commercialName": "orgGoogle5",
-      "ruc": "20454949491",
-      "createdBy": 1,
-      "createdAt": "2025-06-12T04:20:48.902Z",
-      "status": "Active"
-    }
-  ],
-  "members": [
-    {
-      "personId": "b81b7ae5-9039-4349-817e-f819d18a432c",
-      "organizationId": "0f1ca872-c167-40ee-a062-ada5b7843520",
-      "type": "Contractor",
-      "joinedAt": "2025-06-10T02:10:42.832Z",
-      "id": 1
-    },
-    {
-      "personId": "5490b6ba-2cf4-4c4a-bafc-8a6bdf7c4cc6",
-      "organizationId": "0f1ca872-c167-40ee-a062-ada5b7843520",
-      "type": "Worker",
-      "joinedAt": "2025-06-11T21:43:34.625Z",
-      "id": 2
-    },
-    {
-      "personId": 1,
-      "organizationId": 4,
-      "type": "Contractor",
-      "joinedAt": "2025-06-12T01:42:16.518Z",
+      "name": "Fabri Name",
+      "lastName": "Fabri Lastname",
+      "email": "fabri@example.com",
+      "phoneNumber": "567485768",
+      "profession": "Data Mirror",
+      "professionalId": null,
+      "profilePicture": "",
       "id": 3
-    },
-    {
-      "personId": 2,
-      "organizationId": 4,
-      "type": "Worker",
-      "joinedAt": "2025-06-14T00:59:04.360Z",
-      "id": 4
     }
   ],
+  "organizations": [],
+  "organization-members": [],
   "invitations": [],
-  "milestones": [
-    {
-      "id": 2,
-      "name": "milestoneGoogle",
-      "startDate": "2025-06-13T19:12:46.722Z",
-      "endDate": "2025-07-13T19:12:46.722Z",
-      "projectId": 2,
-      "items": [],
-      "startingDate": "2025-06-13T19:12:46.722Z",
-      "endingDate": "2025-07-13T19:12:46.722Z"
-    },
-    {
-      "id": 3,
-      "name": "mileston",
-      "startDate": "2025-06-13T19:14:54.148Z",
-      "endDate": "2025-07-13T19:14:54.149Z",
-      "projectId": 3,
-      "items": [],
-      "startingDate": "2025-06-13T19:14:54.148Z",
-      "endingDate": "2025-07-13T19:14:54.149Z"
-    },
-    {
-      "id": 4,
-      "name": "milestonepsee",
-      "projectId": 1,
-      "startDate": "2025-06-13T20:16:03.039Z",
-      "endDate": "2025-07-13T20:16:03.039Z",
-      "startingDate": "2025-06-13T20:16:03.039Z",
-      "endingDate": "2025-07-13T20:16:03.039Z",
-      "items": []
-    },
-    {
-      "id": 5,
-      "name": "milestonepr",
-      "startDate": "2025-06-13T21:26:30.556Z",
-      "endDate": "2025-07-13T21:26:30.556Z",
-      "projectId": 1,
-      "items": [],
-      "startingDate": "2025-06-13T21:26:30.556Z",
-      "endingDate": "2025-07-13T21:26:30.556Z"
-    }
-  ],
-  "tasks": [
-    {
-      "id": 1,
-      "name": "Tarea de ejemplo 1",
-      "description": "Esta es una tarea de ejemplo para el milestone 4",
-      "status": "PENDING",
-      "startDate": "2025-06-13T20:20:00.000Z",
-      "endDate": "2025-06-20T20:20:00.000Z",
-      "milestoneId": 4,
-      "responsibleId": 1,
-      "createdAt": "2025-06-13T20:20:00.000Z",
-      "updatedAt": "2025-06-13T20:20:00.000Z"
-    },
-    {
-      "id": 2,
-      "name": "Tarea de ejemplo 2",
-      "description": "Esta es otra tarea de ejemplo para el milestone 4",
-      "status": "IN_PROGRESS",
-      "startDate": "2025-06-14T20:20:00.000Z",
-      "endDate": "2025-06-21T20:20:00.000Z",
-      "milestoneId": 4,
-      "responsibleId": 2,
-      "createdAt": "2025-06-13T20:20:00.000Z",
-      "updatedAt": "2025-06-13T20:20:00.000Z"
-    },
-    {
-      "id": 3,
-      "name": "Tarea para milestone 5",
-      "description": "Esta es una tarea para el milestone 5",
-      "status": "PENDING",
-      "startDate": "2025-06-14T21:30:00.000Z",
-      "endDate": "2025-06-22T21:30:00.000Z",
-      "milestoneId": 5,
-      "responsibleId": 1,
-      "createdAt": "2025-06-13T21:30:00.000Z",
-      "updatedAt": "2025-06-13T21:30:00.000Z"
-    },
-    {
-      "id": 4,
-      "name": "Otra tarea para milestone 5",
-      "description": "Esta es otra tarea para el milestone 5",
-      "status": "IN_PROGRESS",
-      "startDate": "2025-06-15T21:30:00.000Z",
-      "endDate": "2025-06-25T21:30:00.000Z",
-      "milestoneId": 5,
-      "responsibleId": 2,
-      "createdAt": "2025-06-13T21:30:00.000Z",
-      "updatedAt": "2025-06-13T21:30:00.000Z"
-    },
-    {
-      "id": 5,
-      "name": "tarea de ejemplo 3",
-      "specialty": "Structures",
-      "status": "DRAFT",
-      "startingDate": "2025-06-13T22:23:42.695Z",
-      "dueDate": "2025-06-20T22:23:42.695Z",
-      "responsible": null,
-      "milestoneId": 4
-    }
-  ]
+  "milestones": [],
+  "project-team-members": [],
+  "tasks": []
 }

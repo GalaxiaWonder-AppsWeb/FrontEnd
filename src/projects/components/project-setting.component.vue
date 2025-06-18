@@ -26,7 +26,8 @@
         </div>
 
         <div class="p-field">
-          <label for="status">{{ $t('projects.settings.status') }}</label>          <pv-dropdown 
+          <label for="status">{{ $t('projects.settings.status') }}</label>          
+          <pv-select 
             id="status" 
             v-model="status" 
             :options="statusOptions" 
@@ -85,14 +86,14 @@ import { Project } from '../model/project.entity.js';
 import { ProjectStatus } from '../model/project-status.js';
 import { ProjectStatusLabels } from '../services/project-status-labels.js';
 import { useRoute, useRouter } from 'vue-router';
-import { Button as PvButton, Textarea as PvTextarea, Dropdown as PvDropdown, Dialog as PvDialog } from "primevue";
+import { Button as PvButton, Textarea as PvTextarea, Select as PvSelect, Dialog as PvDialog } from "primevue";
 
 export default {
   name: 'ProjectSettings',
   components: {
     PvButton,
     PvTextarea,
-    PvDropdown,
+    PvSelect,
     PvDialog
   },
   setup() {

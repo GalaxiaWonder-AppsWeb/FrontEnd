@@ -164,7 +164,7 @@ const minEndDate = computed(() => {
       <div class="form-dates">
         <div class="form-field">
           <label for="startDate">Start Date*</label>
-          <pv-calendar 
+          <pv-date-picker 
             id="startDate" 
             v-model="formData.startDate" 
             dateFormat="dd/mm/yy" 
@@ -176,7 +176,7 @@ const minEndDate = computed(() => {
         
         <div class="form-field">
           <label for="endDate">End Date*</label>
-          <pv-calendar 
+          <pv-date-picker 
             id="endDate" 
             v-model="formData.endDate" 
             dateFormat="dd/mm/yy" 

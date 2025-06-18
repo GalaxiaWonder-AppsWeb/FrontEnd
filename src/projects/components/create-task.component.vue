@@ -148,7 +148,7 @@ watch(() => props.visible, (newValue) => {
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
       </div>        <div class="form-field">
         <label for="specialty">Specialty*</label>
-        <PvDropdown 
+        <pv-select 
           id="specialty" 
           v-model="formData.specialty" 
           :options="specialties" 
@@ -162,7 +162,7 @@ watch(() => props.visible, (newValue) => {
       <div class="form-dates">
         <div class="form-field">
           <label for="startingDate">Start Date*</label>
-          <pv-calendar 
+          <pv-date-picker 
             id="startingDate" 
             v-model="formData.startingDate" 
             dateFormat="dd/mm/yy" 
@@ -174,7 +174,7 @@ watch(() => props.visible, (newValue) => {
         
         <div class="form-field">
           <label for="dueDate">Due Date*</label>
-          <pv-calendar 
+          <pv-date-picker 
             id="dueDate" 
             v-model="formData.dueDate" 
             dateFormat="dd/mm/yy" 

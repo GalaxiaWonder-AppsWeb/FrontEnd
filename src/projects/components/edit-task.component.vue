@@ -3,7 +3,6 @@ import { ref, reactive, computed, watch, onMounted } from 'vue';
 import { Task } from '../model/task.entity.js';
 import { TaskStatus } from '../model/task-status.js';
 import { Specialty } from '../model/specialty.js';
-import Dropdown from 'primevue/dropdown';
 
 const props = defineProps({
   visible: {
@@ -16,8 +15,6 @@ const props = defineProps({
   }
 });
 
-// Register the Dropdown component for use in this component only
-const PvDropdown = Dropdown;
 
 const emit = defineEmits(['update:visible', 'save', 'cancel']);
 
@@ -111,7 +108,8 @@ const handleSave = () => {
       status: formData.status || TaskStatus.DRAFT,
       startingDate: formData.startingDate,
       dueDate: formData.dueDate,
-      responsible: formData.responsible || 0 // This is temporary until we implement the assign responsible
+      responsible: formData.responsible || 0, // This is temporary until we implement the assign responsible
+      milestoneId: props.task.milestoneId || 0 // Assuming task has a milestoneId
     });
     
     emit('save', task);
@@ -154,7 +152,7 @@ const updateVisible = (value) => {
       </div>
         <div class="form-field">
         <label for="specialty">Specialty*</label>
-        <PvDropdown 
+        <pv-select 
           id="specialty" 
           v-model="formData.specialty" 
           :options="specialties" 
@@ -167,7 +165,7 @@ const updateVisible = (value) => {
       </div>
         <div class="form-field" v-if="task.id">
         <label for="status">Status</label>
-        <PvDropdown 
+        <pv-select 
           id="status" 
           v-model="formData.status" 
           :options="statuses" 
@@ -180,7 +178,7 @@ const updateVisible = (value) => {
       <div class="dates-container">
         <div class="form-field">
           <label for="startingDate">Start Date*</label>
-          <pv-calendar 
+          <pv-date-picker 
             id="startingDate" 
             v-model="formData.startingDate" 
             :showIcon="true"
@@ -192,7 +190,7 @@ const updateVisible = (value) => {
         
         <div class="form-field">
           <label for="dueDate">Due Date*</label>
-          <pv-calendar 
+          <pv-date-picker 
             id="dueDate" 
             v-model="formData.dueDate" 
             :showIcon="true"

@@ -20,6 +20,7 @@ const props = defineProps({
 const tasks = ref([]);
 const loading = ref(false);
 const error = ref(null);
+const successMessage = ref('');
 
 // Modal states
 const editTaskDialog = ref(false);
@@ -35,8 +36,30 @@ const loadTasks = async () => {
   try {
     loading.value = true;
     error.value = null;
+    
+    console.log(`Cargando tareas para milestone ID: ${props.milestoneId}`);
     const response = await taskService.getByMilestoneId(props.milestoneId);
+    
+    // Get current user info from localStorage
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userRole = user.activeProjectRole;
+    const memberId = user.memberId;
+    
+    console.log(`Usuario: ${memberId}, Rol en proyecto: ${userRole}`);
+    
+    // For all roles, all tasks are visible 
     tasks.value = response;
+    console.log(`${tasks.value.length} tareas cargadas`);
+    
+    // But we can highlight tasks assigned to the current user if they're a Worker/Specialist
+    if (userRole === 'Specialist' && memberId) {
+      for (const task of tasks.value) {
+        if (task.responsible === Number(memberId) || task.responsible === memberId) {
+          task.isAssignedToMe = true;
+          console.log(`Tarea ${task.id} asignada al usuario actual: ${task.name}`);
+        }
+      }
+    }
   } catch (err) {
     console.error('Error loading tasks:', err);
     error.value = 'Failed to load tasks. Please try again.';
@@ -89,7 +112,8 @@ const saveTask = async (task) => {
   try {
     loading.value = true;
     if (task.id) {
-      await taskService.update(task.id, task);
+      // Modificado para pasar solo el objeto task que ya contiene el id
+      await taskService.update(task);
     } else {
       await taskService.create(task);
     }
@@ -105,16 +129,32 @@ const saveTask = async (task) => {
 };
 
 // Assign responsible
-const assignResponsible = async (userId) => {
+const assignResponsible = async (memberId) => {
+  if (!selectedTask.value || !selectedTask.value.id || !memberId) {
+    error.value = 'No se pudo asignar el responsable. Datos inválidos.';
+    return;
+  }
+
   try {
     loading.value = true;
-    await taskService.assignResponsible(selectedTask.value.id, { responsibleId: userId });
+    error.value = null;
+
+    // Usar el método especializado del servicio
+    await taskService.assignResponsible(selectedTask.value.id, memberId);
+    
+    // Mostrar mensaje de éxito
+    successMessage.value = 'Tarea asignada correctamente. Estado actualizado a PENDIENTE.';
+    setTimeout(() => {
+      successMessage.value = '';
+    }, 5000);
+
+    // Recargar tareas para reflejar los cambios
     await loadTasks();
     assignResponsibleDialog.value = false;
     selectedTask.value = null;
   } catch (err) {
     console.error('Error assigning responsible:', err);
-    error.value = 'Failed to assign responsible. Please try again.';
+    error.value = 'No se pudo asignar el responsable. Por favor, intente nuevamente.';
   } finally {
     loading.value = false;
   }
@@ -166,6 +206,11 @@ onMounted(loadTasks);
       />
     </div>
 
+    <!-- Mostrar mensaje de éxito si existe -->
+    <pv-message v-if="successMessage" severity="success" :closable="true" @close="successMessage = ''">
+      {{ successMessage }}
+    </pv-message>
+    
     <div v-if="loading" class="loading">
       <pv-progress-spinner />
     </div>

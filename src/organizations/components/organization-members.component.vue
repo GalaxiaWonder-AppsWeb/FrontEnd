@@ -1,7 +1,7 @@
 <script>
 import { useRoute } from 'vue-router';
 import { organizationMemberService } from '../services/organization-member.service.js';
-import { personService } from '../services/person.service.js';
+import { personService } from '../../shared/services/person.service.js';
 import { OrganizationMemberType } from '../model/organization-member-type.js';
 import InviteMember from './invite-member.component.vue';
 import OrganizationMemberCard from './organization-member-card.component.vue';

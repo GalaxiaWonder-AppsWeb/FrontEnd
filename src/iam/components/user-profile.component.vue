@@ -10,7 +10,7 @@
           class="p-button-text p-button-rounded back-button" 
           @click="goBack"
           aria-label="Volver"
-          v-tooltip="$t('navigation.back')"
+          v-tooltip="$t('navigation-toolbar.back')"
         />
         <h1>{{ $t('profile.title') }}</h1>
       </div>
@@ -209,7 +209,7 @@
 </template>
 
 <script>
-import { personService } from '../services/person.service';
+import { personService } from '../../shared/services/person.service';
 import { authService } from '../services/auth.service';
 import { fileUploadService } from '../../shared/services/file-upload.service';
 import { useToast } from 'primevue/usetoast';

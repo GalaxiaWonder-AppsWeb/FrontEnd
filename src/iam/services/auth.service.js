@@ -34,13 +34,12 @@ export class AuthService {
             throw new Error('Invalid person object')
         }
 
-        try {            const existingUser = await this.findUserByEmail(account.email)
+        try {            
+            const existingUser = await this.findUserByEmail(account.email)
+            
             if (existingUser) {
                 throw new Error('User already exists')
             }
-            
-            console.log("Datos de cuenta a registrar:", account.toJSON());
-            console.log("Datos de persona a registrar:", person.toJSON());
 
             const personRes = await axios.post(
                 `${this.baseUrl}/persons`,
@@ -67,6 +66,25 @@ export class AuthService {
             throw new Error('Invalid credentials object')
         }
 
+        /*
+        // Este código sirve para trabajar con el API de PropGMS y JWT, pero no es necesario para el login
+        try {
+            // Usualmente POST, no GET, y endpoint específico para auth
+            const res = await axios.post(`${this.baseUrl}/auth/login`, credentials, this.httpOptions)
+            const { token, user } = res.data
+
+            if (!token) {
+                throw new Error('Token not received from server')
+            }
+
+            this.storeToken(token)
+            this.storeUser(user)
+            return user
+        } catch (error) {
+            this.handleError('Login', error)
+        }
+        */
+
         try {
             console.log(propgmsApiUrl);
             console.log(credentials);
@@ -88,8 +106,23 @@ export class AuthService {
         } catch (error) {
             this.handleError('Login', error)
         }
-    }    logout() {
+    }
+
+    storeToken(token) {
+        localStorage.setItem('token', token)
+    }
+
+    getToken() {
+        return localStorage.getItem('token')
+    }
+
+    removeToken() {
+        localStorage.removeItem('token')
+    }
+
+    logout() {
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
         return Promise.resolve(true);
     }
 
@@ -108,8 +141,26 @@ export class AuthService {
 
     isLoggedIn() {
         return !!this.getCurrentUser()
-    }async updatePassword(userId, newPassword) {
+    }
+
+    async updatePassword(userId, newPassword) {
+        /* Este pedazo de código es para usar JWT y el token de autenticación
+            try {
+                const token = this.getToken();
+                const response = await axios.get(`${this.baseUrl}/users/${userId}`, {
+                    headers: {
+                        ...this.httpOptions.headers,
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                // ... resto igual
+            } catch (error) {
+                this.handleError('UpdatePassword', error);
+            }
+        */
         try {
+
+
             // Primero obtener el usuario completo
             const response = await axios.get(`${this.baseUrl}/users/${userId}`, this.httpOptions);
             const currentUser = response.data;
@@ -142,18 +193,6 @@ export class AuthService {
         const msg = error.response?.data || error.message || 'Unexpected error'
         console.error(`[AuthService] ${context} error:`, msg)
         throw new Error(msg)
-    }
-
-    async getAllPersons() {
-        try {
-            const res = await axios.get(`
-            ${this.baseUrl}/persons`,
-              this.httpOptions)
-
-            return res.data
-        } catch (error) {
-            this.handleError('GetAllPersons', error)
-        }
     }
 }
 

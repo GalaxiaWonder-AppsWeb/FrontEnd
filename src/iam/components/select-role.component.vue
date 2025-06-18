@@ -8,7 +8,6 @@
         :placeholder="$t('register.roles.choose-role')"
         class="w-full"
     />
-
   </div>
 </template>
 

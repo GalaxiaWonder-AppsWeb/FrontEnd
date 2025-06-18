@@ -1,4 +1,4 @@
 export const UserType = {
-    WORKER: 'Worker',
-    CLIENT: 'Client'
+    WORKER: 'CLIENT_USER',
+    CLIENT: 'ORGANIZATION_USER',
 };

@@ -1,7 +1,5 @@
 <script>
 import { OrganizationMemberType } from '../model/organization-member-type.js';
-import { fileUploadService } from '../../shared/services/file-upload.service';
-
 export default {
   name: "OrganizationMemberCard",
   props: {

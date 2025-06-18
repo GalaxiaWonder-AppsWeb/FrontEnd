@@ -41,7 +41,7 @@ export default {
         const createdOrgs = await this.api.getByCreatedBy({createdBy: this.owner.personId});
         
         // Obtener todas las organizaciones donde el usuario es miembro
-        const resp = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/members?personId=${this.owner.personId}`);
+        const resp = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization-members?personId=${this.owner.personId}`);
         const memberData = await resp.json();
         
         // Obtener los IDs de organizaciones donde el usuario es miembro

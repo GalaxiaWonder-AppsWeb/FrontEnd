@@ -6,10 +6,15 @@ export class ProjectTeamMember {
                     id = null,
                     role,
                     specialty,
-                    memberId = null
+                    organizationMemberId = null,
+                    projectId = null
                 } = {}) {
         if (typeof id !== 'number' && id !== null) {
             throw new Error('id must be a number or null.');
+        }
+
+        if (typeof projectId !== 'number' && projectId !== null) {
+            throw new Error('projectId must be a number or null.');
         }
 
         if (!Object.values(ProjectRole).includes(role)) {
@@ -32,14 +37,20 @@ export class ProjectTeamMember {
             }
         }
 
-        if (typeof memberId !== 'number') {
-            throw new Error('memberId must be a numeric value.');
+        if (!ProjectRole || !Specialty) {
+            throw new Error('Missing required enums: ProjectRole or Specialty.');
+        }
+
+
+        if (typeof organizationMemberId !== 'number') {
+                throw new Error('organizationMemberId must be a numeric value.');
         }
 
         this.id = id;
         this.role = role; // Esperando a que definas ProjectRole o lo que corresponda
         this.specialty = specialty || null; // Esperando definición de Specialty
-        this.memberId = memberId;
+        this.organizationMemberId = organizationMemberId;
+        this.projectId = projectId || null; // Asegurando que projectId sea un número o null
     }
 
     toJSON() {
@@ -48,7 +59,8 @@ export class ProjectTeamMember {
             id: this.id,
             role: this.role,
             specialty: this.specialty,
-            memberId: this.memberId
+            organizationMemberId: this.organizationMemberId,
+            projectId: this.projectId
         };
     }
 }

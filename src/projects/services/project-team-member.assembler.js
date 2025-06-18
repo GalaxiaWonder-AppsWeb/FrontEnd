@@ -1,4 +1,3 @@
-// src/projects/services/project-team-member.assembler.js
 import { ProjectTeamMember } from "../model/project-team-member.entity.js";
 import { ProjectRole } from "../model/project-role.js";
 import { Specialty } from "../model/specialty.js";
@@ -6,13 +5,42 @@ import { Specialty } from "../model/specialty.js";
 export class ProjectTeamMemberAssembler {
     /**
      * Converts an API resource to a ProjectTeamMember entity
-     */
-    static toEntityFromResource(resource) {
+     */    static toEntityFromResource(resource) {
         try {
-            // Validate resource fields
-            const id = typeof resource.id === 'number' ? resource.id : null;
-            const memberId = typeof resource.memberId === 'number' ? resource.memberId : 
-                (typeof resource.memberId === 'string' ? parseInt(resource.memberId, 10) : null);
+            // Validate resource fields - ensure we have a proper resource object
+            if (!resource) {
+                console.error('Invalid resource provided to toEntityFromResource:', resource);
+                return null;
+            }
+            
+            // Parse ID making sure it's a number
+            let id = null;
+            if (resource.id !== undefined && resource.id !== null) {
+                id = parseInt(resource.id, 10);
+                if (isNaN(id)) {
+                    console.warn('Invalid ID format in resource:', resource.id);
+                    id = null;
+                }
+            }
+            
+            let projectId = null;
+            if (resource.projectId !== undefined && resource.projectId !== null) {
+                projectId = parseInt(resource.projectId, 10);
+                if (isNaN(projectId)) {
+                    console.warn('Invalid projectId format in resource:', resource.projectId);
+                    projectId = null;
+                }
+            }
+
+            // Parse organizationnMemberId making sure it's a number
+            let organizationMemberId = null;
+            if (resource.organizationMemberId !== undefined && resource.organizationMemberId !== null) {
+                organizationMemberId = parseInt(resource.organizationMemberId, 10);
+                if (isNaN(organizationMemberId)) {
+                    console.warn('Invalid organizationMemberId format in resource:', resource.organizationMemberId);
+                    organizationMemberId = null;
+                }
+            }
 
             // Validate role, default to SPECIALIST if needed
             const role = Object.values(ProjectRole).includes(resource.role) 
@@ -26,21 +54,35 @@ export class ProjectTeamMemberAssembler {
                     ? resource.specialty 
                     : Specialty.ARCHITECTURE;
             }
+            
 
             // Create the entity with validated data
-            return new ProjectTeamMember({
+            const teamMember = new ProjectTeamMember({
                 id: id,
                 role: role,
                 specialty: specialty,
-                memberId: memberId
+                organizationMemberId: organizationMemberId,
+                projectId: projectId
+ 
             });
+            
+            console.log('Created ProjectTeamMember entity:', teamMember);
+            return teamMember;
         } catch (error) {
-            console.error("Error converting resource to ProjectTeamMember entity:", error);
+            console.error("Error converting resource to ProjectTeamMember entity:", error, "Resource:", resource);
+            
+            // Try to construct a valid organizationMemberId
+            let safeorganizationMemberId = 0;
+            if (resource && resource.organizationMemberId !== undefined) {
+                const parsedId = parseInt(resource.organizationMemberId, 10);
+                safeorganizationMemberId = !isNaN(parsedId) ? parsedId : 0;
+            }
+            
             // Return a default ProjectTeamMember in case of error
             return new ProjectTeamMember({
                 role: ProjectRole.SPECIALIST,
                 specialty: Specialty.ARCHITECTURE,
-                memberId: 0
+                organizationMemberId: safeorganizationMemberId,
             });
         }
     }
@@ -72,7 +114,8 @@ export class ProjectTeamMemberAssembler {
             id: entity.id,
             role: entity.role,
             specialty: entity.specialty,
-            memberId: entity.memberId
+            organizationMemberId: entity.organizationMemberId,
+            projectId: entity.projectId
         };
     }
 }

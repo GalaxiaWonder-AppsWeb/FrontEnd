@@ -300,7 +300,7 @@ export default {
           else if (this.currentUser.personId && !this.currentUser.profilePicture) {
             // Si el usuario no tiene foto de perfil en localStorage, intentamos obtenerla
             try {
-              const personData = await import('../../iam/services/person.service.js')
+              const personData = await import('../../shared/services/person.service.js')
                 .then(module => module.personService.getById(this.currentUser.personId));
                 
               if (personData && personData.profilePicture) {

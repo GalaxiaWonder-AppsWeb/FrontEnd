@@ -1,65 +1,130 @@
-// src/projects/services/project-team-member.service.js
 import { createService } from '../../shared/services/create.service.js';
 import { HttpVerb } from '../../shared/services/http-verb.js';
-import { ProjectTeamMemberAssembler } from './project-team-member.assembler.js';
-import { BaseService } from '../../shared/services/base.service.js';
 
-// Extending BaseService to handle specialized methods for project team members
-class ProjectTeamService extends BaseService {
-    constructor() {
-        super('/project-team-members');
-    }
+// Crear el servicio base con las operaciones CRUD
+const baseService = createService('/project-team-members', {
+    getAll:    { verb: HttpVerb.GET },                        // GET /project-team-members
+    getById:   { verb: HttpVerb.GET, path: ':id', fullPath: true }, // GET /project-team-members/:id
+    create:    { verb: HttpVerb.POST },                       // POST /project-team-members
+    update:    { verb: HttpVerb.PUT, path: ':id' },           // PUT /project-team-members/:id
+    delete:    { verb: HttpVerb.DELETE, path: ':id' },        // DELETE /project-team-members/:id
+    getByProjectId: { verb: HttpVerb.GET, path: '?projectId=:projectId', fullPath: true },
+    getByProjectIdAndSpecialty: { verb: HttpVerb.GET, path: '?projectId=:projectId&specialty=:specialty', fullPath: true },
+});
+
+// Extender el servicio base con funciones adicionales
+export const projectTeamMemberService = {
+    ...baseService,
     
-    // Get all team members for a specific project
-    async getByProjectId(projectId) {
+    /**
+     * Obtiene los miembros de un proyecto por ID y especialidad
+     * @param {Object} params - Parámetros de la consulta
+     * @param {number} params.projectId - ID del proyecto
+     * @param {string} params.specialty - Especialidad requerida
+     * @returns {Promise<Array>} - Lista de miembros que coinciden con los criterios
+     */    async getByProjectIdAndSpecialty(params) {
         try {
-            console.log(`Getting team members for project ID: ${projectId}`);
-            // Use query parameters to filter members by projectId
-            const response = await this.get('', { projectId: projectId });
-            console.log('Response from GET team members by projectId:', response.data);
-            return ProjectTeamMemberAssembler.toEntitiesFromResponse(response.data);
+            console.log('[projectTeamMemberService] Buscando miembros por proyecto y especialidad:', params);
+            
+            if (!params || !params.projectId) {
+                throw new Error('Project ID is required for getByProjectIdAndSpecialty');
+            }
+            
+            if (!params.specialty) {
+                console.warn('[projectTeamMemberService] No specialty provided, falling back to getByProjectId');
+                return this.getByProjectId(params);
+            }
+            
+            // Usar el servicio base con los parámetros completos
+            const result = await baseService.getByProjectIdAndSpecialty(params);
+            console.log('[projectTeamMemberService] Resultado de búsqueda:', result);
+            return result;
         } catch (error) {
-            console.error(`Error fetching team members for project ${projectId}:`, error);
-            throw error;
+            console.error('[projectTeamMemberService] Error buscando miembros por proyecto y especialidad:', error);
+            // Intentar como fallback obtener todos los miembros del proyecto
+            console.warn('[projectTeamMemberService] Intentando fallback a getByProjectId');
+            try {
+                return await this.getByProjectId({ projectId: params.projectId });
+            } catch (fallbackError) {
+                console.error('[projectTeamMemberService] Error en fallback:', fallbackError);
+                return []; // Devolver array vacío en caso de error
+            }
         }
-    }
+    },
     
-    // Add a new team member to a project
-    async addToProject(projectId, memberId, specialty) {
+    /**
+     * Obtiene los miembros de un proyecto por ID
+     * @param {Object} params - Parámetros de la consulta
+     * @param {number} params.projectId - ID del proyecto
+     * @returns {Promise<Array>} - Lista de miembros del proyecto
+     */
+    async getByProjectId(params) {
         try {
-            console.log(`Adding member ${memberId} to project ${projectId} with specialty ${specialty}`);
-            const teamMember = {
-                projectId: projectId,
-                memberId: memberId,
-                role: 'Specialist', // As per requirement, all members are Specialists
-                specialty: specialty
+            console.log('[projectTeamMemberService] Buscando miembros por proyecto:', params);
+            
+            if (!params || !params.projectId) {
+                throw new Error('Project ID is required for getByProjectId');
+            }
+            
+            // Intentar dos enfoques: primero con el service base, luego con una búsqueda manual
+            try {
+                // 1. Usar el servicio base
+                const result = await baseService.getByProjectId(params);
+                console.log('[projectTeamMemberService] Resultado de búsqueda con servicio base:', result);
+                return result;
+            } catch (serviceError) {
+                console.warn('[projectTeamMemberService] Error con servicio base, intentando alternativa:', serviceError);
+                
+                // 2. Método alternativo: obtener todos y filtrar manualmente
+                const allMembers = await baseService.getAll();
+                console.log('[projectTeamMemberService] Obtenidos todos los miembros:', allMembers);
+                
+                const filteredMembers = allMembers.filter(
+                    member => member.projectId === Number(params.projectId)
+                );
+                console.log('[projectTeamMemberService] Miembros filtrados para proyecto:', filteredMembers);
+                
+                return filteredMembers;
+            }
+        } catch (error) {
+            console.error('[projectTeamMemberService] Error buscando miembros por proyecto:', error);
+            return []; // Devolver array vacío en caso de error
+        }
+    },
+    
+    /**
+     * Agrega un miembro a un proyecto
+     * @param {number} projectId - ID del proyecto
+     * @param {number} memberId - ID del miembro de la organización
+     * @param {string} specialty - Especialidad del miembro (opcional, solo para SPECIALIST)
+     * @param {string} role - Rol del miembro en el proyecto (COORDINATOR, SPECIALIST)
+     */    
+    async addToProject(projectId, memberId, specialty, role) {
+        try {
+            // Validar parámetros
+            if (!projectId) throw new Error('Project ID is required');
+            if (!memberId) throw new Error('Member ID is required');
+            if (!role) throw new Error('Role is required');
+            
+            // Crear el objeto del miembro del proyecto
+            const projectTeamMember = {
+                projectId: Number(projectId),
+                organizationMemberId: Number(memberId),
+                role,
             };
             
-            const response = await this.post('', teamMember);
-            console.log('Response from POST add team member:', response.data);
-            return ProjectTeamMemberAssembler.toEntityFromResource(response.data);
+            // Si es especialista, añadir la especialidad
+            if (role === 'SPECIALIST' && specialty) {
+                projectTeamMember.specialty = specialty;
+            }
+              // Llamar al servicio para crear el miembro
+            const response = await this.create(projectTeamMember);
+            return response;
         } catch (error) {
-            console.error(`Error adding team member to project ${projectId}:`, error);
             throw error;
         }
-    }
-}
-
-// Create instance of specialized service
-const projectTeamServiceInstance = new ProjectTeamService();
-
-// Export the service with standard CRUD operations and specialized methods
-export const projectTeamMemberService = {
-    ...createService('/project-team-members', {
-        getAll: { verb: HttpVerb.GET },
-        getById: { verb: HttpVerb.GET, path: ':id' },
-        create: { verb: HttpVerb.POST },
-        update: { verb: HttpVerb.PUT, path: ':id' },
-        delete: { verb: HttpVerb.DELETE, path: ':id' }
-    }, ProjectTeamMemberAssembler),
+    },
     
-    // Add the specialized methods from our custom service
-    getByProjectId: (projectId) => projectTeamServiceInstance.getByProjectId(projectId),
-    addToProject: (projectId, memberId, specialty) => 
-        projectTeamServiceInstance.addToProject(projectId, memberId, specialty)
+    
+    
 };

@@ -2,6 +2,7 @@
 import { createService } from '../../shared/services/create.service.js';
 import { HttpVerb } from '../../shared/services/http-verb.js';
 import { TaskAssembler } from './task.assembler.js';
+import { TaskStatus } from '../model/task-status.js';
 
 // Importamos BaseService para extender con el método getByMilestoneId personalizado
 import { BaseService } from '../../shared/services/base.service.js';
@@ -23,6 +24,45 @@ class TaskService extends BaseService {
             throw error;
         }
     }
+
+    // Método para asignar un responsable a la tarea y actualizar su estado
+    async assignResponsible(taskId, responsibleId) {
+        try {
+            if (!taskId) {
+                throw new Error('Task ID is required');
+            }
+            
+            if (!responsibleId) {
+                throw new Error('Responsible ID is required');
+            }
+            
+            console.log(`Assigning responsible ${responsibleId} to task ${taskId}`);
+            
+            // Primero obtenemos la tarea actual
+            const taskResponse = await this.get(`${taskId}`);
+            if (!taskResponse.data) {
+                throw new Error(`Task with ID ${taskId} not found`);
+            }
+            
+            // Creamos el objeto actualizado con el nuevo responsable y estado PENDING
+            const updatedTask = {
+                ...taskResponse.data,
+                responsible: responsibleId,
+                status: TaskStatus.PENDING
+            };
+            
+            console.log('Updating task with new responsible and status:', updatedTask);
+            
+            // Actualizamos la tarea
+            const response = await this.put(`${taskId}`, updatedTask);
+            console.log('Response from PUT update task:', response.data);
+            
+            return TaskAssembler.toEntityFromResource(response.data);
+        } catch (error) {
+            console.error(`Error assigning responsible to task ${taskId}:`, error);
+            throw error;
+        }
+    }
 }
 
 // Instancia del servicio personalizado
@@ -34,11 +74,10 @@ export const taskService = {
         getById: { verb: HttpVerb.GET, path: ':id' },
         create: { verb: HttpVerb.POST },
         update: { verb: HttpVerb.PUT, path: ':id' },
-        delete: { verb: HttpVerb.DELETE, path: ':id' },
-        assignResponsible: { verb: HttpVerb.PUT, path: ':id/responsible' },
-        updateStatus: { verb: HttpVerb.PUT, path: ':id/status' }
+        delete: { verb: HttpVerb.DELETE, path: ':id' }
     }, TaskAssembler),
     
-    // Agregamos el método personalizado
-    getByMilestoneId: (milestoneId) => taskServiceInstance.getByMilestoneId(milestoneId)
+    // Agregamos los métodos personalizados
+    getByMilestoneId: (milestoneId) => taskServiceInstance.getByMilestoneId(milestoneId),
+    assignResponsible: (taskId, responsibleId) => taskServiceInstance.assignResponsible(taskId, responsibleId)
 };

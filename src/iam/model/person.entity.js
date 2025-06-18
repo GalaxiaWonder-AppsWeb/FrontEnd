@@ -1,6 +1,6 @@
 import { ProfessionalId }  from './professional-id.entity.js'
 
-export class Person {    constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null, profilePicture = '', id = null) {
+export class Person {    constructor(name, lastName, email, phoneNumber, profession = '', professionalId = null, id = null) {
         // Aseguramos que id sea numérico o null
         this.id = typeof id === 'number' ? id : null
         this.name = name
@@ -8,7 +8,6 @@ export class Person {    constructor(name, lastName, email, phoneNumber, profess
         this.email = email
         this.phoneNumber = phoneNumber
         this.profession = profession
-        this.profilePicture = profilePicture
 
         if (professionalId !== null && !(professionalId instanceof ProfessionalId)) {
             throw new Error('professionalId must be an instance of ProfessionalId')
@@ -55,7 +54,6 @@ export class Person {    constructor(name, lastName, email, phoneNumber, profess
             phoneNumber: this.phoneNumber,
             profession: this.profession,
             professionalId: this.professionalId ? this.professionalId.value : null,
-            profilePicture: this.profilePicture || ''
         }
     }
 }

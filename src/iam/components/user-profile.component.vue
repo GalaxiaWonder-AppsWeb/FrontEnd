@@ -10,7 +10,7 @@
           class="p-button-text p-button-rounded back-button" 
           @click="goBack"
           aria-label="Volver"
-          v-tooltip="$t('navigation.back')"
+          v-tooltip="$t('navigation-toolbar.back')"
         />
         <h1>{{ $t('profile.title') }}</h1>
       </div>
@@ -68,27 +68,8 @@
           </div>
           
           <div v-if="editMode && !isUploadingImage" class="picture-edit-overlay">
-            <pv-file-upload 
-              mode="basic" 
-              name="profile" 
-              accept="image/jpeg,image/png,image/gif" 
-              :auto="true"
-              :customUpload="true"
-              :disabled="isUploadingImage"
-              @uploader="onProfilePictureSelect" 
-              chooseLabel=""
-              class="profile-upload-button" 
-            >
-              <template #chooseicon>
-                <i class="pi pi-camera"></i>
-              </template>
-            </pv-file-upload>
           </div>
         </div>
-        <p v-if="editMode" class="picture-help-text">
-          <span v-if="!isUploadingImage">{{ $t('profile.picture_help') }}</span>
-          <span v-else>{{ $t('profile.uploading_image') || 'Uploading image...' }}</span>
-        </p>
       </div>
 
       <pv-card class="profile-card">
@@ -209,18 +190,13 @@
 </template>
 
 <script>
-import { personService } from '../services/person.service';
-import { authService } from '../services/auth.service';
-import { fileUploadService } from '../../shared/services/file-upload.service';
+import { personService } from '../../shared/services/person.service';
+import { authService } from '../services/auth.service.js';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
-import FileUpload from 'primevue/fileupload';
 
 export default {
   name: 'UserProfile',
-  components: {
-    'pv-file-upload': FileUpload
-  },
   setup() {
     // Inicializar el servicio de Toast
     const toast = useToast();
@@ -244,8 +220,7 @@ export default {
         profession: '',
         userType: '',
         password: '',
-        confirmPassword: '',
-        profilePicture: ''
+        confirmPassword: ''
       },
       originalData: {}
     };
@@ -269,40 +244,7 @@ export default {
       
       return (firstName + lastName).toUpperCase();
     },
-      async onProfilePictureSelect(event) {
-      const file = event.files[0];
-      if (file) {
-        try {
-          // Mostrar carga en progreso
-          this.isUploadingImage = true;
-          
-          // Limitar tamaño de archivo a 2MB
-          if (file.size > 2 * 1024 * 1024) {
-            throw new Error(this.$t('profile.error.image_too_large') || 'Image is too large (max 2MB)');
-          }
-          
-          // Subir archivo al servidor y obtener URL
-          const imageUrl = await fileUploadService.uploadFile(
-            file, 
-            file.name, 
-            `profiles/${this.user.id}`
-          );
-          
-          // Actualizar URL de la imagen en el formulario
-          this.formData.profilePicture = imageUrl;
-          this.isUploadingImage = false;
-        } catch (error) {
-          this.isUploadingImage = false;
-          console.error('Error uploading profile picture:', error);
-          this.toast.add({
-            severity: 'error',
-            summary: this.$t('profile.error.title'),
-            detail: error.message || this.$t('profile.error.image_upload'),
-            life: 5000
-          });
-        }
-      }
-    },
+
     
     async loadUserData() {
       this.loading = true;
@@ -334,7 +276,6 @@ export default {
           userType: personData.userType || user.userType || '',
           password: '',
           confirmPassword: '',
-          profilePicture: personData.profilePicture || ''
         };
         
         // Guardar datos originales para cancelar cambios
@@ -394,8 +335,7 @@ export default {
           name: this.formData.name,
           lastName: this.formData.lastName,
           phoneNumber: this.formData.phoneNumber,
-          profession: this.formData.profession,
-          profilePicture: this.formData.profilePicture
+          profession: this.formData.profession
         };
 
         
@@ -417,7 +357,6 @@ export default {
         if (currentUser) {
           currentUser.name = updatedPerson.name;
           currentUser.lastName = updatedPerson.lastName;
-          currentUser.profilePicture = updatedPerson.profilePicture;
           localStorage.setItem('user', JSON.stringify(currentUser));
         }
           // Notificar éxito
@@ -479,30 +418,6 @@ export default {
   gap: 0.5rem;
 }
 
-.profile-picture-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.profile-picture {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  background-color: var(--primary-color);
-  margin-bottom: 0.5rem;
-}
-
-.profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .profile-placeholder {
   width: 100%;
   height: 100%;
@@ -512,18 +427,6 @@ export default {
   font-size: 3rem;
   font-weight: bold;
   color: white;
-}
-
-.picture-edit-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .upload-progress {
@@ -537,37 +440,6 @@ export default {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.7);
   z-index: 2;
-}
-
-.profile-picture.uploading::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 1;
-}
-
-.profile-upload-button {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.profile-upload-button :deep(.p-button) {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  border: none;
-}
-
-.picture-help-text {
-  font-size: 0.85rem;
-  color: var(--text-color-secondary);
-  margin-top: 0.5rem;
 }
 
 .profile-card {
@@ -622,11 +494,6 @@ export default {
   
   .profile-header h1 {
     margin-bottom: 0;
-  }
-  
-  .profile-picture {
-    width: 120px;
-    height: 120px;
   }
 }
 </style>

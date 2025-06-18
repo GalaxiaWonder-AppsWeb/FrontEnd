@@ -86,9 +86,12 @@ const handleCreateMilestone = async (milestone) => {
     loading.value = true;
     error.value = null;
       // Ensure projectId is a number
+
+    console.log('YA NOSE QUE HACER');
     const projectIdValue = projectId.value;
+    console.log('PAPI QUE TU QUIERE,', projectIdValue, typeof projectIdValue);
     const projectIdNumber = typeof projectIdValue === 'number' ? projectIdValue : Number(projectIdValue);
-    
+    console.log('MAMI QUE TU QUIERE',projectIdNumber, typeof projectIdNumber);
     // Format dates for API and ensure projectId is included
     const milestoneData = {
       ...milestone,
@@ -164,7 +167,7 @@ const handleCreateMilestone = async (milestone) => {
           @click="openCreateMilestone" 
         />
         
-        <!-- View mode toggle -->
+        <!-- View mode toggle 
         <pv-button-set>
           <pv-button 
             icon="pi pi-list" 
@@ -179,6 +182,7 @@ const handleCreateMilestone = async (milestone) => {
             tooltip="Calendar View"
           />
         </pv-button-set>
+        -->
       </div>
     </div>
     
@@ -190,9 +194,11 @@ const handleCreateMilestone = async (milestone) => {
             :projectId="projectId"
             @view-tasks="viewMilestoneTasks"
           />
+          <!--
           <div v-if="!props.projectId" class="error-message">
             <p>Error: Project ID is undefined. Please make sure to provide a valid project ID.</p>
           </div>
+          -->
         </div>
         
         <!-- Calendar View (placeholder, would require additional implementation) -->

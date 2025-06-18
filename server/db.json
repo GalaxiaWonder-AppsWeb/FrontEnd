@@ -1,10 +1,71 @@
 {
   "projects": [],
-  "users": [],
-  "persons": [],
+  "users": [
+    {
+      "id": 1,
+      "email": "google@example.com",
+      "password": "google123",
+      "userType": "Worker",
+      "createdAt": "2025-06-10T02:10:42.750Z",
+      "lastLoginAt": null,
+      "personId": 1
+    },
+    {
+      "id": 2,
+      "email": "apple@example.com",
+      "password": "apple123",
+      "userType": "Worker",
+      "createdAt": "2025-06-10T02:10:42.750Z",
+      "lastLoginAt": null,
+      "personId": 2
+    },
+    {
+      "email": "fabri@example.com",
+      "password": "fabri123",
+      "userType": "Worker",
+      "createdAt": "2025-06-18T01:04:42.411Z",
+      "lastLoginAt": null,
+      "personId": 3,
+      "id": 3
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "Test Use1",
+      "lastName": "Test Lastname1",
+      "email": "google@example.com",
+      "phoneNumber": "123456789",
+      "profession": "Software Engineer",
+      "professionalId": null,
+      "userType": "Worker",
+      "profilePicture": ""
+    },
+    {
+      "id": 2,
+      "name": "Apple User",
+      "lastName": "Apple Lastname",
+      "email": "apple@example.com",
+      "phoneNumber": "987654321",
+      "profession": "Data Scientist",
+      "professionalId": null,
+      "userType": "Worker"
+    },
+    {
+      "name": "Fabri Name",
+      "lastName": "Fabri Lastname",
+      "email": "fabri@example.com",
+      "phoneNumber": "567485768",
+      "profession": "Data Mirror",
+      "professionalId": null,
+      "profilePicture": "",
+      "id": 3
+    }
+  ],
   "organizations": [],
-  "members": [],
+  "organization-members": [],
   "invitations": [],
   "milestones": [],
+  "project-team-members": [],
   "tasks": []
 }

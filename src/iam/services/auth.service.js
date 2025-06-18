@@ -115,7 +115,7 @@ export class AuthService {
             this.handleError('Login', error);
         }
 
-        
+
         /*
         try {
             console.log(propgmsApiUrl);
@@ -138,10 +138,26 @@ export class AuthService {
         } catch (error) {
             this.handleError('Login', error)
         }
+    }
+
+    storeToken(token) {
+        localStorage.setItem('token', token)
+    }
+
+    getToken() {
+        return localStorage.getItem('token')
+    }
+
+    removeToken() {
+        localStorage.removeItem('token')
+    }
+
+    logout() {
             */
     }
     logout() {
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
         return Promise.resolve(true);
     }
 
@@ -160,8 +176,26 @@ export class AuthService {
 
     isLoggedIn() {
         return !!this.getCurrentUser()
-    }async updatePassword(userId, newPassword) {
+    }
+
+    async updatePassword(userId, newPassword) {
+        /* Este pedazo de código es para usar JWT y el token de autenticación
+            try {
+                const token = this.getToken();
+                const response = await axios.get(`${this.baseUrl}/users/${userId}`, {
+                    headers: {
+                        ...this.httpOptions.headers,
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                // ... resto igual
+            } catch (error) {
+                this.handleError('UpdatePassword', error);
+            }
+        */
         try {
+
+
             // Primero obtener el usuario completo
             const response = await axios.get(`${this.baseUrl}/users/${userId}`, this.httpOptions);
             const currentUser = response.data;
@@ -191,32 +225,9 @@ export class AuthService {
     }
 
     handleError(context, error) {
-        const data = error?.response?.data;
-
-        let msg = 'Unexpected error';
-
-        if (typeof data === 'string') {
-            msg = data;
-        } else if (data && typeof data === 'object') {
-            msg = data.error || data.message || JSON.stringify(data);
-        } else if (error?.message) {
-            msg = error.message;
-        }
-
-        console.error(`[AuthService] ${context} error:`, msg);
-        throw new Error(msg);
-    }
-
-    async getAllPersons() {
-        try {
-            const res = await axios.get(`
-            ${this.baseUrl}/persons`,
-              this.httpOptions)
-
-            return res.data
-        } catch (error) {
-            this.handleError('GetAllPersons', error)
-        }
+        const msg = error.response?.data || error.message || 'Unexpected error'
+        console.error(`[AuthService] ${context} error:`, msg)
+        throw new Error(msg)
     }
 }
 

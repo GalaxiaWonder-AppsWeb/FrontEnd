@@ -3,7 +3,7 @@
     "logout": "Sign out",
     "logout_success": "Successfully signed out"
   },
-  "navigation": {
+  "navigation-toolbar": {
     "back": "Back",
     "all_organizations": "All Organizations"
   },
@@ -210,6 +210,35 @@
       "working-team": "Working Team"
     },
     "information": "Project Information",
+    "working-team": {
+      "title": "Working Team",
+      "add-member": {
+        "title": "Add Member",
+        "subtitle": "Add members to the project team",
+        "first-step": "Step 1: Select members to assign for the project",
+        "first-step-placeholder": "Search by name or email",
+        "first-step-select": "Selecting...",
+        "first-step-button": "Continue with the role assignment",
+        "second-step": {
+          "title": "Step 2: Assign roles and specializations",
+          "description": "For each member, select the role. If the role is specialized, you can also assign a specialization.",
+          "table": {
+            "name": "Name",
+            "role": "Role",
+            "specialty": "Specialization",
+            "status": "Status"
+          },
+          "back-button": "Back to selection",
+          "button": "Add members to the project"
+        },
+        "no-members": "No members availabled"
+      },
+      "role": "Role",
+      "specialty": "Specialization",
+      "no-members": "No members in this project",
+      "reload-data": "Reload Data"
+      
+    },
     "settings": {
       "title": "Project Settings",
       "description": "Project Description",
@@ -237,8 +266,9 @@
         "deleting_message": "Could not delete project",
         "empty_description": "Project description cannot be empty",
         "no_status": "Project status must be selected"
-      }
-    },
-    "no_changes": "No changes to save"
+      },
+      "no_changes": "No changes to save"
+    }
+    
   }
 }

@@ -1,5 +1,5 @@
 <script>
-import {Button as PvButton, InputText as PvInputText, Calendar as PvCalendar, InputNumber as PvInputNumber} from "primevue";
+import {Button as PvButton, InputText as PvInputText, DatePicker as PvDatePicker, InputNumber as PvInputNumber} from "primevue";
 import {Project} from "../model/project.entity.js";
 import {ProjectStatus} from "../model/project-status.js";
 import {projectService} from "../services/project.service.js";
@@ -7,7 +7,7 @@ import {Schedule} from "../model/schedule.entity.js";
 
 export default {
   name: "CreateProject",
-  components: {PvButton, PvInputText, PvCalendar, PvInputNumber},
+  components: {PvButton, PvInputText, PvDatePicker, PvInputNumber},
   props: {
     organizationId: {
       type: String,
@@ -67,10 +67,21 @@ export default {
         });
       }
     },
-    
-    async createProject() {
+      async createProject() {
       try {
         this.loading = true;
+        
+        // Verificar si el usuario tiene permisos para crear proyectos (debe ser Contractor)
+        if (!this.user || this.user.activeOrganizationRole !== 'Contractor') {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Acceso denegado',
+            detail: 'Solo los contratistas pueden crear proyectos',
+            life: 5000
+          });
+          this.loading = false;
+          return;
+        }
         
         // Asegurarnos que tenemos la información del creador de la organización
         if (!this.creatorId) {
@@ -163,15 +174,26 @@ export default {
         endingDate: new Date(new Date().setMonth(new Date().getMonth() + 6))
       };
     }
-  },
-  created() {
+  },  created() {
     // Get user from localStorage
     const userData = localStorage.getItem("user");
     if (userData) {
       this.user = JSON.parse(userData);
+      
+      // Verificar si el usuario tiene el rol necesario para crear proyectos
+      if (this.user.activeOrganizationRole !== 'Contractor') {
+        console.warn('Advertencia: Usuario sin permisos para crear proyectos está accediendo al componente CreateProject');
+        console.log('Rol del usuario:', this.user.activeOrganizationRole);
+        
+        // No cargar los datos de la organización si el usuario no tiene permisos
+        return;
+      }
+    } else {
+      console.warn('No hay datos de usuario en localStorage');
+      return;
     }
     
-    // Cargar datos de la organización
+    // Cargar datos de la organización solo si el usuario es Contractor
     this.loadOrganizationData();
   },
   computed: {
@@ -237,7 +259,7 @@ export default {
         <div class="form-row">
           <div class="form-group">
             <label for="startDate">{{ $t('projects.create_dialog.start_date') }}</label>
-            <pv-calendar 
+            <pv-date-picker
               id="startDate" 
               v-model="form.startingDate" 
               dateFormat="dd/mm/yy"
@@ -247,7 +269,7 @@ export default {
           
           <div class="form-group">
             <label for="endDate">{{ $t('projects.create_dialog.end_date') }}</label>
-            <pv-calendar 
+            <pv-date-picker 
               id="endDate" 
               v-model="form.endingDate" 
               dateFormat="dd/mm/yy"

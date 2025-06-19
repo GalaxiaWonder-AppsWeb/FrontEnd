@@ -15,8 +15,7 @@ export class PerformanceMonitor {
       end: null,
       duration: null
     };
-    console.log(`🕒 Iniciando medición para: ${operationName}`);
-  }
+    }
   
   /**
    * Finaliza la medición de una operación y muestra el resultado
@@ -30,7 +29,6 @@ export class PerformanceMonitor {
     measurement.end = performance.now();
     measurement.duration = measurement.end - measurement.start;
     
-    console.log(`⏱️ ${operationName}: ${measurement.duration.toFixed(2)} ms`);
     return measurement.duration;
   }
   

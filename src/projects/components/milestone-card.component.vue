@@ -39,7 +39,6 @@ const progressPercentage = computed(() => {
 
 // Handle edit button click
 const handleEditClick = () => {
-  console.log('Edit button clicked for milestone:', props.milestone);
   emit('edit', props.milestone);
 };
 </script>

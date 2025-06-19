@@ -66,7 +66,6 @@ export class ProjectTeamMemberAssembler {
  
             });
             
-            console.log('Created ProjectTeamMember entity:', teamMember);
             return teamMember;
         } catch (error) {
             console.error("Error converting resource to ProjectTeamMember entity:", error, "Resource:", resource);

@@ -21,7 +21,6 @@ export default {
     personId: String
   },
   created() {
-    console.log(this.organization.id)
     localStorage.setItem('organization', JSON.stringify({id: this.organization.id}));
 
   }

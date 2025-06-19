@@ -57,7 +57,7 @@ export class AuthService {
         }
 
         try {
-            console.log('Login URL:', `${this.baseUrl}/authentication/sign-in`); // 👈 Verificación útil
+            // 👈 Verificación útil
 
             const response = await axios.post(
                 `${this.baseUrl}/authentication/sign-in`,
@@ -71,7 +71,6 @@ export class AuthService {
             const user = response.data;
             this.storeUser(user);
             if (user.token) this.storeToken(user.token);
-            console.log('[DEBUG] User returned by backend:', user);
             return user;
         } catch (error) {
             this.handleError('Login', error);
@@ -144,7 +143,6 @@ export class AuthService {
                 this.httpOptions
             );
 
-            console.log('Contraseña actualizada correctamente');
             return updateResponse.data;
         } catch (error) {
             this.handleError('UpdatePassword', error);

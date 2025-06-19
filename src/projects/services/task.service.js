@@ -14,10 +14,8 @@ class TaskService extends BaseService {
     }
       async getByMilestoneId(milestoneId) {
         try {
-            console.log(`Getting tasks for milestone ID: ${milestoneId}`);
             // Usamos el método get heredado de BaseService con parámetros de consulta
             const response = await this.get('', { milestoneId: milestoneId });
-            console.log('Response from GET tasks by milestoneId:', response.data);
             return TaskAssembler.toEntitiesFromResponse(response.data);
         } catch (error) {
             console.error(`Error fetching tasks for milestone ${milestoneId}:`, error);
@@ -36,8 +34,6 @@ class TaskService extends BaseService {
                 throw new Error('Responsible ID is required');
             }
             
-            console.log(`Assigning responsible ${responsibleId} to task ${taskId}`);
-            
             // Primero obtenemos la tarea actual
             const taskResponse = await this.get(`${taskId}`);
             if (!taskResponse.data) {
@@ -51,12 +47,8 @@ class TaskService extends BaseService {
                 status: TaskStatus.PENDING
             };
             
-            console.log('Updating task with new responsible and status:', updatedTask);
-            
             // Actualizamos la tarea
             const response = await this.put(`${taskId}`, updatedTask);
-            console.log('Response from PUT update task:', response.data);
-            
             return TaskAssembler.toEntityFromResource(response.data);
         } catch (error) {
             console.error(`Error assigning responsible to task ${taskId}:`, error);

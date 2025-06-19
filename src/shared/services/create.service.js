@@ -68,18 +68,11 @@ export function createService(resourceEndpoint, methodMap = {}) {
         service[methodName] = async (payload = null, queryParams = {}) => {
             let urlPath = extractPath(path, fullPath);
             
-            console.log(`[${methodName}] Creating request with path: ${urlPath}, payload:`, payload);
-
             if (isPrimitive(payload)) {
-                console.log(`[${methodName}] Processing primitive payload`);
                 urlPath = urlPath.replace(':id', payload);
                 payload = null;
             } else if (typeof payload === 'object' && payload !== null) {
-                console.log(`[${methodName}] Processing object payload`);
-                console.log(`[${methodName}] Path before replacement: ${urlPath}`);
                 urlPath = replacePathParams(urlPath, payload);
-                console.log(`[${methodName}] Path after replacement: ${urlPath}`);
-
                 if (verb !== HttpVerb.POST) {
                     payload = removeIdFromPayload(payload);
                 }

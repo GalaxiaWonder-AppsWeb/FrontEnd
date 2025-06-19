@@ -17,11 +17,7 @@ export default {
       try {
         // 1. Obtener información de la organización
         const organizationData = await this.api.getById({ id: this.orgId });
-        console.log('Datos grosos de la organización:', organizationData);
-
         this.organization = OrganizationAssembler.toEntityFromResource(organizationData);
-
-        console.log('Organización transformada:', this.organization);
 
         // Seguridad para evitar errores de render
         if (!this.organization) {
@@ -34,14 +30,10 @@ export default {
             ? this.organization.createdBy.value
             : this.organization.createdBy;
 
-        console.log('ID del contratista:', contractorId);
-
         // 3. Obtener datos del contratista
         if (contractorId) {
           try {
             let contractorData = await personService.getById(contractorId);
-            console.log("Datos del contratista obtenidos:", contractorData);
-
             if (contractorData && contractorData.firstName && contractorData.lastName) {
               this.contractorName = `${contractorData.firstName} ${contractorData.lastName}`;
             } else if (contractorData && contractorData.name && contractorData.lastName) {
@@ -58,9 +50,7 @@ export default {
           this.contractorName = "Información no disponible";
         }
 
-        console.log('ORGANIZATION FINAL:', this.organization);
-
-      } catch (error) {
+        } catch (error) {
         console.error("Error al cargar la información:", error);
         this.organization = null;
         this.contractorName = null;

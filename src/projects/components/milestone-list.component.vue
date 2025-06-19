@@ -38,12 +38,8 @@ const loadMilestones = async () => {
     // Get the API base URL from environment
     const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';    // Convertir projectId a número si es posible
     const projectIdInput = props.projectId;
-    console.log('Project ID input:', projectIdInput, 'Type:', typeof projectIdInput);
-    
     // Intentamos convertir a número si no es ya un número
     const projectId = typeof projectIdInput === 'number' ? projectIdInput : Number(projectIdInput);
-    
-    console.log('Project ID after conversion:', projectId, 'Type:', typeof projectId, 'Is NaN:', isNaN(projectId));
     
     // Verificar si es un valor numérico válido
     if (projectId === null || projectId === undefined || isNaN(projectId)) {
@@ -53,11 +49,8 @@ const loadMilestones = async () => {
       return;
     }
       // Use direct fetch call to ensure correct URL formatting
-    console.log(`Fetching milestones for project ID: ${projectId} (type: ${typeof projectId})`);
     // JSON Server syntax for filtering by a field
     const url = `${apiBaseUrl}/milestones?projectId=${projectId}`;
-    console.log(`Request URL: ${url}`);
-    
     // Make the direct API call
     const response = await fetch(url);
     
@@ -66,12 +59,9 @@ const loadMilestones = async () => {
     }
     
     const data = await response.json();
-    console.log('Milestones data received:', data);
-    
     // Convert to entities
     milestones.value = MilestoneAssembler.toEntitiesFromResponse(data);
-    console.log('Converted milestone entities:', milestones.value);
-  } catch (err) {
+    } catch (err) {
     console.error('Error loading milestones:', err);
     error.value = 'Failed to load milestones. Please try again.';
   } finally {
@@ -99,12 +89,9 @@ const createMilestone = () => {
 
 // Edit milestone
 const editMilestone = (milestone) => {
-  console.log('editMilestone called with:', milestone);
   selectedMilestone.value = milestone;
-  console.log('selectedMilestone set to:', selectedMilestone.value);
   editDialogVisible.value = true;
-  console.log('editDialogVisible set to:', editDialogVisible.value);
-};
+  };
 
 // Delete milestone
 const deleteMilestone = (milestone) => {
@@ -127,8 +114,6 @@ const confirmDeleteMilestone = async () => {
     
     // Use direct API call for deleting milestone
     const url = `${apiBaseUrl}/milestones/${milestoneId}`;
-    console.log(`Deleting milestone at URL: ${url} with ID type: ${typeof milestoneId}`);
-    
     const response = await fetch(url, {
       method: 'DELETE'
     });
@@ -164,8 +149,6 @@ const saveMilestone = async (milestone) => {
       projectId = Number(projectId);
     }
     
-    console.log(`Processing milestone with ID: ${milestoneId} (type: ${typeof milestoneId}) and projectId: ${projectId} (type: ${typeof projectId})`);
-    
     const milestoneData = {
       id: milestoneId,
       name: milestone.name,
@@ -191,8 +174,6 @@ const saveMilestone = async (milestone) => {
     if (milestoneId) {      
       // Update existing milestone - use the parsed numeric ID
       const url = `${apiBaseUrl}/milestones/${milestoneId}`;
-      console.log(`Updating milestone at URL: ${url} with ID type: ${typeof milestoneId}`, milestoneData);
-      
       try {
         const response = await fetch(url, {
           method: 'PUT',
@@ -210,16 +191,13 @@ const saveMilestone = async (milestone) => {
         }
         
         const updatedData = await response.json();
-        console.log('Milestone successfully updated:', updatedData);
-      } catch (error) {
+        } catch (error) {
         console.error('Error during milestone update:', error);
         throw error;
       }
     } else {
       // Create new milestone
       const url = `${apiBaseUrl}/milestones`;
-      console.log(`Creating milestone at URL: ${url}`, milestoneData);
-      
       const response = await fetch(url, {
         method: 'POST',
         headers: {

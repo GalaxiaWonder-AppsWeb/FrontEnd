@@ -85,8 +85,6 @@ export class Milestone {
         }
         this.items.splice(index, 1);
     }    toJSON() {
-        console.log('Serializing milestone:', this.id, this.name, 'projectId:', this.projectId);
-        
         // Ensure id is numeric if it can be parsed
         const numericId = this.id ? (typeof this.id === 'string' && !isNaN(Number(this.id)) ? Number(this.id) : this.id) : null;
         const numericProjectId = this.projectId ? (typeof this.projectId === 'string' && !isNaN(Number(this.projectId)) ? Number(this.projectId) : this.projectId) : null;

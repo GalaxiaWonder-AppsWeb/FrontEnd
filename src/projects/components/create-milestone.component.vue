@@ -76,8 +76,6 @@ const createMilestone = () => {
   
   try {    // Convertir projectId a número si es una cadena
     const projectId = typeof props.projectId === 'number' ? props.projectId : Number(props.projectId);
-    console.log(`Creating milestone with projectId: ${projectId} (type: ${typeof projectId})`);
-    
     const milestone = new Milestone({
       name: formData.name,
       startDate: formData.startDate,

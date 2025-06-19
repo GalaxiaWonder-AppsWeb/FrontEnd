@@ -84,7 +84,6 @@ export default {
   },
   methods: {
     async loadOrganization() {
-      console.log('Valor desde la URL:', this.$route.params.orgId);
       try {
         this.organizationId = this.$route.params.orgId
         const res = await organizationService.getById({ id: this.organizationId })
@@ -124,19 +123,15 @@ export default {
       try {
         this.deleting = true;
         this.message = '';
-        
+        /*
         // 1. Obtener todos los miembros de la organización
-        const membersResponse = await organizationMemberService.getByOrgId(this.organizationId);
+        const membersResponse = await organizationService.getAllMembers(this.organizationId);
         const members = membersResponse?.data || membersResponse || [];
-        
-        console.log(`Se encontraron ${members.length} miembros para eliminar`);
-        
         // 2. Eliminar todos los miembros de la organización
         for (const member of members) {
-          await organizationMemberService.delete({ id: member.id });
-          console.log(`Miembro ${member.id} eliminado`);
-        }
-        
+          await organizationMemberService.delete(member.id);
+          }
+        */
         // 3. Eliminar la organización
         await organizationService.delete({ id: this.organizationId });
         

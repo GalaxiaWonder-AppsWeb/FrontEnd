@@ -70,8 +70,6 @@ export default {
     }
   },
   created() {
-    console.log("API URL:", import.meta.env.VITE_PROPGMS_API_URL);
-
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     this.router = useRouter()

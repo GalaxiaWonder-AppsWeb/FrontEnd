@@ -79,8 +79,7 @@ export default {
         const org = await import('../services/organization.service.js').then(m => m.organizationService.getById(this.organizationId));
         const createdBy = org?.createdBy || (org?.data && org.data.createdBy);
         this.isCreator = createdBy === this.currentUserId;
-        console.log(`El usuario actual ${this.currentUserId} es creador: ${this.isCreator}`);
-      } catch (error) {
+        } catch (error) {
         console.error("Error al verificar el creador de la organización:", error);
         this.isCreator = false;
       }

@@ -43,11 +43,8 @@ export default {
         
         // 2. Guardar la organización
         const res = await organizationService.create(org);
-        console.log("Organización creada:", res);
-        
         // 3. Guardar el ID de la organización y mostrar mensaje
         this.organizationId = res.id;
-        console.log("ID de organización guardado123:", this.organizationId);
         this.message = `Organización creada: ${res.legalName}`;
         
         // 5. Notificar creación exitosa

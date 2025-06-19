@@ -24,8 +24,6 @@ export const projectTeamMemberService = {
      * @returns {Promise<Array>} - Lista de miembros que coinciden con los criterios
      */    async getByProjectIdAndSpecialty(params) {
         try {
-            console.log('[projectTeamMemberService] Buscando miembros por proyecto y especialidad:', params);
-            
             if (!params || !params.projectId) {
                 throw new Error('Project ID is required for getByProjectIdAndSpecialty');
             }
@@ -37,7 +35,6 @@ export const projectTeamMemberService = {
             
             // Usar el servicio base con los parámetros completos
             const result = await baseService.getByProjectIdAndSpecialty(params);
-            console.log('[projectTeamMemberService] Resultado de búsqueda:', result);
             return result;
         } catch (error) {
             console.error('[projectTeamMemberService] Error buscando miembros por proyecto y especialidad:', error);
@@ -60,8 +57,6 @@ export const projectTeamMemberService = {
      */
     async getByProjectId(params) {
         try {
-            console.log('[projectTeamMemberService] Buscando miembros por proyecto:', params);
-            
             if (!params || !params.projectId) {
                 throw new Error('Project ID is required for getByProjectId');
             }
@@ -70,20 +65,15 @@ export const projectTeamMemberService = {
             try {
                 // 1. Usar el servicio base
                 const result = await baseService.getByProjectId(params);
-                console.log('[projectTeamMemberService] Resultado de búsqueda con servicio base:', result);
                 return result;
             } catch (serviceError) {
                 console.warn('[projectTeamMemberService] Error con servicio base, intentando alternativa:', serviceError);
                 
                 // 2. Método alternativo: obtener todos y filtrar manualmente
                 const allMembers = await baseService.getAll();
-                console.log('[projectTeamMemberService] Obtenidos todos los miembros:', allMembers);
-                
                 const filteredMembers = allMembers.filter(
                     member => member.projectId === Number(params.projectId)
                 );
-                console.log('[projectTeamMemberService] Miembros filtrados para proyecto:', filteredMembers);
-                
                 return filteredMembers;
             }
         } catch (error) {

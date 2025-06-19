@@ -23,14 +23,12 @@ const props = defineProps({
 const projectId = computed(() => {
   // Primero intentamos obtener de los props
   if (props.projectId !== undefined && props.projectId !== null) {
-    console.log("Using projectId from props:", props.projectId, typeof props.projectId);
     return typeof props.projectId === 'number' ? props.projectId : Number(props.projectId);
   }
   
   // Si no está en los props, intentamos obtenerlo de la ruta
   if (route.params.projectId) {
     const routeProjectId = Number(route.params.projectId);
-    console.log("Using projectId from route:", route.params.projectId, typeof routeProjectId);
     return routeProjectId;
   }
   
@@ -87,11 +85,8 @@ const handleCreateMilestone = async (milestone) => {
     error.value = null;
       // Ensure projectId is a number
 
-    console.log('YA NOSE QUE HACER');
     const projectIdValue = projectId.value;
-    console.log('PAPI QUE TU QUIERE,', projectIdValue, typeof projectIdValue);
     const projectIdNumber = typeof projectIdValue === 'number' ? projectIdValue : Number(projectIdValue);
-    console.log('MAMI QUE TU QUIERE',projectIdNumber, typeof projectIdNumber);
     // Format dates for API and ensure projectId is included
     const milestoneData = {
       ...milestone,
@@ -105,8 +100,6 @@ const handleCreateMilestone = async (milestone) => {
     
     // Use direct API call for creating milestone
     const url = `${apiBaseUrl}/milestones`;
-    console.log(`Creating milestone at URL: ${url}`, milestoneData);
-    
     const response = await fetch(url, {
       method: 'POST',
       headers: {

@@ -32,7 +32,6 @@ const errors = reactive({
 // Initialize form data when milestone changes
 watch(() => props.milestone, (newMilestone) => {
   if (newMilestone) {
-    console.log('Milestone received in edit component:', newMilestone);
     formData.id = newMilestone.id;
     formData.name = newMilestone.name;
     
@@ -46,13 +45,7 @@ watch(() => props.milestone, (newMilestone) => {
         ? new Date(newMilestone.endDate) 
         : new Date(newMilestone.endDate);
         
-      console.log('Form data initialized:', {
-        id: formData.id,
-        name: formData.name,
-        startDate: formData.startDate,
-        endDate: formData.endDate
-      });
-    } catch (error) {
+      } catch (error) {
       console.error('Error parsing milestone dates:', error);
     }
   }
@@ -91,7 +84,6 @@ const validateForm = () => {
 
 // Save milestone
 const saveMilestone = () => {
-  console.log('Save milestone called, validating form...');
   if (!validateForm()) {
     console.warn('Form validation failed');
     return;
@@ -105,14 +97,6 @@ const saveMilestone = () => {
       endDate: formData.endDate,
       projectId: props.milestone.projectId,
       items: props.milestone.items || []
-    });
-    
-    console.log('Saving milestone with data:', {
-      id: milestone.id,
-      name: milestone.name,
-      startDate: milestone.startDate,
-      endDate: milestone.endDate,
-      items: milestone.items.length
     });
     
     // Send the milestone entity back to the parent component

@@ -36,13 +36,11 @@ export default {
       try {
         // Obtener el usuario actual guardado (de localStorage)
         const user = JSON.parse(localStorage.getItem('user'))
-        console.log('primer traceback', user)
         if (!user || !user.personId) {
           throw new Error('No hay usuario logueado o falta personId')
         }
         // Llama al servicio (esto usará el JWT automáticamente por BaseService)
         const person = await personService.getById(user.personId )
-        console.log('Datos de la persona:', person)
         // Puedes asignar a una variable reactiva si lo deseas
         this.personData = person
       } catch (err) {
@@ -51,7 +49,6 @@ export default {
     },
 
     handleOrganizationsUpdated() {
-      console.log("Evento de actualización de organizaciones recibido");
       // Recargar las organizaciones cuando se acepta una invitación
       this.loadOrganizations();
     },

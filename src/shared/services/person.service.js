@@ -7,8 +7,7 @@ import { BaseService } from "./base.service.js";
 class PersonService extends BaseService {
     constructor() {
         super("/persons");
-        console.log('PersonService: Usando endpoint base', this.url);
-    }
+        }
     
     /**
      * Obtiene una persona por su ID con manejo de errores robusto
@@ -17,7 +16,6 @@ class PersonService extends BaseService {
      */
     async getById(personId) {
         try {
-            console.log(`Obteniendo persona con id ${personId}`);
             if (!personId && personId !== 0) {
                 console.warn('ID de persona no proporcionado');
                 return null;
@@ -25,34 +23,26 @@ class PersonService extends BaseService {
 
             // Asegurar que personId sea tratado como string si es número
             const id = personId.toString();
-            console.log('QUE PASO ACA CAUSA',id)
-            
+
             // Intentar obtener usando el servicio base
             try {
-                console.log('tu no mete cabra', parseInt(id))
                 const response = await this.get(id);
-                console.log('ESTA ES MI RESPUESTA', response.data);
-
                 return response.data
                 
                 // Si la respuesta tiene la propiedad data, extraer los datos
                 if (response && response.data) {
-                    console.log(`Persona obtenida:`, response.data);
                     return response.data;
                 }
                 
                 // Si la respuesta ya es el objeto directo
                 if (response && typeof response === 'object' && response.id) {
-                    console.log(`Persona obtenida directamente:`, response);
                     return response;
                 }
                 
                 // Caso especial: si la API devuelve un array (puede suceder con json-server)
                 if (response && Array.isArray(response)) {
-                    console.log(`API devolvió array, buscando persona con id ${personId}`);
                     const person = response.find(p => p.id.toString() === id);
                     if (person) {
-                        console.log(`Persona encontrada en array:`, person);
                         return person;
                     }
                 }
@@ -66,7 +56,6 @@ class PersonService extends BaseService {
 
             // Fallback: Intentar con fetch directo a la API
             try {
-                console.log(`Intentando fetch directo para persona con id ${personId}`);
                 const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
                 
                 // Intentar primero con la ruta de API
@@ -80,7 +69,6 @@ class PersonService extends BaseService {
                 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(`Persona obtenida con fetch directo:`, data);
                     return data;
                 }
             } catch (fetchError) {
@@ -89,7 +77,6 @@ class PersonService extends BaseService {
 
             // Último recurso: Intentar obtener todas las personas y filtrar
             try {
-                console.log(`Intentando obtener todas las personas y filtrar para id ${personId}`);
                 const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
                 const response = await fetch(`${apiUrl}/persons`);
                 
@@ -97,7 +84,6 @@ class PersonService extends BaseService {
                     const allPersons = await response.json();
                     const person = allPersons.find(p => p.id.toString() === id);
                     if (person) {
-                        console.log(`Persona encontrada en listado completo:`, person);
                         return person;
                     }
                 }
@@ -121,7 +107,6 @@ class PersonService extends BaseService {
      * @returns {Promise} - Respuesta de la actualización
      */
     update(personId, personData) {
-        console.log(`Updating person with ID ${personId}:`, personData);
         return this.put(personId, personData);
     }
 
@@ -132,7 +117,6 @@ class PersonService extends BaseService {
      */
     searchWorkers(query) {
         const url = `${this.url}/search/workers?query=${encodeURIComponent(query)}`;
-        console.log(`Searching workers with query: ${query}`);
         return this.http.get(url)
             .then(response => response.data)
             .catch(error => {
@@ -152,8 +136,6 @@ class PersonService extends BaseService {
             return [];
         }
         
-        console.log(`Searching person with email: ${email}`);
-        
         try {
             // Intentar con filtrado de la API Rest
             const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
@@ -161,7 +143,6 @@ class PersonService extends BaseService {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('Datos obtenidos de la API:', data);
                 return data; // La API devuelve un array de resultados
             }
             

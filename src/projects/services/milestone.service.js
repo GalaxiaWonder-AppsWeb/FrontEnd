@@ -18,8 +18,6 @@ class MilestoneService extends BaseService {
             
             // Use JSON Server query parameter syntax for filtering
             const url = `${this.url}?projectId=${projectId}`;
-            console.log(`Getting milestones for project ID ${projectId} at URL: ${url}`);
-            
             const response = await axios.get(url);
             return MilestoneAssembler.toEntitiesFromResponse(response.data);
         } catch (error) {

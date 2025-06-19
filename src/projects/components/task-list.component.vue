@@ -37,7 +37,6 @@ const loadTasks = async () => {
     loading.value = true;
     error.value = null;
     
-    console.log(`Cargando tareas para milestone ID: ${props.milestoneId}`);
     const response = await taskService.getByMilestoneId(props.milestoneId);
     
     // Get current user info from localStorage
@@ -45,19 +44,14 @@ const loadTasks = async () => {
     const userRole = user.activeProjectRole;
     const memberId = user.memberId;
     
-    console.log(`Usuario: ${memberId}, Rol en proyecto: ${userRole}`);
-    
-    // For all roles, all tasks are visible 
+    // For all roles, all tasks are visible
     tasks.value = response;
-    console.log(`${tasks.value.length} tareas cargadas`);
-    
     // But we can highlight tasks assigned to the current user if they're a Worker/Specialist
     if (userRole === 'Specialist' && memberId) {
       for (const task of tasks.value) {
         if (task.responsible === Number(memberId) || task.responsible === memberId) {
           task.isAssignedToMe = true;
-          console.log(`Tarea ${task.id} asignada al usuario actual: ${task.name}`);
-        }
+          }
       }
     }
   } catch (err) {

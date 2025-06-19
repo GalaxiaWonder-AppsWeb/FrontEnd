@@ -81,7 +81,6 @@ export class Organization {
     }
 
     toJSON() {
-        console.log('Valor de this.id antes de serializar:', this.id);
         return {
             id: this.id,
             legalName: this.legalName,

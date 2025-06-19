@@ -15,12 +15,10 @@ export class CacheService {
     const now = Date.now();
     
     if (cacheEntry && now - cacheEntry.timestamp < (ttl || this.cacheTTL)) {
-      console.log(`Usando datos en caché para: ${key}`);
       return cacheEntry.data;
     }
     
     try {
-      console.log(`Obteniendo datos frescos para: ${key}`);
       const data = await fetchFunction();
       this.cache.set(key, {
         data,
@@ -31,7 +29,6 @@ export class CacheService {
       console.error(`Error obteniendo datos para ${key}:`, error);
       // Si hay error y tenemos datos en caché (incluso expirados), los usamos como fallback
       if (cacheEntry) {
-        console.log(`Usando caché expirada como fallback para: ${key}`);
         return cacheEntry.data;
       }
       throw error;
@@ -44,7 +41,6 @@ export class CacheService {
    */
   static invalidate(key) {
     if (this.cache.has(key)) {
-      console.log(`Invalidando caché para: ${key}`);
       this.cache.delete(key);
     }
   }
@@ -53,7 +49,6 @@ export class CacheService {
    * Invalida todas las entradas de la caché
    */
   static invalidateAll() {
-    console.log('Invalidando toda la caché');
     this.cache.clear();
   }
 }

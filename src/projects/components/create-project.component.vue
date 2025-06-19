@@ -55,9 +55,7 @@ export default {
         
         this.creatorId = this.organizationData.createdBy;
         
-        console.log("Organización cargada:", this.organizationData);
-        console.log("Creador de la organización ID:", this.creatorId);
-      } catch (error) {
+        } catch (error) {
         console.error("Error al cargar datos de la organización:", error);
         this.$toast.add({
           severity: 'error',
@@ -111,8 +109,6 @@ export default {
           createdBy: this.user?.personId || null, // El usuario actual que está creando el proyecto
           contractor: this.creatorId // El creador de la organización
         };
-        
-        console.log("Creando proyecto con datos:", newProject);
         
         // Call API to create project
         const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects`, {
@@ -183,8 +179,6 @@ export default {
       // Verificar si el usuario tiene el rol necesario para crear proyectos
       if (this.user.activeOrganizationRole !== 'Contractor') {
         console.warn('Advertencia: Usuario sin permisos para crear proyectos está accediendo al componente CreateProject');
-        console.log('Rol del usuario:', this.user.activeOrganizationRole);
-        
         // No cargar los datos de la organización si el usuario no tiene permisos
         return;
       }

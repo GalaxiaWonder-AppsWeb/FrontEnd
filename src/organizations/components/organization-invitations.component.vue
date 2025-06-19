@@ -122,7 +122,6 @@ export default {
     },
     async loadInvitations() {
       if (!this.currentUserId) {
-        console.log("No hay usuario autenticado, no se cargan invitaciones");
         this.invitations = [];
         this.error = this.$t('notifications.login_required');
         return;

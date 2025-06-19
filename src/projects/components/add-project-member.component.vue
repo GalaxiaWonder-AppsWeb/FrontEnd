@@ -95,12 +95,10 @@ const filteredAvailableMembers = computed(() => {
 const availableMembers = computed(() => {
   // Ensure both arrays exist
   if (!organizationMembers.value || !Array.isArray(organizationMembers.value)) {
-    console.log('organizationMembers no es un array válido, devolviendo lista vacía');
     return [];
   }
   
   if (!projectMembers.value || !Array.isArray(projectMembers.value)) {
-    console.log('projectMembers no es un array válido, devolviendo todos los miembros de la organización');
     return organizationMembers.value.filter(member => member.type === 'Worker')
       .map(formatMemberForDropdown);
   }
@@ -110,8 +108,6 @@ const availableMembers = computed(() => {
     // Solo recopilar los IDs organizationMemberId, que es lo que realmente necesitamos
     const projectMemberOrganizationIds = [];
     
-    console.log('Extrayendo organizationMemberId de miembros actuales del proyecto:', projectMembers.value);
-    
     projectMembers.value.forEach((member, index) => {
       // Para cada miembro del proyecto, guardamos el organizationMemberId (o memberId que es lo mismo)
       const orgMemberId = member.organizationMemberId || member.memberId;
@@ -119,17 +115,12 @@ const availableMembers = computed(() => {
       if (orgMemberId) {
         // Convertir a número para comparaciones consistentes
         projectMemberOrganizationIds.push(Number(orgMemberId));
-        console.log(`Proyecto - miembro ${index}: organizationMemberId = ${orgMemberId}`);
-      }
+        }
     });
 
-    console.log('IDs de miembros de organización ya en el proyecto:', projectMemberOrganizationIds);
-    console.log('Total miembros de organización disponibles para filtrar:', organizationMembers.value.length);
-    
     // Filtramos solo por organizationMemberId, que es el ID relevante
     const filteredMembers = organizationMembers.value.filter(member => {
       if (!member || typeof member !== 'object') {
-        console.log('Miembro inválido encontrado, excluyendo:', member);
         return false;
       }
       
@@ -146,15 +137,11 @@ const availableMembers = computed(() => {
       
       if (!shouldInclude) {
         const reason = !isWorker ? "No es worker" : "Ya está en el proyecto";
-        console.log(`Miembro ${orgMemberId} excluido. Razón: ${reason}`);
-      } else {
-        console.log(`Miembro ${orgMemberId} incluido en la lista de disponibles`);
-      }
+        } else {
+        }
       
       return shouldInclude;
     });
-    
-    console.log(`Después de filtrar: ${filteredMembers.length} miembros disponibles`);
     
     // Formateamos los miembros para el dropdown
     return filteredMembers.map(formatMemberForDropdown);
@@ -169,8 +156,6 @@ const formatMemberForDropdown = (member) => {
   // IMPORTANTE: Usar el ID del miembro de la organización, no el ID de la persona
   const memberId = member.id; // Este es el organizationMemberId que necesitamos
   const personId = member.personId; // Este es el ID de la persona asociada
-  
-  console.log(`Preparando miembro para dropdown. ID del miembro: ${memberId}, ID de la persona: ${personId}`, member);
   
   // Crear el nombre a mostrar
   let displayName = 'Unknown Member';
@@ -340,8 +325,6 @@ const prepareSelectedMembers = () => {
   }
     // Crear registros para cada miembro seleccionado con roles y especialidades por defecto
   membersToAdd.value = validMembers.map(member => {
-    console.log(`Preparando miembro para agregar:`, member);
-    
     return {
       memberId: member.value, // Este es el organizationMemberId (ID de la colección "members")
       personId: member.personId, // Guardamos también el personId para referencia
@@ -351,8 +334,6 @@ const prepareSelectedMembers = () => {
       debug: `Usando miembro: ${member.value}, persona: ${member.personId}`
     };
   });
-  
-  console.log('Miembros preparados para añadir:', membersToAdd.value);
   
   return true;
 };
@@ -427,22 +408,16 @@ const addMembersToProject = async () => {
     error.value = '';
     success.value = ''; // Limpiar mensajes anteriores
 
-    console.log(`Iniciando adición de ${membersToAdd.value.length} miembro(s) al proyecto ${projectId.value}...`);
-
     // Agregar cada miembro seleccionado al proyecto
     for (const member of membersToAdd.value) {
       try {
         // Agregar un miembro a la vez para evitar problemas de concurrencia
-        console.log(`Agregando miembro al proyecto: memberId=${member.memberId}, role=${member.role}, specialty=${member.specialty}`);
-        
         const result = await projectTeamMemberService.addToProject(
           projectId.value,
           member.memberId, // Este debe ser el ID del miembro de la organización
           member.specialty,
           member.role
         );
-        
-        console.log(`Miembro ${member.memberId} (${member.name}) agregado con éxito:`, result);
         
         // Recargar la lista de miembros del proyecto después de cada adición
         await loadProjectMembers();
@@ -461,8 +436,6 @@ const addMembersToProject = async () => {
     await loadProjectMembers();
 
     success.value = 'Miembros agregados al proyecto exitosamente';
-    console.log('Miembros agregados exitosamente, listas recargadas');
-    
     // Emit event to parent that members were added
     emit('member-added');
     
@@ -481,18 +454,14 @@ const addMembersToProject = async () => {
 // Vigilamos cambios en la lista de miembros del proyecto
 // para actualizar la lista de miembros disponibles
 watch(projectMembers, async (newMembers, oldMembers) => {
-  console.log('projectMembers cambió:', newMembers);
-  
   // Si la lista ha cambiado y estamos agregando miembros (no al inicializarse)
   if (oldMembers && oldMembers.length !== newMembers.length && !loading.value) {
-    console.log('Detectado cambio en miembros del proyecto, refrescando miembros disponibles...');
     // No es necesario recargar de la API, el computed se recalculará automáticamente
   }
 }, { deep: true });
 
 // Cargamos los datos al montar el componente
 onMounted(async () => {
-  console.log('Inicializando componente add-project-member con projectId:', projectId.value);
   try {
     loading.value = true;
     error.value = ''; // Limpiamos cualquier error previo
@@ -505,25 +474,20 @@ onMounted(async () => {
       return;
     }
     
-    console.log(`Cargando detalles del proyecto ${projectId.value}...`);
     const project = await loadProjectDetails();
 
     if (project) {
-      console.log(`Proyecto cargado:`, project);
       if (!organizationId.value) {
         error.value = `El proyecto no tiene una organización asociada (ID proyecto: ${projectId.value})`;
         loading.value = false;
         return;
       }
       
-      console.log(`Cargando miembros de la organización ${organizationId.value}...`);
       await loadOrganizationMembers();
       
-      console.log(`Cargando miembros actuales del proyecto ${projectId.value}...`);
       await loadProjectMembers();
       
-      console.log(`Inicialización completa. Miembros de organización: ${organizationMembers.value.length}, Miembros de proyecto: ${projectMembers.value.length}`);
-    } else {
+      } else {
       error.value = `No se pudo cargar la información del proyecto ${projectId.value}`;
     }
   } catch (err) {

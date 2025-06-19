@@ -6,6 +6,6 @@ export const organizationMemberService = createService('/organization/members', 
     getById:        { verb: HttpVerb.GET, path: ':id', fullPath: true },
     create:         { verb: HttpVerb.POST },
     update:         { verb: HttpVerb.PATCH, path: ':id' },
-    delete:         { verb: HttpVerb.DELETE, path: ':id' },
+    delete:         { verb: HttpVerb.DELETE, path: ':id', fullPath: true },
     getByPersonId:  { verb: HttpVerb.GET, path: 'by-person-id/:personId', fullPath: true }
 })

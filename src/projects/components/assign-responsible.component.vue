@@ -34,8 +34,6 @@ const searchQuery = ref("");
 
 // Cargamos los miembros del proyecto con la especialidad requerida
 const loadProjectMembers = async () => {
-  console.log(`Iniciando carga de miembros para proyecto ID: ${projectId.value}`);
-  
   if (!projectId.value) {
     console.error("No se pudo determinar el ID del proyecto");
     error.value = "No se pudo determinar el ID del proyecto";
@@ -56,21 +54,17 @@ const loadProjectMembers = async () => {
     loading.value = true;
     error.value = null;
     
-    console.log(`Buscando miembros para proyecto ${projectId.value} con especialidad ${props.task.specialty || 'cualquiera'}`);
-    
     // Usar la función para obtener miembros por especialidad (ahora con mejor manejo de errores)
     let members = [];
     
     if (props.task.specialty) {
       // Intentar primero con la especialidad específica
-      console.log(`Buscando miembros con especialidad: ${props.task.specialty}`);
       try {
         members = await projectTeamMemberService.getByProjectIdAndSpecialty({
           projectId: projectId.value,
           specialty: props.task.specialty
         });
-        console.log(`Encontrados ${members?.length || 0} miembros con especialidad específica`);
-      } catch (specialtyError) {
+        } catch (specialtyError) {
         console.error("Error buscando por especialidad específica:", specialtyError);
         members = [];
       }
@@ -79,13 +73,11 @@ const loadProjectMembers = async () => {
     // Si no hay miembros con esa especialidad o no se especificó especialidad, 
     // intentar cargar todos los miembros del proyecto
     if (!members || members.length === 0) {
-      console.log(`No se encontraron miembros con la especialidad, cargando todos los miembros del proyecto ${projectId.value}`);
       try {
         const allMembers = await projectTeamMemberService.getByProjectId({ 
           projectId: projectId.value 
         });
         
-        console.log(`Encontrados ${allMembers?.length || 0} miembros del proyecto en total`);
         teamMembers.value = allMembers || [];
       } catch (allMembersError) {
         console.error("Error cargando todos los miembros:", allMembersError);
@@ -99,21 +91,17 @@ const loadProjectMembers = async () => {
     // Si no encontramos miembros de ninguna forma, probar un último recurso:
     // obtener todos los project-team-members y filtrar manualmente
     if (!teamMembers.value.length) {
-      console.log("Intentando último recurso: obtener todos los miembros de equipos y filtrar manualmente");
       try {
         const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
         const response = await fetch(`${apiUrl}/project-team-members`);
         
         if (response.ok) {
           const allTeamMembers = await response.json();
-          console.log(`Obtenidos ${allTeamMembers.length} miembros de equipos en total`);
-          
           // Filtrar manualmente por projectId
           const filteredMembers = allTeamMembers.filter(m => 
             m.projectId === Number(projectId.value)
           );
           
-          console.log(`Después de filtrar por projectId=${projectId.value}, quedan ${filteredMembers.length} miembros`);
           teamMembers.value = filteredMembers;
         }
       } catch (lastResortError) {
@@ -123,7 +111,6 @@ const loadProjectMembers = async () => {
     
     // Cargar detalles de cada miembro
     if (teamMembers.value.length) {
-      console.log(`Cargando detalles para ${teamMembers.value.length} miembros`);
       await loadMemberDetails();
     } else {
       console.warn("No se encontraron miembros para el proyecto");
@@ -140,11 +127,8 @@ const loadProjectMembers = async () => {
 // Cargar detalles de cada miembro (nombres, etc.)
 const loadMemberDetails = async () => {
   if (!teamMembers.value || !teamMembers.value.length) {
-    console.log("No hay miembros para cargar detalles");
     return;
   }
-  
-  console.log("Cargando detalles para miembros:", teamMembers.value);
   
   const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
   
@@ -155,8 +139,6 @@ const loadMemberDetails = async () => {
         continue;
       }
       
-      console.log("Procesando miembro:", member);
-      
       // Determinar el ID correcto para buscar. Podría ser organizationMemberId o memberId
       const orgMemberId = member.organizationMemberId || member.memberId;
       
@@ -166,8 +148,6 @@ const loadMemberDetails = async () => {
       }
       
       // 1. Primero, cargar el miembro de la organización para obtener el personId
-      console.log(`Consultando miembro de organización con ID ${orgMemberId} en ${apiUrl}/members/${orgMemberId}`);
-      
       try {
         const orgMemberResponse = await fetch(`${apiUrl}/members/${orgMemberId}`);
         
@@ -176,15 +156,12 @@ const loadMemberDetails = async () => {
         }
         
         const orgMember = await orgMemberResponse.json();
-        console.log(`Miembro de organización obtenido:`, orgMember);
-        
         // 2. Ahora, cargar la información de la persona usando el personId
         if (!orgMember.personId) {
           console.warn(`El miembro de organización no tiene personId definido:`, orgMember);
           continue;
         }
         
-        console.log(`Cargando detalles para persona con ID: ${orgMember.personId}`);
         const personResponse = await fetch(`${apiUrl}/persons/${orgMember.personId}`);
         
         if (!personResponse.ok) {
@@ -192,8 +169,6 @@ const loadMemberDetails = async () => {
         }
         
         const person = await personResponse.json();
-        console.log(`Persona obtenida:`, person);
-        
         // Almacenar la información de la persona en el cache
         personDetails.value[orgMemberId] = person;
         
@@ -202,12 +177,10 @@ const loadMemberDetails = async () => {
         
         // Intento alternativo: si el miembro tiene personId directamente, intentar usarlo
         if (member.personId) {
-          console.log(`Intentando cargar persona directamente con ID: ${member.personId}`);
           try {
             const directPersonResponse = await fetch(`${apiUrl}/persons/${member.personId}`);
             if (directPersonResponse.ok) {
               const person = await directPersonResponse.json();
-              console.log(`Persona obtenida directamente:`, person);
               personDetails.value[orgMemberId] = person;
             }
           } catch (directError) {
@@ -224,11 +197,8 @@ const loadMemberDetails = async () => {
 // Filtrar miembros por especialidad coincidente con la tarea
 const filteredMembers = computed(() => {
   if (!teamMembers.value || !teamMembers.value.length) {
-    console.log("No hay miembros para filtrar");
     return [];
   }
-  
-  console.log("Filtrando miembros. Total miembros:", teamMembers.value.length);
   
   // Primero, verificar si hay miembros con la especialidad exacta
   const exactSpecialtyMembers = teamMembers.value.filter(member => {
@@ -238,8 +208,6 @@ const filteredMembers = computed(() => {
   
   // Si encontramos miembros con la especialidad exacta, usamos solo esos
   const membersToFilter = exactSpecialtyMembers.length > 0 ? exactSpecialtyMembers : teamMembers.value;
-  console.log(`Usando ${membersToFilter.length} miembros para filtrar (${exactSpecialtyMembers.length} con especialidad exacta)`);
-  
   // Ahora aplicamos los filtros adicionales
   const filtered = membersToFilter.filter(member => {
     // Verificar que el miembro sea válido
@@ -274,8 +242,7 @@ const filteredMembers = computed(() => {
       } else {
         // Si no podemos buscar por datos personales, intentar buscar en los datos del miembro
         matchesSearch = false;
-        console.log(`No se encontraron datos personales para el miembro ${memberId} durante la búsqueda`);
-      }
+        }
     }
     
     const shouldInclude = matchesRole && matchesSearch && (exactSpecialtyMembers.length > 0 || matchesSpecialty);
@@ -284,13 +251,11 @@ const filteredMembers = computed(() => {
       const reason = !matchesRole ? "No es especialista" : 
                      !matchesSearch ? "No coincide con término de búsqueda" : 
                      !matchesSpecialty ? "No coincide con especialidad requerida" : "Desconocido";
-      console.log(`Miembro ${memberId} excluido. Razón: ${reason}`);
-    }
+      }
     
     return shouldInclude;
   });
   
-  console.log(`Filtrado completado. Miembros resultantes: ${filtered.length}`);
   return filtered;
 });
 
@@ -315,14 +280,9 @@ const isCurrentResponsible = (memberId) => {
 const getMemberName = (memberId) => {
   if (!memberId) return "Miembro desconocido";
   
-  console.log(`Intentando obtener nombre para miembro con ID: ${memberId}`);
-  console.log(`Estado actual de personDetails:`, personDetails.value);
-  
   const person = personDetails.value[memberId];
   if (!person) {
     // Si no tenemos datos de esta persona, buscar si hay algún personId disponible
-    console.log(`No se encontraron datos de persona para miembro ${memberId}, intentando encontrar alternativas`);
-    
     // Buscar si tenemos este miembro en teamMembers
     const teamMember = teamMembers.value.find(m => 
       m.id === memberId || 
@@ -331,7 +291,6 @@ const getMemberName = (memberId) => {
     );
     
     if (teamMember && teamMember.personId && personDetails.value[teamMember.personId]) {
-      console.log(`Encontrado personId alternativo: ${teamMember.personId}`);
       const alternatePerson = personDetails.value[teamMember.personId];
       const altFirstName = alternatePerson.name || '';
       const altLastName = alternatePerson.lastName || '';
@@ -351,8 +310,6 @@ const getMemberName = (memberId) => {
 
 // Manejar asignación de responsable
 const handleAssign = () => {
-  console.log(`Intentando asignar miembro con ID: ${selectedMemberId.value}`);
-  
   if (!selectedMemberId.value) {
     console.warn("No se ha seleccionado ningún miembro");
     return;
@@ -360,16 +317,12 @@ const handleAssign = () => {
   
   // Verificar si tenemos datos de la persona para este miembro
   const person = personDetails.value[selectedMemberId.value];
-  console.log(`Datos de persona para el miembro seleccionado:`, person);
-  
   // Encontrar el miembro completo en la lista filtrada para tener todos sus datos
   const selectedMember = filteredMembers.value.find(m => 
     m.id === selectedMemberId.value || 
     m.organizationMemberId === selectedMemberId.value || 
     m.memberId === selectedMemberId.value
   );
-  
-  console.log("Miembro completo seleccionado:", selectedMember);
   
   // Emitir el ID del miembro seleccionado
   emit('assign', selectedMemberId.value);
@@ -396,7 +349,6 @@ const updateVisible = (value) => {
 
 // Observar cambios en la visibilidad para cargar datos
 watch(() => props.visible, (isVisible) => {
-  console.log(`Dialog visibility changed to: ${isVisible}`);
   if (isVisible) {
     // Forzar carga de miembros con timeout para asegurar que el dialog esté completamente renderizado
     setTimeout(() => {
@@ -407,7 +359,6 @@ watch(() => props.visible, (isVisible) => {
 
 // Observar cambios en la tarea para recargar los miembros si cambia
 watch(() => props.task, (newTask) => {
-  console.log(`Task changed:`, newTask);
   if (props.visible && newTask) {
     loadProjectMembers();
   }
@@ -415,7 +366,6 @@ watch(() => props.task, (newTask) => {
 
 // Cargar datos al montar el componente
 onMounted(() => {
-  console.log(`Component mounted. Dialog visible: ${props.visible}`);
   if (props.visible) {
     loadProjectMembers();
   }

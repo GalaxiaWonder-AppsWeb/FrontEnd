@@ -11,7 +11,6 @@ export class BaseService {
         const endpoint = resourceEndpoint.startsWith('/') ? resourceEndpoint : `/${resourceEndpoint}`;
         
         this.url = `${baseUrl}${endpoint}`;
-        //console.log(`BaseService initialized with URL: ${this.url}`);
     }
 
     /**
@@ -21,7 +20,6 @@ export class BaseService {
      */
     _buildUrl(path) {
         const cleanPath = path ? (path.startsWith('/') ? path.substring(1) : path) : '';
-        console.log(`Building URL with path: ${cleanPath}`);
         return cleanPath ? `${this.url}/${cleanPath}` : this.url;
     }
 
@@ -33,7 +31,6 @@ export class BaseService {
      * @returns {Object} - Respuesta original
      */
     _handleSuccess(method, url, response) {
-        console.log(`Success ${method} response from ${url}:`, response.status);
         return response;
     }
 
@@ -52,7 +49,6 @@ export class BaseService {
             // Si es un error 404 en GET y la URL contiene '/api/v1', intentar con ruta alternativa
             if (method === 'GET' && error.response.status === 404 && url.includes('/api/v1')) {
                 const alternativeUrl = url.replace('/api/v1', '');
-                console.log(`Trying alternative URL: ${alternativeUrl}`);
                 return axios.get(alternativeUrl, { params: options.params })
                     .then(response => this._handleSuccess('GET', alternativeUrl, response))
                     .catch(altError => {
@@ -80,10 +76,7 @@ export class BaseService {
      * @returns {Promise<Object>} - Promesa con la respuesta
      */
     get(path = '', params = null) {
-        console.log('FALLE ACA NO??');
         const cleanUrl = this._buildUrl(path);
-        console.log(`123GET request to: ${cleanUrl}`, params);
-
         return axios.get(cleanUrl, { params, headers: this._getAuthHeaders() })
             .then(response => this._handleSuccess('GETTER', cleanUrl, response))
             .catch(error => this._handleError('GET', cleanUrl, error, { params }));
@@ -97,8 +90,6 @@ export class BaseService {
      */
     post(path = '', data) {
         const cleanUrl = this._buildUrl(path);
-        console.log(`POST request to: ${cleanUrl}`, data);
-
         return axios.post(cleanUrl, data, {
             headers: this._getAuthHeaders()
         })
@@ -114,8 +105,6 @@ export class BaseService {
      */
     put(path = '', data) {
         const cleanUrl = this._buildUrl(path);
-        console.log(`PUT request to: ${cleanUrl}`, data);
-
         return axios.put(cleanUrl, data, {
             headers: this._getAuthHeaders()
         })
@@ -131,8 +120,6 @@ export class BaseService {
      */
     patch(path = '', data) {
         const cleanUrl = this._buildUrl(path);
-        console.log(`PATCH request to: ${cleanUrl}`, data);
-
         return axios.patch(cleanUrl, data, {
             headers: this._getAuthHeaders()
         })
@@ -147,8 +134,6 @@ export class BaseService {
      */
     delete(path = '') {
         const cleanUrl = this._buildUrl(path);
-        console.log(`DELETE request to: ${cleanUrl}`);
-
         return axios.delete(cleanUrl, {
             headers: this._getAuthHeaders()
         })

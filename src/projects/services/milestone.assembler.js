@@ -16,8 +16,6 @@ export class MilestoneAssembler {    static toEntityFromResource(resource) {
             projectId = Number(projectId);
         }
         
-        console.log(`Assembler processing milestone with ID: ${id} (type: ${typeof id}) and projectId: ${projectId} (type: ${typeof projectId})`);
-        
         return new Milestone({
             id: id,
             name: resource.name,

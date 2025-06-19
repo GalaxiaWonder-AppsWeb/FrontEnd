@@ -41,13 +41,9 @@ const loading = ref(true) // Flag to control loading state
 
 // Function to handle when a new member is added
 const handleMemberAdded = async () => {
-  console.log('Member added to project - refreshing data and closing dialog');
-  
   try {
     // First reload members
     await loadMembers();
-    console.log('Members list reloaded after member addition');
-    
     // Show success toast
     toast.add({
       severity: 'success',
@@ -147,20 +143,14 @@ const loadMembers = async () => {
   organizationMembersCache.value = {};
   
   try {
-    console.log(`Loading project members for project ID: ${projectId.value}...`);
-    
     // Get fresh data using the projectTeamMemberService
     const response = await projectTeamMemberService.getByProjectId({ projectId: projectId.value });
     
     // Ensure we have a valid array and update the reference
     projectMembers.value = Array.isArray(response) ? response : [];
     
-    console.log(`Project members loaded: ${projectMembers.value.length} members found`);
-    
     // Precargar los datos de las personas asociadas a los miembros
     if (projectMembers.value.length > 0) {
-      console.log('Preloading organization member and person data...');
-      
       // Step 1: Load all organization member data first
       const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
       
@@ -173,14 +163,10 @@ const loadMembers = async () => {
         try {
           // Fetch the organization member
           const orgMemberId = Number(member.organizationMemberId);
-          console.log(`Fetching organization member data for ID: ${orgMemberId}`);
-          
           const memberResponse = await fetch(`${apiUrl}/members/${orgMemberId}`);
           
           if (memberResponse.ok) {
             const orgMember = await memberResponse.json();
-            console.log(`Organization member loaded for ID ${orgMemberId}:`, orgMember);
-            
             // Store in the cache using the numeric ID
             organizationMembersCache.value[orgMemberId] = orgMember;
             
@@ -197,8 +183,7 @@ const loadMembers = async () => {
                   // Also cache by organizationMemberId for easy lookup in the template
                   personsCache.value[`org_${orgMemberId}`] = person;
                   
-                  console.log(`Person data loaded for organization member ${orgMemberId}:`, person);
-                }
+                  }
               } catch (personError) {
                 console.error(`Error loading person for organization member ${orgMemberId}:`, personError);
               }
@@ -216,11 +201,8 @@ const loadMembers = async () => {
       // Wait for all promises to resolve
       await Promise.all(memberPromises);
       
-      console.log('All member data loaded.');
-      console.log(`Cache status: ${Object.keys(personsCache.value).length} persons, ${Object.keys(organizationMembersCache.value).length} organization members`);
-    } else {
-      console.log('No project members to load data for');
-    }
+      } else {
+      }
   } catch (error) {
     console.error('Error loading team members:', error);
     // Ensure we always have a valid array

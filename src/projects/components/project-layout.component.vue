@@ -42,12 +42,9 @@ export default {
           return;
         }
         
-        console.log(`Determinando rol para personId=${this.personId} en projectId=${this.projectId}`);
-        
         // 3. Verificar si el usuario es Contractor en la organización
         // Si es Contractor, automáticamente es Coordinator en el proyecto
         if (user.activeOrganizationRole === 'Contractor') {
-          console.log("Usuario es Contractor en la organización, asignando rol Coordinator en el proyecto");
           user.activeProjectRole = ProjectRole.COORDINATOR;
           localStorage.setItem("user", JSON.stringify(user));
           return;
@@ -65,13 +62,11 @@ export default {
               // Asignar el rol en el proyecto
               user.activeProjectRole = members[0].role || ProjectRole.SPECIALIST;
               localStorage.setItem("user", JSON.stringify(user));
-              console.log(`Rol asignado en el proyecto: ${user.activeProjectRole}`);
-            } else {
+              } else {
               // Si no es miembro, asignar rol por defecto (Specialist para Workers)
               user.activeProjectRole = ProjectRole.SPECIALIST;
               localStorage.setItem("user", JSON.stringify(user));
-              console.log("Usuario no tiene asignación específica, usando rol Worker como Specialist");
-            }
+              }
           } else {
             console.warn("Error al consultar miembros del proyecto");
             // Si hay error en la consulta, usar rol por defecto según el rol en la organización

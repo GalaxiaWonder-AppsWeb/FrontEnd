@@ -79,9 +79,6 @@ export class Project {
     }    
     
     toJSON() {
-        console.log('Valor de this.id antes de serializar:', this.id);
-        console.log('Valor de contractor antes de serializar:', this.contractor);
-        
         // Asegurarnos de que el valor de contractor se serialice correctamente
         let contractorValue = null;
         if (this.contractor) {

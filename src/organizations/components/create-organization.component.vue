@@ -4,9 +4,7 @@ import {Organization} from "../model/organization.entity.js";
 import {Ruc} from "../model/ruc.js";
 import {OrganizationStatus} from "../model/organization-status.js";
 import {organizationService} from "../services/organization.service.js";
-import {OrganizationMember} from "../model/organization-member.entity.js";
-import {OrganizationMemberType} from "../model/organization-member-type.js";
-import {organizationMemberService, organizationMemberServiceCustom} from "../services/organization-member.service.js";
+
 export default {
   name: "CreateOrganization",
   components: {PvButton, PvInputText},
@@ -52,10 +50,6 @@ export default {
         console.log("ID de organización guardado123:", this.organizationId);
         this.message = `Organización creada: ${res.legalName}`;
         
-        // 4. Vincular al creador como contratista
-        console.log("Vinculando contratista", this.user.personId, "con organización", this.organizationId);
-        await this.LinkContractor(this.user.personId, res.id);
-        
         // 5. Notificar creación exitosa
         this.$emit('organization-created', this.organizationId);
         
@@ -88,38 +82,7 @@ export default {
       const numeric = value.replace(/\D/g, '')
       event.target.value = numeric
     },    
-    async LinkContractor(person, organization) {
-      const personId = Number(person);
-      const orgId = Number(organization);
-      console.log("Datos convertidos:", { personId, orgId });
-      /*const res = await organizationMemberServiceCustom.createContractorMember(
-        personId,
-        orgId,
-        OrganizationMemberType.CONTRACTOR
-      );
-*/
-      try {
-        console.log("Vinculando contratista:", { person, organization });
-        
-        // Usar el método especializado para crear contratista
-        const res = await organizationMemberServiceCustom.createContractorMember(
-          person,
-          organization,
-          OrganizationMemberType.CONTRACTOR
-        );
-        
-        console.log("Respuesta del servicio:", res);
-        
-        this.createdMemberId = res.id;
-        this.message = `Miembro creado para persona ${res.personId} y añadido a la organización`;
-        console.log("Miembro creado y añadido a la organización:", res);
-        return res;
-      } catch (error) {
-        console.error("Error al crear miembro:", error);
-        this.message = `Error al crear miembro: ${error.message}`;
-        throw error; // Propagar el error para que pueda ser manejado por el llamador
-      }
-    }
+
   },
   created(){
     this.user = JSON.parse(localStorage.getItem("user"))

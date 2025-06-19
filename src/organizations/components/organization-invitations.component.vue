@@ -8,16 +8,16 @@
     <div v-if="loading" class="notification-loading">
       <pv-progress-spinner style="width:30px;height:30px" />
     </div>
-    
+
     <div v-else-if="error" class="notification-error">
       {{ error }}
     </div>
-    
+
     <div v-else-if="invitations.length === 0" class="notification-empty">
       <i class="pi pi-bell-slash"></i>
       <p>{{ $t('notifications.empty') }}</p>
     </div>
-    
+
     <div v-else class="notification-list">
       <div v-for="invitation in invitations" :key="invitation.id" class="notification-item">
         <div class="notification-content">
@@ -27,25 +27,31 @@
           <div>
             <div class="notification-title">{{ invitation.organizationName }}</div>
             <div class="notification-subtitle">
-              {{ $t('notifications.invited_by') }} {{ invitation.inviterName }}
+              {{ $t('notifications.invited_by') }} {{ invitation.invitedByFullName }}
             </div>
             <div class="notification-time">
               <i class="pi pi-clock"></i>
-              {{ formatDate(invitation.invitedAt) }}
+              {{ formatDate(invitation.invitedOn) }}
             </div>
           </div>
         </div>
-        
+
+
+          <span :class="['invitation-status', invitation.status.toLowerCase()]">
+            {{ invitation.status }}
+          </span>
+
+
         <div class="notification-actions">
-          <pv-button 
-            icon="pi pi-check" 
+          <pv-button
+            icon="pi pi-check"
             class="p-button-success p-button-sm accept-button"
-            :disabled="processingInvitation === invitation.id"
+            :disabled="processingInvitation === invitation.id || invitation.status === 'ACCEPTED' || invitation.status === 'REJECTED'"
             @click="acceptInvitation(invitation)" />
-          <pv-button 
-            icon="pi pi-times" 
+          <pv-button
+            icon="pi pi-times"
             class="p-button-danger p-button-sm reject-button"
-            :disabled="processingInvitation === invitation.id"
+            :disabled="processingInvitation === invitation.id || invitation.status === 'ACCEPTED' || invitation.status === 'REJECTED'"
             @click="rejectInvitation(invitation)" />
         </div>
       </div>
@@ -54,12 +60,11 @@
 </template>
 
 <script>
-import { OrganizationInvitationService } from '../services/organization-invitation.service.js';
 import { organizationService } from '../services/organization.service.js';
-import { personService } from '../../shared/services/person.service.js';
-import { organizationMemberService } from '../services/organization-member.service.js';
-import { OrganizationInvitationStatus } from '../model/organization-invitation-status.js';
 import { authService } from '../../iam/services/auth.service.js';
+import { OrganizationInvitationAssembler} from "../services/organization-invitation.assembler.js";
+import {organizationInvitationService} from "../services/organization-invitation.service.js";
+import {personService} from "../../shared/services/person.service.js";
 
 export default {
   name: "OrganizationInvitations",
@@ -98,7 +103,7 @@ export default {
         .map(word => word.charAt(0).toUpperCase())
         .join('');
     },
-    
+
     async loadCurrentUser() {
       try {
         // Verificar si el usuario está autenticado
@@ -114,249 +119,132 @@ export default {
         this.currentUserId = null;
         this.error = this.$t('notifications.error_loading');
       }
-    },    async loadInvitations() {
+    },
+    async loadInvitations() {
       if (!this.currentUserId) {
         console.log("No hay usuario autenticado, no se cargan invitaciones");
         this.invitations = [];
         this.error = this.$t('notifications.login_required');
         return;
       }
-      
+
       try {
         this.loading = true;
         this.error = null;
-        
-        console.log(`Cargando invitaciones para el usuario: ${this.currentUserId}`);
-        
-        // Cargar invitaciones directamente de la API para asegurar que obtenemos los datos más recientes
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/invitations?personId=${this.currentUserId}&status=Pending&_t=${new Date().getTime()}`);
-        
-        if (!response.ok) {
-          throw new Error(`Error al obtener invitaciones: ${response.status} ${response.statusText}`);
-        }
-        
-        const invitations = await response.json();
-        console.log("Invitaciones obtenidas directamente de la API:", invitations);
-        
-        // Verificar que tenemos datos de invitaciones
-        if (!Array.isArray(invitations)) {
-          console.error("La respuesta de invitaciones no es un array:", invitations);
-          this.invitations = [];
-          this.error = this.$t('notifications.error_loading');
-          return;
-        }
-        
-        // Filtrar invitaciones pendientes, aceptando tanto 'Pending' como 'PENDING'
-        const pendingInvitations = invitations.filter(
-          inv => inv.status === 'Pending' || inv.status === 'PENDING'
+
+        // 1. Obtener las invitaciones con el servicio
+        const response = await organizationService.getAllInvitationByPersonId(this.currentUserId);
+        const rawInvitations = Array.isArray(response?.data) ? response.data : response;
+        // 2. Transformar cada invitación con assembler si tienes uno
+        const invitations = rawInvitations.map(inv =>
+            OrganizationInvitationAssembler
+                ? OrganizationInvitationAssembler.toEntityFromResource(inv)
+                : inv
         );
-        
-        console.log("Invitaciones pendientes filtradas:", pendingInvitations);
-        
-        // Enriquecer con detalles de organización e invitador
-        const enrichedInvitations = await Promise.all(
-          pendingInvitations.map(async invitation => {
-            let organizationName = 'Organización';
-            let inviterName = 'Usuario';
-            
+
+        // 3. Enriquecer invitaciones con nombre de la organización y del invitador
+        for (const invitation of invitations) {
+          // Obtener nombre de la organización
+          if (!invitation.organizationName && invitation.organizationId) {
             try {
-              const organization = await organizationService.getById(invitation.organizationId);
-              if (organization) {
-                organizationName = organization.name || organization.legalName;
-              }
-              
-              const inviter = await personService.getById(invitation.invitedBy);
-              if (inviter) {
-                inviterName = `${inviter.name} ${inviter.lastName}`;
-              }
-            } catch (error) {
-              console.warn("Error fetching details for invitation:", error);
+              const orgData = await organizationService.getById(invitation.organizationId);
+              invitation.organizationName = orgData?.legalName || "Organización desconocida";
+            } catch {
+              invitation.organizationName = "Organización desconocida";
             }
-            
-            return {
-              ...invitation,
-              organizationName,
-              inviterName
-            };
-          })
-        );
-        
-        this.invitations = enrichedInvitations;
-      } catch (error) {
-        console.error("Error loading invitations:", error);
-        this.error = this.$t('notifications.error_loading');
-      } finally {
+          }
+          // Obtener nombre y correo del invitador
+          if (invitation.invitedBy) {
+            try {
+              const personRes = await personService.getById(invitation.invitedBy);
+              invitation.invitedByName =
+                  personRes?.firstName && personRes?.lastName
+                      ? `${personRes.firstName} ${personRes.lastName}`
+                      : "Usuario desconocido";
+              invitation.invitedByEmail = personRes?.email || '';
+            } catch {
+              invitation.invitedByName = "Usuario desconocido";
+              invitation.invitedByEmail = '';
+            }
+          }
+        }
+
+        this.invitations = invitations;
         this.loading = false;
+      } catch (error) {
+        console.error("Error al cargar invitaciones:", error);
+        this.error = this.$t('notifications.error_loading');
+        this.invitations = [];
+        this.loading = false;
+      } finally {
+        this.processingInvitation = null;
       }
     },
-      async acceptInvitation(invitation) {
-      // Prevenir múltiples clics
-      if (this.processingInvitation) {
-        return;
-      }
-      
+
+    async acceptInvitation(invitationId) {
       try {
-        this.processingInvitation = invitation.id;
-        console.log("Aceptando invitación ID:", invitation.id);
-        
-        // Mostrar spinner y notificación de procesamiento
-        this.$toast.add({
-          severity: 'info',
-          summary: this.$t('notifications.processing'),
-          detail: this.$t('notifications.accepting'),
-          life: 2000
-        });
-        
-        // Actualizar el estado de la invitación a ACCEPTED utilizando el método mejorado
-        console.log("Actualizando invitación con ID:", invitation.id);
-        await OrganizationInvitationService.accept(invitation.id);
-          // 2. Crear el miembro de la organización
-        const newMember = {
-          personId: Number(this.currentUserId),
-          organizationId: Number(invitation.organizationId),
-          type: 'Worker', // Por defecto, los invitados se unen como trabajadores
-          joinedAt: new Date().toISOString()
-        };
-        
-        console.log("Creando nuevo miembro:", newMember);
-        await organizationMemberService.create(newMember);
-        
-        // Actualizar el usuario en localStorage para reflejar que ahora es miembro de esta organización
-        const currentUser = authService.getCurrentUser();
-        if (currentUser) {
-          // Solo para esta organización, establecer el rol como Worker
-          currentUser.activeOrganizationRole = 'Worker';
-          localStorage.setItem("user", JSON.stringify(currentUser));
-        }
-        
-        // Mostrar notificación de éxito
+        this.processingInvitation = invitationId;
+        await organizationInvitationService.accept(invitationId );
         this.$toast.add({
           severity: 'success',
-          summary: this.$t('notifications.accepted_title'),
-          detail: this.$t('notifications.accepted_message', { org: invitation.organizationName }),
+          summary: this.$t('organization.invite.accepted_title'),
+          detail: this.$t('organization.invite.accepted_message'),
           life: 3000
         });
-          // Eliminar esta invitación del array local
-        this.invitations = this.invitations.filter(inv => inv.id !== invitation.id);
-        
-        // Si no quedan invitaciones, cerrar el menú
-        if (this.invitations.length === 0) {
-          this.$emit('close-menu');
-        }
-        
-        // Notificar a otros componentes para actualizar el contador inmediatamente
-        this.$emit('invitation-processed');
-          // Emitir eventos para actualizar lista de organizaciones
-        if (window && window.dispatchEvent) {
-          // Emitir evento para actualizar las notificaciones inmediatamente
-          window.dispatchEvent(new CustomEvent('refresh-notifications'));
-          
-          // También programar una segunda actualización después de un momento
-          // para asegurar que el contador se actualice correctamente
-          setTimeout(() => {
-            window.dispatchEvent(new CustomEvent('refresh-notifications'));
-          }, 500);
-          
-          // Notificar que hay nuevas organizaciones disponibles
-          window.dispatchEvent(new CustomEvent('organizations-updated'));
-          
-          // Cerrar el menú de notificaciones para mostrar las organizaciones actualizadas
-          this.$emit('close-menu');
-          
-          // NO redireccionamos al usuario a la organización, solo actualizamos la lista
-          console.log("Invitación aceptada, se actualizará la lista de organizaciones");
-        }
+        await this.loadInvitations();
       } catch (error) {
-        console.error("Error accepting invitation:", error);
+        console.error("Error al aceptar invitación:", error);
         this.$toast.add({
           severity: 'error',
-          summary: this.$t('notifications.error_title'),
-          detail: this.$t('notifications.error_accept'),
+          summary: this.$t('organization.invite.error_title'),
+          detail: this.$t('organization.invite.error_message'),
           life: 3000
         });
       } finally {
         this.processingInvitation = null;
       }
     },
-      async rejectInvitation(invitation) {
-      // Prevenir múltiples clics
-      if (this.processingInvitation) {
-        return;
-      }
-      
+
+    async rejectInvitation(invitationId) {
       try {
-        this.processingInvitation = invitation.id;
-        console.log("Rechazando invitación ID:", invitation.id);
-        
-        // Mostrar spinner y notificación
+        this.processingInvitation = invitationId;
+        await organizationInvitationService.reject( invitationId );
         this.$toast.add({
           severity: 'info',
-          summary: this.$t('notifications.processing'),
-          detail: this.$t('notifications.rejecting'),
-          life: 2000
-        });
-        
-        // Actualizar el estado de la invitación a REJECTED utilizando el método mejorado
-        console.log("Actualizando invitación con ID:", invitation.id);
-        await OrganizationInvitationService.reject(invitation.id);
-        
-        // Mostrar toast de éxito
-        this.$toast.add({
-          severity: 'info',
-          summary: this.$t('notifications.rejected_title'),
-          detail: this.$t('notifications.rejected_message'),
+          summary: this.$t('organization.invite.rejected_title'),
+          detail: this.$t('organization.invite.rejected_message'),
           life: 3000
         });
-          // Eliminar esta invitación del array local
-        this.invitations = this.invitations.filter(inv => inv.id !== invitation.id);
-        
-        // Si no quedan invitaciones, cerrar el menú
-        if (this.invitations.length === 0) {
-          this.$emit('close-menu');
-        }
-        
-        // Notificar a otros componentes para actualizar el contador inmediatamente
-        this.$emit('invitation-processed');        // Disparar evento global inmediatamente
-        if (window && window.dispatchEvent) {
-          window.dispatchEvent(new CustomEvent('refresh-notifications'));
-          
-          // También programar una segunda actualización después de un momento
-          // para asegurar que el contador se actualice correctamente
-          setTimeout(() => {
-            window.dispatchEvent(new CustomEvent('refresh-notifications'));
-          }, 500);
-          
-          // No es necesario actualizar la lista de organizaciones ya que se rechazó la invitación
-        }
+        await this.loadInvitations();
       } catch (error) {
-        console.error("Error rejecting invitation:", error);
+        console.error("Error al rechazar invitación:", error);
         this.$toast.add({
           severity: 'error',
-          summary: this.$t('notifications.error_title'),
-          detail: this.$t('notifications.error_reject'),
+          summary: this.$t('organization.invite.error_title'),
+          detail: this.$t('organization.invite.error_message'),
           life: 3000
         });
       } finally {
         this.processingInvitation = null;
       }
     },
-    
+
     formatDate(dateString) {
       if (!dateString) return '';
-      
+
       const now = new Date();
       const date = new Date(dateString);
-      
+
       // Si es hoy, mostrar solo la hora
       if (date.toDateString() === now.toDateString()) {
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       }
-      
+
       // Si es este año, mostrar día y mes
       if (date.getFullYear() === now.getFullYear()) {
         return date.toLocaleDateString([], { day: 'numeric', month: 'short' });
       }
-      
+
       // Si es otro año, mostrar fecha completa
       return date.toLocaleDateString();
     }
@@ -433,14 +321,15 @@ export default {
 .notification-item {
   background: #fafafa;
   border-radius: 12px;
-  margin-bottom: 0.8rem;
-  padding: 1.2rem 1rem;
+  margin-bottom: 1.5rem; /* Aumentado desde 1.2rem para mejor separación entre tarjetas */
+  padding: 1.5rem 1.2rem; /* Mantenido igual */
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: box-shadow 0.15s, background 0.15s;
   border: 1px solid #ececec;
   box-shadow: 0 2px 8px rgba(33,53,71,0.06);
+  gap: 1.2rem; /* Añadido gap para separar los elementos internos */
 }
 
 .notification-item:last-child {
@@ -452,16 +341,27 @@ export default {
   box-shadow: 0 4px 12px rgba(33,53,71,0.13);
 }
 
+/* Estilo para el estado de la invitación */
+.notification-item > div:nth-child(2) {
+  background: #e0e7ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4f46e5;
+  white-space: nowrap;
+}
+
 .notification-content {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 1.2rem; /* Aumentado desde 0.9rem para más espacio entre avatar y texto */
 }
 
 .notification-org-avatar {
-  width: 44px;
-  height: 44px;
+  width: 48px; /* Ligeramente más grande */
+  height: 48px;
   border-radius: 10px;
   background: linear-gradient(135deg, #b4d0fc 0%, #e3edfa 100%);
   color: #2563eb;
@@ -476,14 +376,15 @@ export default {
 
 .notification-title {
   font-weight: 700;
-  margin-bottom: 0.18rem;
+  margin-bottom: 0.35rem; /* Aumentado desde 0.18rem */
   color: #1a1a1a;
+  font-size: 1.05rem; /* Ligeramente más grande */
 }
 
 .notification-subtitle {
   font-size: 0.96rem;
   color: #60697b;
-  margin-bottom: 0.22rem;
+  margin-bottom: 0.4rem; /* Aumentado desde 0.22rem */
 }
 
 .notification-time {
@@ -502,7 +403,8 @@ export default {
 
 .notification-actions {
   display: flex;
-  gap: 0.7rem;
+  gap: 0.9rem; /* Aumentado desde 0.7rem */
+  margin-left: 0.5rem; /* Añadido margen izquierdo */
 }
 
 .accept-button,
@@ -536,6 +438,30 @@ export default {
   background: #be1846;
   box-shadow: 0 4px 12px rgba(243,18,96,0.32);
   transform: translateY(-1px);
+}
+
+/* Clases dinámicas para el estado de la invitación */
+.invitation-status {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.invitation-status.pending {
+  background: #f59e0b;
+}
+
+.invitation-status.accepted {
+  background: #17c964;
+}
+
+.invitation-status.rejected {
+  background: #ef4444;
 }
 
 /* Responsive tweaks */

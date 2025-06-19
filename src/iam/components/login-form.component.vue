@@ -91,7 +91,7 @@ export default {
           this.router.push('/organizations') // Redirige tras login
         }
       } catch (error) {
-        this.errorMessage = error.message || 'Login failed'
+        this.errorMessage = error.message.data || 'Login failed'
       } finally {
         this.loading = false
       }

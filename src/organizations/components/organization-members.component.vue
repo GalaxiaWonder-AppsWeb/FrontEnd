@@ -1,11 +1,11 @@
 <script>
 import { useRoute } from 'vue-router';
 import { organizationMemberService } from '../services/organization-member.service.js';
-import { personService } from '../../shared/services/person.service.js';
 import { OrganizationMemberType } from '../model/organization-member-type.js';
 import InviteMember from './invite-member.component.vue';
 import OrganizationMemberCard from './organization-member-card.component.vue';
 import { authService } from '../../iam/services/auth.service.js';
+import {organizationService} from "../services/organization.service.js";
 
 export default {
   name: "OrganizationMembers",
@@ -79,74 +79,41 @@ export default {
         const org = await import('../services/organization.service.js').then(m => m.organizationService.getById(this.organizationId));
         const createdBy = org?.createdBy || (org?.data && org.data.createdBy);
         this.isCreator = createdBy === this.currentUserId;
+        console.log(`El usuario actual ${this.currentUserId} es creador: ${this.isCreator}`);
       } catch (error) {
         console.error("Error al verificar el creador de la organización:", error);
         this.isCreator = false;
       }
-    },async loadMembers() {
+    },
+    async loadMembers() {
+      this.loading = true;
+      this.error = null;
       try {
-        this.loading = true;
-        this.error = null;
-        
-        console.log(`123Cargando miembros para organización ${this.organizationId}`);
-        
-        // Obtener los miembros de la organización
-        const response = await organizationMemberService.getByOrgId(this.organizationId);
-        const members = response?.data || response;
-        
-        if (!members || !Array.isArray(members)) {
-          console.error("La respuesta no contiene un array de miembros:", response);
-          throw new Error("No se pudieron cargar los miembros");
-        }
-        
-        console.log(`Se encontraron ${members.length} miembros`);
-        
-        // Para cada miembro, obtener información detallada de la persona usando fetch directamente
-        const membersWithDetails = await Promise.all(
-          members.map(async member => {
-            try {
-              // Usando fetch para mayor control
-              const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/persons/${member.personId}`);
-              let person = null;
-              
-              if (response.ok) {
-                person = await response.json();
-                console.log(`Persona obtenida para miembro ${member.id}:`, person);
-              } else {
-                console.warn(`No se pudo obtener la persona para el miembro ${member.id}`);
-              }
-              
-              return {
-                ...member,
-                person: person || { 
-                  name: 'Usuario', 
-                  lastName: 'Desconocido', 
-                  email: 'email@desconocido.com' 
-                }
-              };
-            } catch (error) {
-              console.error(`Error al obtener persona para miembro ${member.id}:`, error);
-              return {
-                ...member,
-                person: { 
-                  name: 'Usuario', 
-                  lastName: 'Desconocido', 
-                  email: 'email@desconocido.com' 
-                }
-              };
-            }
-          })
-        );
-        
-        console.log("Miembros con detalles:", membersWithDetails);
-        this.members = membersWithDetails;
-      } catch (error) {
-        console.error("Error al cargar miembros:", error);
+        const response = await organizationService.getAllMembers(this.organizationId);
+        const members = Array.isArray(response?.data) ? response.data : response;
+
+        // Mapea y normaliza la respuesta según lo que espera el card
+        this.members = members.map(m => ({
+          id: m.id,
+          personId: m.personId || m.id, // puedes ajustar según tu backend
+          type: m.memberType,
+          joinedAt: m.joinedAt,
+          person: {
+            firstName: m.firstName,
+            lastName: m.lastName,
+            email: m.email,
+            profilePicture: m.profilePicture
+          }
+        }));
+      } catch (e) {
+        console.error("Error al cargar miembros:", e);
         this.error = this.$t('organization.members.error_loading');
+        this.members = [];
       } finally {
         this.loading = false;
       }
     },
+
     openInviteDialog() {
       this.showInviteDialog = true;
     },confirmRemoveMember(memberId, memberName) {
@@ -226,16 +193,16 @@ export default {
     <div v-else-if="members.length === 0" class="empty-message">
       {{ $t('organization.members.empty') }}
     </div>      <div v-else class="members-grid">
-        <OrganizationMemberCard 
-          v-for="(member, index) in sortedMembers" 
+      <OrganizationMemberCard
+          v-for="member in sortedMembers"
           :key="member.id"
           :member="member"
           :isCreator="isCreator"
           :currentUserId="currentUserId"
           @remove="confirmRemoveMember($event.id, $event.name)"
-          :style="{'--card-index': index}"
-        />
-      </div>
+      />
+
+    </div>
     
     <pv-dialog 
       v-model:visible="showInviteDialog" 

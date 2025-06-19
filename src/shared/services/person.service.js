@@ -31,7 +31,7 @@ class PersonService extends BaseService {
             try {
                 console.log('tu no mete cabra', parseInt(id))
                 const response = await this.get(id);
-                console.log('ESTA ES MI RESPUESTA', response);
+                console.log('ESTA ES MI RESPUESTA', response.data);
 
                 return response.data
                 

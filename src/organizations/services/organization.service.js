@@ -9,12 +9,15 @@ const baseUrl = import.meta.env.VITE_PROPGMS_API_URL;
 
 // Crear el servicio base
 const baseService = createService('/organization', {
-    getAll:         { verb: HttpVerb.GET },
-    getById:        { verb: HttpVerb.GET, path: ':id', fullPath: true },
-    getByCreatedBy: { verb: HttpVerb.GET, path: 'by-member-person-id'},
-    create:         { verb: HttpVerb.POST, path: 'create-organization' },
-    update:         { verb: HttpVerb.PATCH, path: ':id' },
-    delete:         { verb: HttpVerb.DELETE, path: ':id' }
+    getAll:                     { verb: HttpVerb.GET },
+    getAllInvitations:          { verb: HttpVerb.GET, path: ':id/invitations' },
+    getAllMembers:              { verb: HttpVerb.GET, path: ':id/members' },
+    getById:                    { verb: HttpVerb.GET, path: ':id', fullPath: true },
+    getAllInvitationByPersonId: { verb: HttpVerb.GET, path: 'persons/:id/invitations' },
+    getByCreatedBy:             { verb: HttpVerb.GET, path: 'by-member-person-id'},
+    create:                     { verb: HttpVerb.POST, path: 'create-organization' },
+    update:                     { verb: HttpVerb.PATCH, path: ':id' },
+    delete:                     { verb: HttpVerb.DELETE, path: ':id' }
 });
 
 // Crear versión con caché
@@ -33,6 +36,46 @@ export const organizationService = {    // Mantener métodos originales
             () => baseService.getById(numericId)
         );
     },
+
+    async getAllInvitations(organizationId) {
+        const token = authService.getToken();
+        return axios.get(
+            `${baseUrl}/organization/${organizationId}/invitations`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` })
+                }
+            }
+        ).then(res => res.data);
+    },
+
+    async getAllMembers(organizationId) {
+        const token = authService.getToken();
+        return axios.get(
+            `${baseUrl}/organization/${organizationId}/members`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` })
+                }
+            }
+        ).then(res => res.data);
+    },
+
+    async getAllInvitationByPersonId(personId) {
+        const token = authService.getToken();
+        return axios.get(
+            `${baseUrl}/organization/persons/${personId}/invitations`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` })
+                }
+            }
+        ).then(res => res.data);
+    },
+
 
     async getByPersonId(personId) {
         const token = authService.getToken();

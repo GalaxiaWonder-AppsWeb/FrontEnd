@@ -96,6 +96,7 @@
       "legal-name": "Nombre legal",
       "commercial-name": "Nombre comercial",
       "change-settings": "Guardar cambios",
+      "danger-zone": "Zona de Peligro",
       "delete": "Eliminar organización",
       "delete-confirm": "¿Estás seguro de que deseas eliminar esta organización? Esta acción eliminará todos los miembros asociados y no se puede deshacer.",
       "deleted-success": "Organización eliminada correctamente",

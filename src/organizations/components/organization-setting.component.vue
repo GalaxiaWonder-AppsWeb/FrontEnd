@@ -24,7 +24,7 @@
       <p :class="messageClass">{{this.message}}</p>
       
       <div class="danger-zone">
-        <h2>Zona de Peligro</h2>
+        <h2>{{$t('organization.edit-organization.danger-zone')}}</h2>
         <div class="delete-section">
           <pv-button
               class="p-button-danger p-button-outlined"

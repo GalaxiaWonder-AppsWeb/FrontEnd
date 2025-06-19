@@ -99,6 +99,7 @@
       "legal-name": "Legal Name",
       "commercial-name": "Commercial Name",
       "change-settings": "Change settings",
+      "danger-zone": "Danger Zone",
       "delete": "Delete organization",
       "delete-confirm": "Are you sure you want to delete this organization? This action will delete all associated members and cannot be undone.",
       "deleted-success": "Organization successfully deleted",

@@ -10,7 +10,6 @@ export class OrganizationAssembler {
             ruc: new Ruc(resource.ruc),
             createdBy: resource.createdBy,
             createdAt: new Date(resource.createdAt),
-            status: resource.status,
             members: resource.members,
             invitations: resource.invitations
         });

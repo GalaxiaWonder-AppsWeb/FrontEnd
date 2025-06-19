@@ -103,8 +103,7 @@ export default {
           legalName: this.legalName,
           commercialName: this.commercialName,
           ruc: new Ruc(this.originalOrg.ruc),
-          createdBy: this.originalOrg.createdBy,
-          status: this.originalOrg.status
+          createdBy: this.originalOrg.createdBy
         })
         const res = await organizationService.update(updatedOrg.toJSON())
         this.message = `Organización actualizada`

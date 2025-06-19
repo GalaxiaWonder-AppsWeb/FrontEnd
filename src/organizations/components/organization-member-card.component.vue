@@ -24,7 +24,7 @@ export default {
     },
     
     getMemberTypeClass(type) {
-      return type === OrganizationMemberType.CONTRACTOR ? 'contractor' : 'worker';
+      return type === OrganizationMemberType.CONTRACTOR ? 'CONTRACTOR' : 'WORKER';
     },
     
     getMemberRoleBadgeClass(type) {

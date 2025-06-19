@@ -16,8 +16,12 @@ export class OrganizationMember {
     }
 
     changeType(newType) {
-        this.type = newType
+        if (!Object.values(OrganizationMemberType).includes(newType)) {
+            throw new Error("Tipo inválido");
+        }
+        this.type = newType;
     }
+
 
     isWorker() {
         return this.type === OrganizationMemberType.WORKER
@@ -33,7 +37,7 @@ export class OrganizationMember {
             personId: this.personId,
             organizationId: this.organizationId,
             type: this.type,
-            joinedAt: this.joinedAt
+            joinedAt: this.joinedAt instanceof Date ? this.joinedAt.toISOString() : this.joinedAt
         }
     }
 }

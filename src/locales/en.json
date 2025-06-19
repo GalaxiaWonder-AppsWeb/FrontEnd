@@ -27,8 +27,8 @@
     "roles": {
       "title": "Role",
       "choose-role": "Choose a role",
-      "worker": "Worker",
-      "client": "Client"
+      "worker": "ORGANIZATION USER ",
+      "client": "CLIENT USER"
     }
   },
   "login": {

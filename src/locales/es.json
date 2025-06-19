@@ -23,8 +23,8 @@
     "roles": {
       "title": "Rol",
       "choose-role": "Selecciona un rol",
-      "worker": "Trabajador",
-      "client": "Cliente"
+      "worker": "USUARIO DE ORGANIZACIÓN",
+      "client": "USUARIO CLIENTE"
     }
   },
   "login": {

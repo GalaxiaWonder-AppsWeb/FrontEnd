@@ -110,7 +110,7 @@ export default {
     this.checkAuthentication();
     // Cerrar menú de perfil al hacer clic fuera
     document.addEventListener('click', this.handleClickOutside);
-    
+
     // Verificar si el usuario es contratista
     if (this.inOrganizationView) {
       this.isContractor = await this.userHasRole('Contractor');
@@ -118,13 +118,13 @@ export default {
   },  async created() {
     // Verificar el rol del usuario cuando se crea el componente
     if (this.inOrganizationView) {
-      this.isContractor = await this.userHasRole('Contractor');
+      this.isContractor = this.userHasRole('Contractor');
     }
-    
+
     if (this.inProjectView) {
       this.isCoordinator = await this.userHasProjectRole('Coordinator');
     }
-    
+
     // Vigilar cambios en la ruta para actualizar el rol
     this.$watch(
       () => this.route.params.orgId,
@@ -134,7 +134,7 @@ export default {
         }
       }
     );
-    
+
     // Vigilar cambios en la ruta para actualizar el rol de proyecto
     this.$watch(
       () => this.route.params.projectId,
@@ -147,20 +147,21 @@ export default {
   },
   beforeUnmount() {
     document.removeEventListener('click', this.handleClickOutside);
-  },  computed: {
+  },
+  computed: {
     // Propiedad para determinar si se muestra el botón de regreso
     showBackButton() {
       // Mostrar en perfiles y vistas específicas
-      return this.route.path === '/profile' || 
-             this.inOrganizationView || 
+      return this.route.path === '/profile' ||
+             this.inOrganizationView ||
              this.inProjectView;
     },
-    
+
     inOrganizationView() {
       return this.route.path.startsWith('/organizations/') && !this.route.path.includes('/projects/');
     },
     inProjectView() {
-      return this.route.path.includes('/projects/') || 
+      return this.route.path.includes('/projects/') ||
              (this.route.name === 'organization-specific-project' && this.route.params.projectId)
     },
     inOrganizationGeneralView(){
@@ -169,17 +170,7 @@ export default {
       if (this.inProjectView) return 'projects'
       if (this.inOrganizationView) return 'organization'
       return 'organization'
-    }},
-  async mounted() {
-    this.checkAuthentication();
-    // Cerrar menú de perfil al hacer clic fuera
-    document.addEventListener('click', this.handleClickOutside);
-    
-    // Verificar si el usuario es contratista
-    if (this.inOrganizationView) {
-      this.isContractor = await this.userHasRole('Contractor');
-    }
-  },methods: {    /**
+    }},methods: {    /**
      * Verifica si el usuario actual tiene el rol especificado en la organización activa
      * @param {string} role - El rol a verificar (Contractor, Worker)
      * @returns {boolean} - true si el usuario tiene el rol, false en caso contrario
@@ -189,32 +180,40 @@ export default {
       if (!user) {
         return false;
       }
-      
-      // Si estamos verificando el rol de Contractor y tenemos un orgId
+
       if (role === 'Contractor' && this.inOrganizationView && this.route.params.orgId && user.personId) {
         try {
-          // Verificar si el usuario es el creador de la organización
-          const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${this.route.params.orgId}`);
+          const token = localStorage.getItem('token');
+          const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/${this.route.params.orgId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            }
+          });
           if (response.ok) {
             const organization = await response.json();
             if (organization && organization.createdBy === user.personId) {
-              // Si es el creador, establecer el rol como Contractor en localStorage
               if (!user.activeOrganizationRole || user.activeOrganizationRole !== 'Contractor') {
                 user.activeOrganizationRole = 'Contractor';
                 localStorage.setItem('user', JSON.stringify(user));
               }
               return true;
             }
+          } else {
+            // LOG GENTIL
+            console.warn(`No se pudo obtener la organización (${response.status}): ${url}`);
+            return false;
           }
         } catch (error) {
           console.error('Error al verificar si el usuario es creador:', error);
+          return false;
         }
       }
-      
-      // Verificación normal por activeOrganizationRole
+
       return user.activeOrganizationRole === role;
     },
-    
+
+
     /**
      * Verifica si el usuario actual tiene el rol especificado en el proyecto activo
      * @param {string} role - El rol a verificar (Coordinator, Specialist)
@@ -279,7 +278,8 @@ export default {
         path = `/organizations/${orgId}/${section}`
       }
       this.router.push(path)
-    },    async checkAuthentication() {
+    },
+    async checkAuthentication() {
       try {
         // Verificar si el usuario está autenticado
         const isAuth = authService.isAuthenticated();

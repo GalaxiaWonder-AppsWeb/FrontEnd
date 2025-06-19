@@ -2,14 +2,18 @@ import { createService } from '../../shared/services/create.service.js'
 import { HttpVerb } from '../../shared/services/http-verb.js'
 import { CacheService } from '../../shared/services/cache.service.js'
 import axios from 'axios'
+import { authService } from '../../iam/services/auth.service.js';
+
+
+const baseUrl = import.meta.env.VITE_PROPGMS_API_URL;
 
 // Crear el servicio base
-const baseService = createService('/organizations', {
+const baseService = createService('/organization', {
     getAll:         { verb: HttpVerb.GET },
     getById:        { verb: HttpVerb.GET, path: ':id', fullPath: true },
-    getByCreatedBy: { verb: HttpVerb.GET },
-    create:         { verb: HttpVerb.POST },
-    update:         { verb: HttpVerb.PUT, path: ':id' },
+    getByCreatedBy: { verb: HttpVerb.GET, path: 'by-member-person-id'},
+    create:         { verb: HttpVerb.POST, path: 'create-organization' },
+    update:         { verb: HttpVerb.PATCH, path: ':id' },
     delete:         { verb: HttpVerb.DELETE, path: ':id' }
 });
 
@@ -29,7 +33,20 @@ export const organizationService = {    // Mantener métodos originales
             () => baseService.getById(numericId)
         );
     },
-    
+
+    async getByPersonId(personId) {
+        const token = authService.getToken();
+        return axios.get(
+            `${baseUrl}/organization/by-member-person-id/${personId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` })
+                }
+            }
+        ).then(res => res.data);
+    },
+
     // Al crear, actualizar o eliminar, invalidar caché relacionada
     create: async (data) => {
         const result = await baseService.create(data);

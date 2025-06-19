@@ -3,17 +3,21 @@ import OrganizationItem from "./organization-item.component.vue";
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationAssembler} from "../services/organization.assembler.js";
 import CreateOrganization from "./create-organization.component.vue";
+import { personService } from "../../shared/services/person.service.js";
 
 export default {
   name: "OrganizationList",
   components: {CreateOrganization, OrganizationItem},
   data() {
     return {
+      personData: null,
       organizations: [],
       api: organizationService,
       owner: ''
     }
-  },  created() {
+  },
+  created() {
+    this.fetchPersonData();
     this.owner = JSON.parse(localStorage.getItem("user"));
     this.loadOrganizations();
     
@@ -24,57 +28,46 @@ export default {
   beforeUnmount() {
     // Limpiar escucha de eventos para evitar memory leaks
     window.removeEventListener('organizations-updated', this.handleOrganizationsUpdated);
-  },  methods: {
+  },
+
+  methods: {
+
+    async fetchPersonData() {
+      try {
+        // Obtener el usuario actual guardado (de localStorage)
+        const user = JSON.parse(localStorage.getItem('user'))
+        console.log('primer traceback', user)
+        if (!user || !user.personId) {
+          throw new Error('No hay usuario logueado o falta personId')
+        }
+        // Llama al servicio (esto usará el JWT automáticamente por BaseService)
+        const person = await personService.getById(user.personId )
+        console.log('Datos de la persona:', person)
+        // Puedes asignar a una variable reactiva si lo deseas
+        this.personData = person
+      } catch (err) {
+        console.error('Error obteniendo persona:', err)
+      }
+    },
+
     handleOrganizationsUpdated() {
       console.log("Evento de actualización de organizaciones recibido");
       // Recargar las organizaciones cuando se acepta una invitación
       this.loadOrganizations();
     },
-    async loadOrganizations(){
-      console.log("Owner: ", this.owner)
-      if (!this.owner || !this.owner.personId) {
+
+    async loadOrganizations() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user || !user.personId) {
         console.error("No hay usuario logueado o falta ID de persona");
         return;
       }
-      
       try {
-        const createdOrgs = await this.api.getByCreatedBy({createdBy: this.owner.personId});
-        
-        // Obtener todas las organizaciones donde el usuario es miembro
-        const resp = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization-members?personId=${this.owner.personId}`);
-        const memberData = await resp.json();
-        
-        // Obtener los IDs de organizaciones donde el usuario es miembro
-        const orgIds = memberData.map(member => member.organizationId);
-        
-        // Obtener detalles de cada organización donde el usuario es miembro
-        const memberOrgs = [];
-        for (const orgId of orgIds) {
-          try {
-            const org = await this.api.getById(orgId);
-            if (org) {
-              memberOrgs.push(org);
-            }
-          } catch (err) {
-            console.error(`Error al obtener organización ${orgId}:`, err);
-          }
-        }
-        
-        // Combinar organizaciones creadas y organizaciones donde es miembro
-        const allOrgs = [...createdOrgs, ...memberOrgs];
-        
-        // Filtrar duplicados (por si acaso)
-        const uniqueIds = new Set();
-        const uniqueOrgs = [];
-        
-        allOrgs.forEach(org => {
-          if (org && org.id && !uniqueIds.has(org.id)) {
-            uniqueIds.add(org.id);
-            uniqueOrgs.push(org);
-          }
-        });
-        
-        this.organizations = OrganizationAssembler.toEntitiesFromResponse(uniqueOrgs);
+        // Llama directamente al nuevo método
+        const organizations = await this.api.getByPersonId(user.personId);
+
+        // Si necesitas convertir a entidades internas:
+        this.organizations = OrganizationAssembler.toEntitiesFromResponse(organizations);
       } catch (error) {
         console.error("Error al cargar organizaciones:", error);
       }

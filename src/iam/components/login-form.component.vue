@@ -40,6 +40,7 @@
         icon="pi pi-sign-in"
         type="submit"
         :loading="loading"
+        :disabled="!form.email || !form.password"
     />
   </form>
 </template>
@@ -48,7 +49,7 @@
 <script>
 
 import LanguageSwitcher from '../../public/components/language-switcher.component.vue'
-import {AuthService} from '../services/auth.service.js'
+import {authService} from '../services/auth.service.js'
 import {Credentials} from '../model/credentials.entity.js'
 import { useRouter } from 'vue-router'
 
@@ -66,15 +67,15 @@ export default {
       loading: false,
       errorMessage: '',
       router: null,
-      authService: null
     }
   },
   created() {
     console.log("API URL:", import.meta.env.VITE_PROPGMS_API_URL);
 
-    localStorage.clear()
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     this.router = useRouter()
-    this.authService = new AuthService()
+    this.authService = authService
   },
   methods: {
     async handleLogin() {
@@ -85,6 +86,8 @@ export default {
         const user = await this.authService.login(credentials)
 
         if (user) {
+          this.form.email = '';
+          this.form.password = '';
           this.router.push('/organizations') // Redirige tras login
         }
       } catch (error) {

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { authService } from '../../iam/services/auth.service.js';
 
 // Si no está definida la variable de entorno, usar un valor por defecto
 const propGmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
@@ -82,8 +83,8 @@ export class BaseService {
         console.log('FALLE ACA NO??');
         const cleanUrl = this._buildUrl(path);
         console.log(`123GET request to: ${cleanUrl}`, params);
-        
-        return axios.get(cleanUrl, { params })
+
+        return axios.get(cleanUrl, { params, headers: this._getAuthHeaders() })
             .then(response => this._handleSuccess('GETTER', cleanUrl, response))
             .catch(error => this._handleError('GET', cleanUrl, error, { params }));
     }
@@ -97,8 +98,10 @@ export class BaseService {
     post(path = '', data) {
         const cleanUrl = this._buildUrl(path);
         console.log(`POST request to: ${cleanUrl}`, data);
-        
-        return axios.post(cleanUrl, data)
+
+        return axios.post(cleanUrl, data, {
+            headers: this._getAuthHeaders()
+        })
             .then(response => this._handleSuccess('POST', cleanUrl, response))
             .catch(error => this._handleError('POST', cleanUrl, error));
     }
@@ -112,8 +115,10 @@ export class BaseService {
     put(path = '', data) {
         const cleanUrl = this._buildUrl(path);
         console.log(`PUT request to: ${cleanUrl}`, data);
-        
-        return axios.put(cleanUrl, data)
+
+        return axios.put(cleanUrl, data, {
+            headers: this._getAuthHeaders()
+        })
             .then(response => this._handleSuccess('PUT', cleanUrl, response))
             .catch(error => this._handleError('PUT', cleanUrl, error));
     }
@@ -127,8 +132,10 @@ export class BaseService {
     patch(path = '', data) {
         const cleanUrl = this._buildUrl(path);
         console.log(`PATCH request to: ${cleanUrl}`, data);
-        
-        return axios.patch(cleanUrl, data)
+
+        return axios.patch(cleanUrl, data, {
+            headers: this._getAuthHeaders()
+        })
             .then(response => this._handleSuccess('PATCH', cleanUrl, response))
             .catch(error => this._handleError('PATCH', cleanUrl, error));
     }
@@ -141,9 +148,19 @@ export class BaseService {
     delete(path = '') {
         const cleanUrl = this._buildUrl(path);
         console.log(`DELETE request to: ${cleanUrl}`);
-        
-        return axios.delete(cleanUrl)
+
+        return axios.delete(cleanUrl, {
+            headers: this._getAuthHeaders()
+        })
             .then(response => this._handleSuccess('DELETE', cleanUrl, response))
             .catch(error => this._handleError('DELETE', cleanUrl, error));
+    }
+
+    _getAuthHeaders() {
+        const token = authService.getToken();
+        return {
+            'Content-Type': 'application/json',
+            ...(token && { Authorization: `Bearer ${token}` })
+        }
     }
 }

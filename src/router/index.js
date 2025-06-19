@@ -61,7 +61,7 @@ const routes = [
                 component: OrganizationList
             },
             {
-              path: '/invitations',
+              path: 'invitations',
                 name: 'invitations',
                 component: OrganizationInvitations
             },
@@ -196,12 +196,13 @@ router.beforeEach(async (to, from, next) => {
         sessionStorage.setItem('redirectAfterLogin', to.fullPath);
         return next('/login');
     }    // Si la ruta es parte de una organización, verificar si el usuario es el creador
-    if (to.params.orgId && user.personId) {        try {
+    if (to.params.orgId && user.personId) {
+        try {
             console.log(`Verificando si el usuario es creador de la organización ${to.params.orgId}...`);
             
             // Primero verificar si el usuario es miembro de la organización
-            const memberResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization-members?userId=${user.id}&organizationId=${to.params.orgId}`);
-            
+            const memberResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/by-member-person-id/${user.id}`);
+            console.log('Respuesta de la consulta de miembros:', memberResponse);
             if (memberResponse.ok) {
                 const members = await memberResponse.json();
                 
@@ -214,7 +215,7 @@ router.beforeEach(async (to, from, next) => {
                     user.memberId = member.id;
                     
                     // Verificar ahora si es creador consultando la organización
-                    const orgResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organizations/${to.params.orgId}`);
+                    const orgResponse = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/${to.params.orgId}`);
                     
                     if (orgResponse.ok) {
                         const organization = await orgResponse.json();

@@ -36,15 +36,6 @@
         />
 
       </div>
-      <div class="p-field">
-        <label for="profession">{{ $t('register.profession') }}</label>
-        <pv-input-text
-            id="profession"
-            v-model="profession"
-            :disabled="!(role === 'Worker')"
-            class="profession-input"
-        />
-      </div>
 
     </div>
 
@@ -71,7 +62,7 @@
         :label="$t('register.submit')"
         icon="pi pi-user-plus"
         type="submit"
-        :disabled="!role || (['Contractor', 'Specialist'].includes(role) && !profession)"
+        :disabled="!role || (['Contractor', 'Specialist'].includes(role) )"
     />
   </form>
 
@@ -94,7 +85,6 @@ export default {
       name: '',
       lastName: '',
       phoneNumber: '',
-      profession: '',
       email: '',
       password: '',
       role: '', // If u want an empty field use it like this, but always use enum values later for security
@@ -124,12 +114,6 @@ export default {
         return;
       }
 
-      if (this.role === UserType.WORKER && this.profession === '') {
-        this.message = this.$t('register.errors.missing-profession');
-        this.messageType = 'error';
-        return;
-      }
-
 
 
       try {
@@ -138,7 +122,6 @@ export default {
             this.lastName,
             this.email,
             this.phoneNumber,
-            this.profession
         )
 
         const credentials = new Credentials(
@@ -160,7 +143,6 @@ export default {
         this.name = ''
         this.lastName = ''
         this.phoneNumber = ''
-        this.profession = ''
         this.email = ''
         this.password = ''
         this.role = ''
@@ -179,11 +161,6 @@ export default {
     }
   },
   watch: {
-    role(newRole) {
-      if (newRole === UserType.CLIENT) {
-        this.profession = '';
-      }
-    }
   }
 }
 </script>
@@ -258,13 +235,6 @@ label {
 
 .p-button {
   width: 100%;
-}
-
-
-::v-deep(.profession-input:disabled) {
-  color: #888888;             /* texto gris tenue */
-  cursor: not-allowed;
-  opacity: 1; /* evita que se vea deslavado si PrimeVue le baja la opacidad */
 }
 
 ::v-deep(.p-password-input) {

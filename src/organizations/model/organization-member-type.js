@@ -1,4 +1,4 @@
 export const OrganizationMemberType = {
-    CONTRACTOR: 'Contractor',
-    WORKER: 'Worker'
+    CONTRACTOR: 'CONTRACTOR',
+    WORKER: 'WORKER'
 }

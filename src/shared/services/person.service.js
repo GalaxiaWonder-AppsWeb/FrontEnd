@@ -25,10 +25,15 @@ class PersonService extends BaseService {
 
             // Asegurar que personId sea tratado como string si es número
             const id = personId.toString();
+            console.log('QUE PASO ACA CAUSA',id)
             
             // Intentar obtener usando el servicio base
             try {
+                console.log('tu no mete cabra', parseInt(id))
                 const response = await this.get(id);
+                console.log('ESTA ES MI RESPUESTA', response);
+
+                return response.data
                 
                 // Si la respuesta tiene la propiedad data, extraer los datos
                 if (response && response.data) {
@@ -55,7 +60,10 @@ class PersonService extends BaseService {
                 console.warn(`Error al obtener persona con get() para id ${personId}:`, error);
                 // Si hay un error, intentamos un fallback
             }
-            
+            //
+            //
+            //
+
             // Fallback: Intentar con fetch directo a la API
             try {
                 console.log(`Intentando fetch directo para persona con id ${personId}`);
@@ -78,7 +86,7 @@ class PersonService extends BaseService {
             } catch (fetchError) {
                 console.warn(`Error en fetch directo para persona con id ${personId}:`, fetchError);
             }
-            
+
             // Último recurso: Intentar obtener todas las personas y filtrar
             try {
                 console.log(`Intentando obtener todas las personas y filtrar para id ${personId}`);
@@ -96,6 +104,7 @@ class PersonService extends BaseService {
             } catch (allError) {
                 console.warn(`Error al obtener todas las personas para filtrar id ${personId}:`, allError);
             }
+
             
             console.warn(`No se pudo obtener persona con id ${personId} después de múltiples intentos`);
             return null;

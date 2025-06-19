@@ -5,7 +5,7 @@ export class UserAccount {
     constructor({
                     id = null,
                     credentials = new Credentials(),
-                    userType = UserType.CLIENT,
+                    userType = UserType.WORKER,
                     createdAt = new Date(),
                     lastLoginAt = null,
                     personId = null

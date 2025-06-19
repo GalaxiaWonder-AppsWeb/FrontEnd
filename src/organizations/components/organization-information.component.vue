@@ -15,56 +15,38 @@ export default {
   methods: {
     async loadInformation() {
       try {
-
         // 1. Obtener información de la organización
         const organizationData = await this.api.getById({ id: this.orgId });
-        
-        this.organization = OrganizationAssembler.toEntityFromResource(organizationData);
-        
+        console.log('Datos grosos de la organización:', organizationData);
 
-        // 2. Obtener el ID del contratista (createdBy)
-        let contractorId = null;
-        
-        // Verificar que createdBy exista y tenga la propiedad value
-        if (this.organization && this.organization.createdBy && this.organization.createdBy) {
-          contractorId = this.organization.createdBy;
-        } 
-        // Si createdBy es directamente una cadena de texto (por ejemplo, en formato JSON directo de la API)
-        else if (this.organization && this.organization.createdBy && typeof this.organization.createdBy === 'number') {
-          contractorId = this.organization.createdBy;
+        this.organization = OrganizationAssembler.toEntityFromResource(organizationData);
+
+        console.log('Organización transformada:', this.organization);
+
+        // Seguridad para evitar errores de render
+        if (!this.organization) {
+          this.contractorName = "Información no disponible";
+          return;
         }
-        
-        
-        // 3. Hacer una llamada al endpoint /persons/:id para obtener el nombre completo
+
+        // 2. Obtener el contractorId de manera robusta
+        const contractorId = (typeof this.organization.createdBy === 'object' && this.organization.createdBy !== null)
+            ? this.organization.createdBy.value
+            : this.organization.createdBy;
+
+        console.log('ID del contratista:', contractorId);
+
+        // 3. Obtener datos del contratista
         if (contractorId) {
           try {
-            console.log("Haciendo llamada al endpoint /persons/:id");
-            // Primero intentar con la ruta directa
             let contractorData = await personService.getById(contractorId);
-            
-            // Si no hay datos, intentar hacer una solicitud fetch directa como fallback
-            if (!contractorData) {
-              console.log("Intentando obtener datos con fetch directo");
-              const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/persons/${contractorId}`);
-              if (response.ok) {
-                contractorData = await response.json();
-              }
-            }
-            
-            console.log("Datos del contratista recibidos:", contractorData);
-            
-            // Verificar si tenemos un objeto válido y acceder a los datos correctamente
-            if (contractorData) {
-              // Si los datos vienen directamente en el objeto contractorData
-              if (contractorData.name) {
-                this.contractorName = `${contractorData.name.trim()} ${contractorData.lastName.trim()}`;
-              } 
-              // Si los datos vienen en una propiedad data dentro de contractorData
-              else if (contractorData.data && contractorData.data.name) {
-                this.contractorName = `${contractorData.data.name.trim()} ${contractorData.data.lastName.trim()}`;
-              } else {
-                this.contractorName = "Información no disponible";
-              }
+            console.log("Datos del contratista obtenidos:", contractorData);
+
+            if (contractorData && contractorData.firstName && contractorData.lastName) {
+              this.contractorName = `${contractorData.firstName} ${contractorData.lastName}`;
+            } else if (contractorData && contractorData.name && contractorData.lastName) {
+              // Por compatibilidad si la API devuelve .name en vez de .firstName
+              this.contractorName = `${contractorData.name} ${contractorData.lastName}`;
             } else {
               this.contractorName = "Información no disponible";
             }
@@ -72,7 +54,12 @@ export default {
             console.error("Error durante la llamada al servicio personService.getById:", error);
             this.contractorName = "Error al cargar la información";
           }
+        } else {
+          this.contractorName = "Información no disponible";
         }
+
+        console.log('ORGANIZATION FINAL:', this.organization);
+
       } catch (error) {
         console.error("Error al cargar la información:", error);
         this.organization = null;
@@ -81,9 +68,13 @@ export default {
     },
 
     formatDate(dateString) {
-      const date = new Date(dateString)
-      return new Intl.DateTimeFormat('es-PE').format(date)
+      if (!dateString) return "Sin fecha";
+      const date = new Date(dateString);
+      // Verifica si es una fecha válida
+      if (isNaN(date.getTime())) return "Sin fecha";
+      return new Intl.DateTimeFormat('es-PE').format(date);
     }
+
   },
   created() {
     this.orgId = this.$route.params.orgId

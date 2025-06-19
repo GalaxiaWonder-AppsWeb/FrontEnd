@@ -11,7 +11,6 @@ export class Organization {
                     ruc = new Ruc(),
                     createdBy = null,
                     createdAt = new Date(),
-                    status = OrganizationStatus.ACTIVE,
                     members = [],
                     invitations = []
                 }) {
@@ -33,7 +32,6 @@ export class Organization {
         this.ruc = ruc
         this.createdBy = createdBy
         this.createdAt = createdAt
-        this.status = status
         this.members = members
         this.invitations = invitations
     }
@@ -91,7 +89,6 @@ export class Organization {
             ruc: this.ruc?.value ?? null,
             createdBy: this.createdBy,
             createdAt: this.createdAt,
-            status: this.status
         }
     }
 }

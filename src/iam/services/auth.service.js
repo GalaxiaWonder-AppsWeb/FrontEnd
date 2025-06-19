@@ -1,23 +1,13 @@
 import axios from 'axios'
-
-import {UserAccount} from "../model/user-account.entity.js";
 import {Credentials} from "../model/credentials.entity.js";
-import {Person} from "../model/person.entity.js";
-import {UserType} from "../model/user-type.js";
 
 const propgmsApiUrl = import.meta.env.VITE_PROPGMS_API_URL
 
-function toSignUpPayload(account, person) {
-    return {
-        username: account.email,
-        password: account.password,
-        userType: account.userType === 'Worker' ? 1 : 2, // Usa el ID numérico esperado por el backend
-        firstName: person.name,
-        lastName: person.lastName,
-        email: person.email,
-        phone: person.phoneNumber
-    }
-}
+// Define el mapeo local para los roles
+const UserTypeIds = {
+    ORGANIZATION_USER: 0, // equivale a TYPE_WORKER
+    CLIENT_USER: 1        // equivale a TYPE_CLIENT
+};
 
 export class AuthService {
     constructor() {
@@ -28,7 +18,7 @@ export class AuthService {
             }
         }
     }
-
+    /*
     async findUserByEmail(email) {
         const res = await axios.get(`${this.baseUrl}/users`, {
             params: { email },
@@ -36,13 +26,13 @@ export class AuthService {
         })
         return res.data[0] || null
     }
-
+    */
     async register(account, person) {
         try {
             const payload = {
                 username: account.email,
                 password: account.password,
-                userType: account.userType === 'Worker' ? 0 : 1, // o usa tu mapping real
+                userType: UserTypeIds[account.userType],
                 firstName: person.name,
                 lastName: person.lastName,
                 email: person.email,
@@ -50,7 +40,7 @@ export class AuthService {
             };
 
             const response = await axios.post(
-                `${this.baseUrl}/api/v1/authentication/sign-up`,
+                `${this.baseUrl}/authentication/sign-up`,
                 payload,
                 this.httpOptions
             );
@@ -59,35 +49,6 @@ export class AuthService {
         } catch (error) {
             this.handleError('Register', error);
         }
-        /*
-        try {
-            const existingUser = await this.findUserByEmail(account.email)
-            if (existingUser) {
-                throw new Error('User already exists')
-            }
-            
-            console.log("Datos de cuenta a registrar:", account.toJSON());
-            console.log("Datos de persona a registrar:", person.toJSON());
-
-            const personRes = await axios.post(
-                `${this.baseUrl}/persons`,
-                person.toJSON(),
-                this.httpOptions
-            )
-
-            account.personId = Number(personRes.data.id)
-
-            const createRes = await axios.post(
-                `${this.baseUrl}/users`,
-                account.toJSON(),
-                this.httpOptions
-            )
-
-            return createRes.data
-        } catch (error) {
-            this.handleError('Register', error)
-        }
-        */
     }
 
     async login(credentials) {
@@ -96,10 +57,10 @@ export class AuthService {
         }
 
         try {
-            console.log('Login URL:', `${this.baseUrl}/api/v1/authentication/sign-in`); // 👈 Verificación útil
+            console.log('Login URL:', `${this.baseUrl}/authentication/sign-in`); // 👈 Verificación útil
 
             const response = await axios.post(
-                `${this.baseUrl}/api/v1/authentication/sign-in`,
+                `${this.baseUrl}/authentication/sign-in`,
                 {
                     email: credentials.email,
                     password: credentials.password
@@ -109,35 +70,13 @@ export class AuthService {
 
             const user = response.data;
             this.storeUser(user);
+            if (user.token) this.storeToken(user.token);
             console.log('[DEBUG] User returned by backend:', user);
             return user;
         } catch (error) {
             this.handleError('Login', error);
         }
 
-
-        /*
-        try {
-            console.log(propgmsApiUrl);
-            console.log(credentials);
-            const res = await axios.get(`${this.baseUrl}/users`, {
-                params: {
-                    email: credentials.email,
-                    password: credentials.password
-                },
-                headers: this.httpOptions.headers
-            })
-            console.log(res)
-            if (res.data.length === 0) {
-                throw new Error('Invalid email or password')
-            }
-
-            const user = res.data[0]
-            this.storeUser(user)
-            return user
-        } catch (error) {
-            this.handleError('Login', error)
-        }
     }
 
     storeToken(token) {
@@ -152,9 +91,7 @@ export class AuthService {
         localStorage.removeItem('token')
     }
 
-    logout() {
-            */
-    }
+
     logout() {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
@@ -179,44 +116,34 @@ export class AuthService {
     }
 
     async updatePassword(userId, newPassword) {
-        /* Este pedazo de código es para usar JWT y el token de autenticación
-            try {
-                const token = this.getToken();
-                const response = await axios.get(`${this.baseUrl}/users/${userId}`, {
-                    headers: {
-                        ...this.httpOptions.headers,
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                // ... resto igual
-            } catch (error) {
-                this.handleError('UpdatePassword', error);
-            }
-        */
+        /* Este pedazo de código es para usar JWT y el token de autenticación*/
         try {
-
-
-            // Primero obtener el usuario completo
-            const response = await axios.get(`${this.baseUrl}/users/${userId}`, this.httpOptions);
+            const token = this.getToken();
+            const response = await axios.get(`${this.baseUrl}/api/v1/user_accounts/${userId}`, {
+                headers: {
+                    ...this.httpOptions.headers,
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const currentUser = response.data;
-            
+
             if (!currentUser) {
                 throw new Error('User not found');
             }
-            
+
             // Actualizar solo la contraseña
             const updatedUser = {
                 ...currentUser,
                 password: newPassword
             };
-            
+
             // Enviar la actualización
             const updateResponse = await axios.put(
-                `${this.baseUrl}/users/${userId}`,
+                `${this.baseUrl}/api/v1/user_accounts/${userId}`,
                 updatedUser,
                 this.httpOptions
             );
-            
+
             console.log('Contraseña actualizada correctamente');
             return updateResponse.data;
         } catch (error) {
@@ -225,10 +152,28 @@ export class AuthService {
     }
 
     handleError(context, error) {
-        const msg = error.response?.data || error.message || 'Unexpected error'
+        let msg = 'Unexpected error';
+        if (error?.response?.data) {
+            if (typeof error.response.data === 'string') {
+                msg = error.response.data;
+            } else if (typeof error.response.data === 'object') {
+                msg = error.response.data.error || error.response.data.message || JSON.stringify(error.response.data);
+            }
+        } else if (error?.message) {
+            msg = error.message;
+        }
         console.error(`[AuthService] ${context} error:`, msg)
         throw new Error(msg)
     }
+
+    getAuthHeaders() {
+        const token = this.getToken();
+        return {
+            'Content-Type': 'application/json',
+            ...(token && { 'Authorization': `Bearer ${token}` })
+        };
+    }
+
 }
 
 // Exportar una instancia del servicio para usarlo en cualquier lugar

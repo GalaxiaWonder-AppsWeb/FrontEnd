@@ -345,7 +345,7 @@ export default {
         });
         
         // Redirigir al usuario a la página de login
-        window.location.href = '/login'; // Usamos location.href para asegurarnos de un refresh completo
+        window.location.href = '/'; // Usamos location.href para asegurarnos de un refresh completo
       } catch (error) {
         console.error("Error during logout:", error);
         this.$toast.add({

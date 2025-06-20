@@ -24,12 +24,6 @@ export default {
     async CreateOrganization() {
       try {
         // 1. Crear la organización
-        console.log("Creando organización con datos:", {
-          legalName: document.getElementById('legalName')?.value,
-          commercialName: document.getElementById('commercialName')?.value,
-          ruc: document.getElementById('ruc')?.value,
-          userId: this.user
-        });
           const org = new Organization({
           legalName: document.getElementById('legalName')?.value,
           commercialName: document.getElementById('commercialName')?.value,

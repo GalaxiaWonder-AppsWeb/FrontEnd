@@ -82,11 +82,13 @@ export default {
         :organization="item"
     />
   </div>  <div v-else>
-    <p>{{ $t('organization.no-organizations') }}</p>
+    <p class="no-orga">{{ $t('organization.no-organizations') }}</p>
   </div>
   
 </template>
 
 <style scoped>
-
+.no-orga {
+  color: black;
+}
 </style>

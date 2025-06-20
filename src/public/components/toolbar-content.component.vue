@@ -13,11 +13,11 @@
             v-tooltip="$t('navigation-toolbar.back')"
           />
           <!-- Enlace para volver a organizaciones cuando estamos en una organización específica -->
-          <pv-button 
-            v-if="inOrganizationView" 
+          <pv-button
+            v-if="inOrganizationView"
             icon="pi pi-th-large" 
             :label="$t('organization.all')" 
-            class="p-button-text organizations-link" 
+            class="p-button-text organizations-link custom-label"
             @click="goToOrganizationsList"
           />
           <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
@@ -563,4 +563,9 @@ export default {
   margin-right: 1rem;
   font-size: 0.9rem;
 }
+
+.custom-label .p-button-label {
+  color: #ffffff; /* o el color que prefieras */
+}
+
 </style>

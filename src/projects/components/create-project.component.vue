@@ -33,7 +33,7 @@ export default {
     }
   },
   methods: {    
-    async loadOrganizationData() {
+    async loadOrganizationData() {/*
       try {
         // Obtener información de la organización para identificar al creador
         const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/organizations/${this.organizationId}`, {
@@ -64,7 +64,7 @@ export default {
           life: 3000
         });
       }
-    },
+    */},
       async createProject() {
       try {
         this.loading = true;

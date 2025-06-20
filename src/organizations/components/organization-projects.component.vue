@@ -6,7 +6,7 @@ export default {
   name: "OrganizationProjects",
   components: {
     CreateProject
-  },  data() {
+  }, data() {
     return {
       route: useRoute(),
       loading: false,
@@ -25,41 +25,44 @@ export default {
       if (!this.projects || this.projects.length === 0) {
         return [];
       }
-      
+
       // Si es Contractor (creador), muestra todos los proyectos
       if (this.userRole === 'Contractor') {
         return this.projects;
       }
-      
+
       // Si es Worker (miembro), muestra solo los proyectos en los que participa oficialmente
       // como miembro del equipo en la colección project-team-members
       if (this.userRole === 'Worker') {
         // Projects where the user is a team member (via project-team-members collection)
         return this.projectsWhereUserIsTeamMember || [];
       }
-      
+
       return [];
     },
-      // Determina si el usuario puede crear nuevos proyectos
+    // Determina si el usuario puede crear nuevos proyectos
     canCreateProject() {
       // Verificar explícitamente el rol contra 'Contractor' para crear proyectos
-      return this.userRole === 'Contractor';
+      const user = JSON.parse(localStorage.getItem('user'));
+      return user.activeOrganizationRole === 'Contractor';
     }
   },
-  methods: {  async loadProjectMemberships() {
+  methods: {
+
+    async loadProjectMemberships() {/*
       if (!this.currentUser || !this.currentUser.memberId) {
         console.warn('No se puede cargar membresías de proyectos sin ID de miembro');
         return;
       }
-      
+
       this.loadingMemberships = true;
-      
+
       try {
         // Obtener el ID del miembro de la organización actual
         const organizationMemberId = this.currentUser.memberId;
         // Consultar project-team-members donde el usuario actual es miembro
         const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-        
+
         // Primero intentamos la búsqueda exacta usando el parámetro organizationMemberId
         const response = await fetch(`${apiUrl}/project-team-members?organizationMemberId=${organizationMemberId}`, {
           method: 'GET',
@@ -68,11 +71,11 @@ export default {
             'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
           }
         });
-        
+
         if (!response.ok) {
           throw new Error(`Error al cargar membresías: ${response.statusText}`);
         }
-        
+
         const memberships = await response.json();
         // Si hay membresías, cargar los proyectos correspondientes
         if (memberships && memberships.length > 0) {
@@ -93,17 +96,17 @@ export default {
                 return null;
               }
             });
-            
+
             const projectsLoaded = (await Promise.all(projectPromises)).filter(Boolean);
             // Asegurarse de que los proyectos pertenecen a la organización actual
-            const orgProjects = projectsLoaded.filter(p => 
-              p.organizationId === Number(this.organizationId)
+            const orgProjects = projectsLoaded.filter(p =>
+                p.organizationId === Number(this.organizationId)
             );
-            
+
             // Combinar con la lista existente sin duplicados
             const existingIds = this.projectsWhereUserIsTeamMember.map(p => p.id);
             const newProjects = orgProjects.filter(p => !existingIds.includes(p.id));
-            
+
             this.projectsWhereUserIsTeamMember = [...this.projectsWhereUserIsTeamMember, ...newProjects];
           } else {
             // Filtrar los proyectos ya cargados en memoria
@@ -120,34 +123,34 @@ export default {
       } finally {
         this.loadingMemberships = false;
       }
-    },
-    
+    */},
+
     // Método de respaldo para buscar las membresías si el método principal falla
-    async loadProjectMembershipsFallback() {
+    async loadProjectMembershipsFallback() {/*
       try {
         // Obtener todos los project-team-members y filtrar manualmente
         const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
         const response = await fetch(`${apiUrl}/project-team-members`);
-        
+
         if (!response.ok) {
           throw new Error("No se pudieron cargar los miembros de proyectos");
         }
-        
+
         const allMemberships = await response.json();
         // Filtrar manualmente por el ID del miembro de la organización
         const organizationMemberId = this.currentUser.memberId;
-        const userMemberships = allMemberships.filter(m => 
-          m.organizationMemberId === organizationMemberId || 
-          m.memberId === organizationMemberId
+        const userMemberships = allMemberships.filter(m =>
+            m.organizationMemberId === organizationMemberId ||
+            m.memberId === organizationMemberId
         );
-        
+
         // Obtener los IDs de proyectos
         if (userMemberships.length > 0) {
           const projectIds = [...new Set(userMemberships.map(m => m.projectId))]; // Eliminar duplicados
-          
+
           // Cargar cada proyecto individualmente
           const loadedProjects = [];
-          
+
           for (const projectId of projectIds) {
             try {
               const projectResponse = await fetch(`${apiUrl}/projects/${projectId}`);
@@ -162,13 +165,14 @@ export default {
               console.error(`Error cargando proyecto ${projectId}:`, projectError);
             }
           }
-          
+
           this.projectsWhereUserIsTeamMember = loadedProjects;
         }
       } catch (error) {
         console.error('Error en método fallback:', error);
       }
-    },      async loadProjects() {
+    */},
+    async loadProjects() {/*
       this.loading = true;
       this.error = null;
       
@@ -236,8 +240,9 @@ export default {
       } finally {
         this.loading = false;
       }
+      */
     },
-      async loadSpecificProject(projectId) {
+    async loadSpecificProject(projectId) {/*
       try {
         const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
         const response = await fetch(`${apiUrl}/projects/${projectId}`, {
@@ -346,8 +351,9 @@ export default {
           life: 3000
         });
       }
+      */
     },
-    
+
     getStatusSeverity(status) {
       // Asigna un color basado en el estado del proyecto
       switch (status?.toLowerCase()) {
@@ -375,18 +381,19 @@ export default {
         default:
           return 'secondary';
       }
-    },      getUserInfo() {
+    },
+    getUserInfo() {
       try {
         // Obtener información del usuario desde localStorage
         const userData = localStorage.getItem('user');
         if (userData) {
           this.currentUser = JSON.parse(userData);
-          
+
           // Si el objeto currentUser está incompleto, inicializarlo correctamente
           if (!this.currentUser) {
             this.currentUser = {};
           }
-            // Si el rol no está definido, determinar cuál debería ser
+          // Si el rol no está definido, determinar cuál debería ser
           if (!this.currentUser.activeOrganizationRole) {
             // No asignar automáticamente el rol, eso lo hará el router guard
             // Solo definir un rol temporal mientras se carga la página
@@ -394,7 +401,7 @@ export default {
             // No guardamos en localStorage aquí, para no sobreescribir lo que el router determine
             // Solo actualizamos la visualización local
           }
-          
+
           this.userRole = this.currentUser.activeOrganizationRole;
           // Asegurarnos de que tengamos un memberId
           if (!this.currentUser.memberId && this.organizationId) {
@@ -404,56 +411,56 @@ export default {
         } else {
           console.warn("No se encontró información de usuario en localStorage");
           // Inicializar con valores por defecto para evitar errores
-          this.currentUser = { 
+          this.currentUser = {
             activeOrganizationRole: 'Worker',
             id: null // Asegurarse de tener un campo id (necesario para loadUserMembership)
           };
           this.userRole = 'Worker';
-          
+
           // Guardar en localStorage para futuras referencias
           localStorage.setItem('user', JSON.stringify(this.currentUser));
         }
       } catch (error) {
         console.error('Error al obtener información del usuario:', error);
         // Inicializar con valores por defecto en caso de error
-        this.currentUser = { activeOrganizationRole: 'Worker' };
+        this.currentUser = {activeOrganizationRole: 'Worker'};
         this.userRole = 'Worker';
       }
     },      // Método para cargar la membresía del usuario desde la API
-    async loadUserMembership() {
+    async loadUserMembership() {/*
       try {
         if (!this.currentUser || !this.currentUser.id || !this.organizationId) {
           console.warn("No se puede cargar la membresía sin ID de usuario u organización");
           return null;
         }
-        
+
         const apiUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-        
+
         // Buscar por userId y organizationId
         const response = await fetch(`${apiUrl}/members?userId=${this.currentUser.id}&organizationId=${this.organizationId}`);
-        
+
         if (!response.ok) {
           throw new Error(`Error al cargar membresía: ${response.statusText}`);
         }
-        
+
         const memberships = await response.json();
         if (memberships && memberships.length > 0) {
           const membership = memberships[0]; // Tomar la primera membresía
-            // Actualizar la información del usuario
+          // Actualizar la información del usuario
           this.currentUser.memberId = membership.id;
           this.currentUser.memberType = membership.type || 'Worker';
-          
+
           // Solo actualizamos el rol si no existe o si es 'Worker'
           // NUNCA sobreescribir 'Contractor' con 'Worker'
-          if (!this.currentUser.activeOrganizationRole || 
+          if (!this.currentUser.activeOrganizationRole ||
               this.currentUser.activeOrganizationRole !== 'Contractor') {
             this.currentUser.activeOrganizationRole = membership.type || 'Worker';
-            } else {
-            }
-          
+          } else {
+          }
+
           // Actualizar el rol local
           this.userRole = this.currentUser.activeOrganizationRole;
-          
+
           // Guardar la información actualizada en localStorage
           localStorage.setItem('user', JSON.stringify(this.currentUser));
           // Si hay un personId en la membresía, también lo guardamos
@@ -461,7 +468,7 @@ export default {
             this.currentUser.personId = membership.personId;
             localStorage.setItem('user', JSON.stringify(this.currentUser));
           }
-          
+
           return this.currentUser;
         } else {
           console.warn(`No se encontró membresía para usuario ${this.currentUser.id} en organización ${this.organizationId}`);
@@ -470,37 +477,40 @@ export default {
       } catch (error) {
         console.error('Error al cargar membresía:', error);
       }
-    },
-    
-    handleProjectCreated() {
+      */},
+
+    handleProjectCreated() {/*
       // Recargar los proyectos después de crear uno nuevo
       this.loadProjects();
+      */
     },
-    
+
     getProjectRole(project) {
+
       // Si el usuario es Contractor (creador), siempre es Coordinator en el proyecto
       if (this.userRole === 'Contractor') {
         return 'Coordinator';
       }
-      
+
       // Para Workers, buscar en las membresías para determinar el rol
       try {
         // Buscar el proyecto en projectsWhereUserIsTeamMember para ver si el usuario ya es miembro
         const isMember = this.projectsWhereUserIsTeamMember.some(p => p.id === project.id);
-        
+
         if (isMember) {
           // Si hay un rol específico guardado para este proyecto, mostrarlo
           return this.currentUser.activeProjectRole || 'Specialist';
         } else {
           return 'No es miembro';
         }
-      } catch (error) {        console.error('Error obteniendo rol de proyecto:', error);
+      } catch (error) {
+        console.error('Error obteniendo rol de proyecto:', error);
         return 'Desconocido';
       }
     },
-    
+
     // Método para inicializar los datos del usuario de forma asíncrona
-    async initializeUserData() {
+    async initializeUserData() {/*
       try {
         // Primero obtenemos la información básica del usuario
         this.getUserInfo();
@@ -519,8 +529,9 @@ export default {
           this.userRole = 'Worker';
         }
       }
-    }
-  },  async created() {
+    }*/
+    },
+    async created() {/*
     try {
       this.organizationId = this.route.params.orgId;
       await this.initializeUserData();
@@ -532,20 +543,24 @@ export default {
       this.loadProjects();
     }
   }
+  */
+    }
+  }
 }
 </script>
 
 <template>
   <div class="projects-container">
     <div class="header">
-      <h2>{{ $t('projects.title') }}</h2>
+      <h2 class="title">{{ $t('projects.title') }}</h2>
       
-      <CreateProject 
+      <CreateProject
         v-if="canCreateProject"
         :organizationId="organizationId"
         @project-created="handleProjectCreated"
       />
     </div>
+
     
     <div v-if="loading" class="loading-indicator">
       <pv-progress-spinner />
@@ -624,12 +639,16 @@ export default {
         </div>
       </div>
     </div>
+    -->
   </div>
 </template>
 
 <style scoped>
 .projects-container {
   padding: 1rem;
+}
+.title {
+  color: #171414;
 }
 
 .header {

@@ -186,8 +186,8 @@ export default {
         await organizationInvitationService.accept(invitationId );
         this.$toast.add({
           severity: 'success',
-          summary: this.$t('organization.invite.accepted_title'),
-          detail: this.$t('organization.invite.accepted_message'),
+          summary: this.$t('notifications.accepted_title'),
+          detail: this.$t('notifications.accepted_message'),
           life: 3000
         });
         await this.loadInvitations();
@@ -195,7 +195,7 @@ export default {
         console.error("Error al aceptar invitación:", error);
         this.$toast.add({
           severity: 'error',
-          summary: this.$t('organization.invite.error_title'),
+          summary: this.$t('organization.notifications.error_title'),
           detail: this.$t('organization.invite.error_message'),
           life: 3000
         });
@@ -210,8 +210,8 @@ export default {
         await organizationInvitationService.reject( invitationId );
         this.$toast.add({
           severity: 'info',
-          summary: this.$t('organization.invite.rejected_title'),
-          detail: this.$t('organization.invite.rejected_message'),
+          summary: this.$t('notifications.rejected_title'),
+          detail: this.$t('notifications.rejected_message'),
           life: 3000
         });
         await this.loadInvitations();

@@ -3,7 +3,6 @@
     <h3>{{ $t('organization.invite.title') }}</h3>
     <form @submit.prevent="inviteUser">
       <span class="p-input-icon-left">
-        <i class="pi pi-envelope" />
         <pv-input-text
             v-model="email"
             :placeholder="$t('organization.invite.email_placeholder')"
@@ -13,7 +12,7 @@
         />
       </span>
       <small v-if="error" class="p-error">{{ error }}</small>
-      <pv-button
+      <pv-button style="margin-left: 10px"
           type="submit"
           icon="pi pi-user-plus"
           :label="$t('organization.invite.button')"
@@ -67,8 +66,16 @@ export default {
           email: this.email.trim()
         });
 
-        this.successMsg = this.$t('organization.invite.success_message_simple', { email: this.email });
+        this.successMsg = this.$t('organization.invite.success_title', { email: this.email });
         this.email = "";
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'success',
+            summary: this.$t('organization.invite.success_title'),
+            detail: this.$t('organization.invite.success_message', { name: this.name }),
+            life: 3000
+          });
+        }
         this.$emit('invitationSent'); // notifica a padre si es necesario
       } catch (err) {
         this.error = this.$t('organization.invite.error_message');
@@ -88,7 +95,11 @@ export default {
   margin: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1rem;
+}
+
+form {
+  margin-bottom: 1rem;
 }
 .mt-3 { margin-top: 1rem; }
 .p-error { color: #e63946; }

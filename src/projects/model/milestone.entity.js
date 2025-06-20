@@ -2,10 +2,11 @@ import {ScheduleItem} from "./schedule-item.js";
 
 export class Milestone {
     constructor({
-                    id = new MilestoneId(),
+                    id = null,
                     name = '',
                     startDate = new Date(),
                     endDate = new Date(),
+                    projectId = null,
                     items = [],
                 }) {
         if (!name || typeof name !== 'string') {
@@ -22,12 +23,30 @@ export class Milestone {
 
         if (endDate < startDate) {
             throw new Error('End date cannot be earlier than start date');
+        }        
+        
+        // Parse id to number if it's a string that looks like a number
+        if (typeof id === 'number') {
+            this.id = id;
+        } else if (typeof id === 'string' && !isNaN(Number(id))) {
+            this.id = Number(id);
+        } else {
+            this.id = null;
         }
-
-        this.id = id
+        
         this.name = name
         this.startDate = startDate
         this.endDate = endDate
+        
+        // Parse projectId to number if it's a string that looks like a number
+        if (typeof projectId === 'number') {
+            this.projectId = projectId;
+        } else if (typeof projectId === 'string' && !isNaN(Number(projectId))) {
+            this.projectId = Number(projectId);
+        } else {
+            this.projectId = projectId;
+        }
+        
         this.items = items
     }
 
@@ -65,26 +84,20 @@ export class Milestone {
             throw new Error('Item not found in the milestone');
         }
         this.items.splice(index, 1);
-    }
-
-    toJSON() {
-        console.log('Valor de this.id antes de serializar:', this.id);
+    }    toJSON() {
+        // Ensure id is numeric if it can be parsed
+        const numericId = this.id ? (typeof this.id === 'string' && !isNaN(Number(this.id)) ? Number(this.id) : this.id) : null;
+        const numericProjectId = this.projectId ? (typeof this.projectId === 'string' && !isNaN(Number(this.projectId)) ? Number(this.projectId) : this.projectId) : null;
+        
         return {
-            id: this.id?.value ?? null,
+            id: numericId,
             name: this.name,
             startDate: this.startDate,
             endDate: this.endDate,
+            startingDate: this.startDate, // Include both formats for compatibility
+            endingDate: this.endDate,     // Include both formats for compatibility
+            projectId: numericProjectId,
             items: this.items
         }
-    }
-}
-
-export class MilestoneId {
-    constructor(value) {
-        this.value = value || crypto.randomUUID()
-    }
-
-    toJSON() {
-        return this.value
     }
 }

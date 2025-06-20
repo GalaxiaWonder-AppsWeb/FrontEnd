@@ -1,13 +1,10 @@
 import {ProjectStatus} from './project-status.js'
 import {Schedule} from './schedule.entity.js'
-import {OrganizationMemberId} from '../../organizations/model/organization-member.entity.js'
-import {ContractingEntityId} from '../../shared/model/contracting-entity-id.js'
-import {OrganizationId} from '../../organizations/model/organization.entity.js'
-import {ProjectTeamMember, ProjectTeamMemberId} from './project-team-member.entity.js'
+import {ProjectTeamMember} from './project-team-member.entity.js'
 
 export class Project {
     constructor({
-                    id = new ProjectId(),
+                    id = null,
                     name = '',
                     description = '',
                     status = ProjectStatus.BASIC_STUDIES,
@@ -16,9 +13,11 @@ export class Project {
                     startingDate = new Date(),
                     endingDate = new Date(),
                     team = [],
-                    organizationId = new OrganizationId(),
-                    contractor = new OrganizationMemberId(),
-                    contractingEntityId = new ContractingEntityId()
+                    organizationId = null,
+                    contractor = null,
+                    contractingEntityId = null,
+                    createdBy = null,
+                    createdAt = new Date()
                 }) {
         if (!name || typeof name !== 'string') {
             throw new Error('Legal name is required and must be a non-empty string')
@@ -32,19 +31,20 @@ export class Project {
             throw new Error('Budget is required and must be a number')
         }
 
-
-        this.id = id
-        this.name = name
-        this.description = description
-        this.status = status
-        this.schedule = schedule
-        this.budget = budget
-        this.startingDate = startingDate
-        this.endingDate = endingDate
-        this.team = team
-        this.organizationId = organizationId
-        this.contractor = contractor
-        this.contractingEntityId = contractingEntityId
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.schedule = schedule;
+        this.budget = budget;
+        this.startingDate = startingDate;
+        this.endingDate = endingDate;
+        this.team = team;
+        this.organizationId = organizationId;
+        this.contractor = contractor;
+        this.contractingEntityId = contractingEntityId;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
     }
 
     updateStatus(status) {
@@ -71,18 +71,24 @@ export class Project {
 
 
     removeTeamMember(memberId) {
-        if (!(memberId instanceof ProjectTeamMemberId)) {
-            throw new Error('MemberId must be a valid ProjectTeamMemberId instance.');
+        if (typeof memberId !== 'number') {
+            throw new Error('memberId must be a number')
         }
 
-        this.team = this.team.filter(member => member.memberId.value !== memberId.value);
-    }
-
-
+        this.team = this.team.filter(member => member.memberId !== memberId)
+    }    
+    
     toJSON() {
-        console.log('Valor de this.id antes de serializar:', this.id);
+        // Asegurarnos de que el valor de contractor se serialice correctamente
+        let contractorValue = null;
+        if (this.contractor) {
+            contractorValue = typeof this.contractor === 'object' && this.contractor.value !== undefined 
+                ? this.contractor.value 
+                : this.contractor;
+        }
+        
         return {
-            id: this.id?.value ?? null,
+            id: this.id,
             name: this.name,
             description: this.description,
             status: this.status,
@@ -90,13 +96,12 @@ export class Project {
             budget: this.budget,
             startingDate: this.startingDate,
             endingDate: this.endingDate,
+            team: this.team,
+            organizationId: this.organizationId,
+            contractor: contractorValue,
+            contractingEntityId: this.contractingEntityId,
+            createdBy: this.createdBy,
+            createdAt: this.createdAt
         }
-    }
-}
-
-export class ProjectId {
-    constructor(value) {
-        // Si no se proporciona un valor, genera un UUID
-        this.value = value || crypto.randomUUID();
     }
 }

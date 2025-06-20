@@ -2,12 +2,9 @@
 import {Button as PvButton, InputText as PvInputText} from "primevue";
 import {Organization} from "../model/organization.entity.js";
 import {Ruc} from "../model/ruc.js";
-import {PersonId} from "../../iam/model/person.entity.js";
 import {OrganizationStatus} from "../model/organization-status.js";
 import {organizationService} from "../services/organization.service.js";
-import {OrganizationMember} from "../model/organization-member.entity.js";
-import {OrganizationMemberType} from "../model/organization-member-type.js";
-import {organizationMemberService} from "../services/organization-member.service.js";
+
 export default {
   name: "CreateOrganization",
   components: {PvButton, PvInputText},
@@ -23,65 +20,66 @@ export default {
       }
     };
   },
-  methods:{
+  methods:{    
     async CreateOrganization() {
       try {
-        console.log('ENTRADA');
-
-        const legalName = document.getElementById('legalName')?.value || '';
-        const commercialName = document.getElementById('commercialName')?.value || '';
-        const rucValue = document.getElementById('ruc')?.value || '';
-        const personId = this.user?.personId;
-
-        console.log("Legal Name:", legalName);
-        console.log("Commercial Name:", commercialName);
-        console.log("RUC:", rucValue);
-        console.log("Created By:", personId);
-        console.log("Status:", OrganizationStatus.ACTIVE);
-
-        // Validación opcional de campos
-        if (!legalName || !commercialName || !rucValue || !personId) {
-          throw new Error("Todos los campos son obligatorios");
-        }
-
-        // Construir objeto plano
-        const org = {
-          legalName: legalName.trim(),
-          commercialName: commercialName.trim(),
-          ruc: rucValue.trim(),
-          createdBy: personId,
+        // 1. Crear la organización
+        console.log("Creando organización con datos:", {
+          legalName: document.getElementById('legalName')?.value,
+          commercialName: document.getElementById('commercialName')?.value,
+          ruc: document.getElementById('ruc')?.value,
+          userId: this.user
+        });
+          const org = new Organization({
+          legalName: document.getElementById('legalName')?.value,
+          commercialName: document.getElementById('commercialName')?.value,
+          ruc: new Ruc(document.getElementById('ruc')?.value),
+          createdBy: Number(this.user.personId),
           status: OrganizationStatus.ACTIVE
-        };
-
+        });
+        
+        // Cerramos el diálogo antes de comenzar operaciones asíncronas
         this.visible = false;
-
+        
+        // 2. Guardar la organización
         const res = await organizationService.create(org);
-        this.organizationId = res.id; // el ID viene del backend
-        this.message = `Created: ${res.legalName}`;
-
-        await this.LinkContractor(new PersonId(personId), this.organizationId);
+        // 3. Guardar el ID de la organización y mostrar mensaje
+        this.organizationId = res.id;
+        this.message = `Organización creada: ${res.legalName}`;
+        
+        // 5. Notificar creación exitosa
         this.$emit('organization-created', this.organizationId);
-
+        
+        // 6. Mostrar mensaje de éxito
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: `Organización "${res.legalName}" creada correctamente`,
+            life: 3000
+          });
+        }
       } catch (err) {
         console.error("Error al crear organización:", err);
-        this.message = err.message || 'Error desconocido';
+        this.message = `Error: ${err.message}`;
+        
+        // Mostrar mensaje de error al usuario
+        if (this.$toast) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: `No se pudo crear la organización: ${err.message}`,
+            life: 5000
+          });
+        }
       }
     },
     onlyNumbers(event) {
       const value = event.target.value
       const numeric = value.replace(/\D/g, '')
       event.target.value = numeric
-    },
-    async LinkContractor(person, organization) {
-      const member = new OrganizationMember({
-        personId: person,
-        organizationId: organization,
-        type: OrganizationMemberType.CONTRACTOR
-      })
-      const res = await organizationMemberService.create(member.toJSON())
-      this.createdMemberId = res.id
-      this.message = `Member created for person ${res.personId}`
-    }
+    },    
+
   },
   created(){
     this.user = JSON.parse(localStorage.getItem("user"))
@@ -148,7 +146,7 @@ export default {
 .form-group label {
   font-weight: 600;
   width: 8rem;
-  color: #000000;
+  color: #ffffff;
 }
 
 

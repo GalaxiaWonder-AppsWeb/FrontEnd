@@ -1,7 +1,7 @@
 <script>
 import {organizationService} from "../services/organization.service.js";
 import {OrganizationAssembler} from "../services/organization.assembler.js";
-import {personService} from "../services/person.service.js";
+import {personService} from "../../shared/services/person.service.js";
 export default {
   name: "OrganizationInformation",
   data() {
@@ -15,28 +15,42 @@ export default {
   methods: {
     async loadInformation() {
       try {
-        console.log("ORGANIZATION ID: ", this.orgId);
-
         // 1. Obtener información de la organización
         const organizationData = await this.api.getById({ id: this.orgId });
         this.organization = OrganizationAssembler.toEntityFromResource(organizationData);
-        console.log("ORGANIZATION:", this.organization);
 
-        // 2. Obtener el ID del contratista (createdBy)
-        const contractorId = this.organization.createdBy.value;
-        console.log("CONTRATISTA ID:", contractorId);
-        // 3. Hacer una llamada al endpoint /persons/:id para obtener el nombre completo
+        // Seguridad para evitar errores de render
+        if (!this.organization) {
+          this.contractorName = "Información no disponible";
+          return;
+        }
+
+        // 2. Obtener el contractorId de manera robusta
+        const contractorId = (typeof this.organization.createdBy === 'object' && this.organization.createdBy !== null)
+            ? this.organization.createdBy.value
+            : this.organization.createdBy;
+
+        // 3. Obtener datos del contratista
         if (contractorId) {
           try {
-            console.log("Haciendo llamada al endpoint /persons/:id");
-            const { data } = await personService.getById(contractorId); // Llamada al servicio
-            console.log("Datos del contratista recibidos:", data); // Mostrar datos en consola
-            this.contractorName = `${data.name.trim()} ${data.lastName.trim()}`; // Procesar datos
+            let contractorData = await personService.getById(contractorId);
+            if (contractorData && contractorData.firstName && contractorData.lastName) {
+              this.contractorName = `${contractorData.firstName} ${contractorData.lastName}`;
+            } else if (contractorData && contractorData.name && contractorData.lastName) {
+              // Por compatibilidad si la API devuelve .name en vez de .firstName
+              this.contractorName = `${contractorData.name} ${contractorData.lastName}`;
+            } else {
+              this.contractorName = "Información no disponible";
+            }
           } catch (error) {
             console.error("Error durante la llamada al servicio personService.getById:", error);
+            this.contractorName = "Error al cargar la información";
           }
+        } else {
+          this.contractorName = "Información no disponible";
         }
-      } catch (error) {
+
+        } catch (error) {
         console.error("Error al cargar la información:", error);
         this.organization = null;
         this.contractorName = null;
@@ -44,9 +58,13 @@ export default {
     },
 
     formatDate(dateString) {
-      const date = new Date(dateString)
-      return new Intl.DateTimeFormat('es-PE').format(date)
+      if (!dateString) return "Sin fecha";
+      const date = new Date(dateString);
+      // Verifica si es una fecha válida
+      if (isNaN(date.getTime())) return "Sin fecha";
+      return new Intl.DateTimeFormat('es-PE').format(date);
     }
+
   },
   created() {
     this.orgId = this.$route.params.orgId

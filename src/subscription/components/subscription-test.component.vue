@@ -1,7 +1,6 @@
 <script>
 import { subscriptionService } from '../services/subscription.service.js'
 import { workspaceService } from '../services/workspace.service.js'
-import { PersonId } from '../../iam/model/person.entity.js'
 import { Subscription } from '../model/subscription.entity.js'
 import { Workspace } from '../model/workspace.entity.js'
 import { SubscriptionStatus } from '../model/subscription-status.js'
@@ -21,7 +20,7 @@ export default {
     async createSubscription() {
       try {
         const subscription = new Subscription({
-          personId: new PersonId(this.personId),
+          personId: Number(this.personId),
           status: SubscriptionStatus.ACTIVE
         })
 
@@ -37,9 +36,9 @@ export default {
     async createWorkspace() {
       try {
         const workspace = new Workspace({
-          organizationId: { value: this.organizationId },
-          createdBy: { value: this.personId },
-          subscriptionId: { value: this.subscriptionId },
+          organizationId: Number(this.organizationId),
+          createdBy: Number(this.personId),
+          subscriptionId: Number(this.subscriptionId),
           maxMembers: 10,
           maxProjects: 5,
           maxStorageSizeInBytes: 5000000

@@ -10,55 +10,22 @@
 
 <script>
 import ToolbarComponent from '../../public/components/toolbar-content.component.vue'
-import { organizationMemberService } from '../services/organization-member.service.js'
-import { OrganizationInvitationService } from '../services/organization-invitation.service.js'
+import { useRoute } from 'vue-router';
 
 export default {
-  name: 'OrganizationLayout',
-  components: {
-    ToolbarComponent
-  },
-  data() {
+  name: 'OrganizationLayout',  data(){
     return {
+      route: useRoute(),
       personId: null,
       organizationId: null,
       invitedPersonIds: [],
     }
   },
-  methods: {
-    async getMemberType() {
-      const user = JSON.parse(localStorage.getItem("organization"))
-      this.personId = user.personId
-      this.organizationId = user.organizationId
-
-      try {
-        const res = await organizationMemberService.getByPersonAndOrgId({
-          personId: this.personId,
-          organizationId: this.organizationId
-        })
-
-        user.activeOrganizationRole = res.length > 0 ? res[0].type : null
-        localStorage.setItem("user", JSON.stringify(user))
-      } catch (err) {
-        console.error("Error al obtener rol de organización:", err)
-      }
-    },
-
-    async getInvitedPersonIds() {
-      try {
-        const res = await OrganizationInvitationService.getByOrganizationId({
-          organizationId: this.organizationId
-        })
-        this.invitedPersonIds = res.map(inv => inv.personId)
-      } catch (err) {
-        console.error("Error al obtener invitados:", err)
-      }
-    }
-
+  components: {
+    ToolbarComponent
+  },  methods: {
   },
-  async created() {
-    await this.getMemberType()
-    await this.getInvitedPersonIds()
+  created() {
   }
 }
 </script>

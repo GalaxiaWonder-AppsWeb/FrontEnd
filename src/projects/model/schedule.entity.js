@@ -1,4 +1,4 @@
-import {Milestone, MilestoneId} from './milestone.entity.js';
+import {Milestone} from './milestone.entity.js';
 
 export class Schedule {
     constructor({ milestones = [] } = {}) {
@@ -17,7 +17,7 @@ export class Schedule {
     }
 
     removeMilestone(milestoneId) {
-        if (!(milestoneId instanceof MilestoneId)) {
+        if (typeof milestoneId !== 'number' || isNaN(milestoneId)) {
             throw new Error('MilestoneId must be a valid instance of MilestoneId.');
         }
 

@@ -10,7 +10,6 @@ export const organizationMemberService = {
             const response = await axios.get(propGmsApiUrl, {
                 params: { organizationId }
             });
-            console.log(response);
             return response.data;
         } catch (error) {
             console.error('Error al obtener los miembros:', error);

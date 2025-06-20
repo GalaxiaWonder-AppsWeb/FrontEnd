@@ -44,6 +44,8 @@ function buildRequestHandler(verb, base, urlPath) {
             return (data) => base.post(urlPath, data).then(res => res.data);
         case HttpVerb.PUT:
             return (data) => base.put(urlPath, data).then(res => res.data);
+        case HttpVerb.PATCH:
+            return (data) => base.patch(urlPath, data).then(res => res.data);
         case HttpVerb.DELETE:
             return () => base.delete(urlPath).then(res => res.data);
         default:
@@ -65,18 +67,12 @@ export function createService(resourceEndpoint, methodMap = {}) {
 
         service[methodName] = async (payload = null, queryParams = {}) => {
             let urlPath = extractPath(path, fullPath);
-
+            
             if (isPrimitive(payload)) {
-                console.log("PRIM TRUE")
                 urlPath = urlPath.replace(':id', payload);
                 payload = null;
             } else if (typeof payload === 'object' && payload !== null) {
-                console.log("PRIM FALSE")
-                console.log(payload)
-                console.log("ANTES" + urlPath)
                 urlPath = replacePathParams(urlPath, payload);
-                console.log("DESPUES" + urlPath)
-
                 if (verb !== HttpVerb.POST) {
                     payload = removeIdFromPayload(payload);
                 }

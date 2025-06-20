@@ -1,9 +1,9 @@
 export const Specialty = {
-    ARCHITECTURE: 'Architecture',
-    STRUCTURES: 'Structures',
+    ARCHITECTURE: 'ARCHITECTURE',
+    STRUCTURES: 'STRUCTURES',
     HSA: 'HSA',
-    TOPOGRAPHY: 'Topography',
-    SANITATION: 'Sanitation',
-    ELECTRICITY: 'Electricity',
-    COMMUNICATIONS: 'Communications',
+    TOPOGRAPHY: 'TOPOGRAPHY',
+    SANITATION: 'SANITATION',
+    ELECTRICITY: 'ELECTRICITY',
+    COMMUNICATIONS: 'COMMUNICATIONS',
 }

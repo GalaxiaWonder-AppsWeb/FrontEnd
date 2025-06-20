@@ -1,61 +1,56 @@
-import {OrganizationId} from "./organization.entity.js";
-import {PersonId} from "../../iam/model/person.entity.js";
-import {OrganizationInvitationStatus} from "./organization-invitation-status.js";
+import { OrganizationInvitationStatus } from "./organization-invitation-status.js";
 
 export class OrganizationInvitation {
     constructor({
-        organizationInvitationId = new OrganizationInvitationId(),
-        organizationId = new OrganizationId(),
-        personId = new PersonId(),
-        invitedBy = new PersonId(),
-        invitedAt = new Date(),
-        acceptedAt = null,
-        status = OrganizationInvitationStatus.PENDING
+                    id = null,
+                    organizationName = '',
+                    personId = '',
+                    invitedByFullName = '',
+                    invitedByEmail = '',
+                    status = OrganizationInvitationStatus.PENDING,
+                    invitedOn = new Date(),
+                    acceptedAt = null,
                 }) {
-        this.id = organizationInvitationId
-        this.organizationId = organizationId
+        this.id = Number.isInteger(id) ? id : null;
+        this.organizationName = organizationName
         this.personId = personId
-        this.invitedBy = invitedBy
-        this.invitedAt = invitedAt
-        this.acceptedAt = acceptedAt
-        this.status = status
+        this.invitedByFullName = invitedByFullName
+        this.invitedByEmail = invitedByEmail
+        this.invitedOn = invitedOn
+        this.acceptedAt = acceptedAt ? new Date(acceptedAt) : null;
+        this.status = status;
     }
 
     toJSON() {
         return {
-            id: this.id?.value ?? null,
-            organizationId: this.organizationId?.value ?? null,
-            personId: this.personId?.value ?? null,
-            invitedBy: this.invitedBy?.value ?? null,
-            invitedAt: this.invitedAt,
-            acceptedAt: this.acceptedAt,
+            id: this.id,
+            organizationName: this.organizationName,
+            personId: this.personId,
+            invitedByFullName: this.invitedByFullName,
+            invitedByEmail: this.invitedByEmail,
+            invitedOn: this.invitedOn?.toISOString(),
+            acceptedAt: this.acceptedAt?.toISOString(),
             status: this.status
         }
     }
 
     accept(date = new Date()) {
-        if (this.status !== OrganizationInvitationStatus.PENDING) {
-            throw new Error('Invitation cannot be accepted')
+        if (!this.isPending()) {
+            throw new Error('Invitation cannot be accepted');
         }
-        this.status = OrganizationInvitationStatus.ACCEPTED
-        this.acceptedAt = date
+        this.status = OrganizationInvitationStatus.ACCEPTED;
+        this.acceptedAt = date;
     }
 
     reject() {
-        if (this.status !== OrganizationInvitationStatus.PENDING) {
-            throw new Error('Invitation cannot be rejected')
+        if (!this.isPending()) {
+            throw new Error('Invitation cannot be rejected');
         }
-        this.status = OrganizationInvitationStatus.REJECTED
-        this.acceptedAt = null
+        this.status = OrganizationInvitationStatus.REJECTED;
+        this.acceptedAt = null;
     }
 
     isPending() {
-        return this.status === OrganizationInvitationStatus.PENDING
-    }
-}
-
-export class OrganizationInvitationId {
-    constructor() {
-        this.value = crypto.randomUUID()
+        return this.status === OrganizationInvitationStatus.PENDING;
     }
 }

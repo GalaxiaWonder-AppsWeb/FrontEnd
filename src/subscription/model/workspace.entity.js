@@ -1,23 +1,28 @@
-import {OrganizationId} from "../../organizations/model/organization.entity.js";
-import {PersonId} from "../../iam/model/person.entity.js";
-import {SubscriptionId} from "./subscription.entity.js";
-
 export class Workspace {
     constructor({
-                    id = new WorkspaceId(),
-                    organizationId = new OrganizationId(),
-                    createdBy = new PersonId(),
+                    id = null,
+                    organizationId = null,
+                    createdBy = null,
                     createdAt = new Date(),
-                    subscriptionId = new SubscriptionId(),
+                    subscriptionId = null,
                     maxMembers = 0,
                     maxStorageSizeInBytes = 0,
                     maxProjects = 0
                 }) {
-        this.id = id
+
+        if (typeof organizationId !== 'number') {
+            throw new Error('organizationId must be a number')
+        }
+
+        if (typeof createdBy !== 'number') {
+            throw new Error('createdBy must be a number')
+        }
+
+        this.id = typeof id === 'number' ? id : null
         this.organizationId = organizationId
         this.createdBy = createdBy
         this.createdAt = createdAt
-        this.subscriptionId = subscriptionId
+        this.subscriptionId = typeof subscriptionId === 'number' ? subscriptionId : null
         this.maxMembers = maxMembers
         this.maxStorageSizeInBytes = maxStorageSizeInBytes
         this.maxProjects = maxProjects
@@ -46,20 +51,14 @@ export class Workspace {
 
     toJSON() {
         return {
-            id: this.id?.value,
-            organizationId: this.organizationId?.value,
-            createdBy: this.createdBy?.value,
+            id: this.id,
+            organizationId: this.organizationId,
+            createdBy: this.createdBy,
             createdAt: this.createdAt,
-            subscriptionId: this.subscriptionId?.value,
+            subscriptionId: this.subscriptionId,
             maxMembers: this.maxMembers,
             maxStorageSizeInBytes: this.maxStorageSizeInBytes,
             maxProjects: this.maxProjects
         }
-    }
-}
-
-export class WorkspaceId {
-    constructor() {
-        this.value = crypto.randomUUID()
     }
 }

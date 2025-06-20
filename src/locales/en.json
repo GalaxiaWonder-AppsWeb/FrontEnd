@@ -1,5 +1,20 @@
 {
+  "auth": {
+    "logout": "Sign out",
+    "logout_success": "Successfully signed out"
+  },
+  "navigation-toolbar": {
+    "back": "Back",
+    "all_organizations": "All Organizations"
+  },
   "register": {
+    "errors": {
+      "email-taken": "This email is already in use",
+      "invalid-phone": "Invalid phone number",
+      "missing-role": "You must select a role",
+      "missing-profession": "Profession is required for workers"
+    },
+    "checking-email": "Checking email...",
     "title": "User Register",
     "name": "Name",
     "last-name": "Last Name",
@@ -12,8 +27,8 @@
     "roles": {
       "title": "Role",
       "choose-role": "Choose a role",
-      "worker": "Worker",
-      "client": "Client"
+      "worker": "ORGANIZATION USER ",
+      "client": "CLIENT USER"
     }
   },
   "login": {
@@ -23,9 +38,9 @@
     "submit": "Enter",
     "no-account": "Don't have an account yet?",
     "go-register": "Register here"
-  },
-  "organization": {
+  },  "organization": {
     "title": "Organization",
+    "all": "All Organizations",
     "section": {
       "information":"Information",
       "projects": "Projects",
@@ -43,43 +58,218 @@
         "create": "Create organization",
         "cancel": "Cancel"
       }
-    },
-    "info-organization": {
+    },    "info-organization": {
       "business-name": "Business Name",
       "ruc": "RUC",
       "creation-date": "Creation Date",
       "contractor": "Contractor"
-    },
-    "edit-organization": {
+    },    "members": {
+      "invite": "Invite Member",
+      "empty": "This organization doesn't have members yet",
+      "joined": "Joined on",
+      "remove": "Remove",
+      "removed_title": "Member removed",
+      "removed_message": "The member has been removed from the organization",
+      "error_loading": "Error loading members",
+      "error_title": "Error",
+      "error_remove": "Couldn't remove the member",
+      "no_permission": "No permission",
+      "creator_only": "Only the creator can perform this action",
+      "confirm_remove_title": "Confirm Removal",
+      "confirm_remove_message": "Are you sure you want to remove {name} from the organization?"
+    },    "invite": {
+      "title": "Invite Members",
+      "search": "Search workers by name or email",
+      "email_placeholder": "Enter email address",
+      "button": "Invite",
+      "no_results": "No workers found with that search criteria",
+      "pending": "Pending invitations",
+      "error_search": "Error searching for workers",
+      "error_invitations": "Error loading invitations",
+      "success_title": "Invitation sent",
+      "success_message": "{name} has been invited to the organization",
+      "error_title": "Error sending invitation",
+      "error_message": "Could not send invitation",
+      "sending": "Sending invitation",
+      "please_wait": "Please wait...",
+      "invalid_email": "Please enter a valid email address",
+      "email_not_found": "No user found with this email address",
+      "user_already_member": "This user is already a member of this organization",
+      "email_verified": "Email verified",
+      "status": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected"      
+      }
+    },"edit-organization": {
       "title": "Edit organization",
       "legal-name": "Legal Name",
       "commercial-name": "Commercial Name",
-      "change-settings": "Change settings"
-    },
-    "member": {
-        "membersTitle": "Current members",
-        "noMembers": "No members registered.",
-        "role": {
-          "title": "Role",
-          "Contractor": "Contractor",
-          "Worker": "Worker"
-        },
-        "since": "Since",
-        "invitationsTitle": "Invitations",
-        "noInvitations": "No invitations registered.",
-        "invitationFor": "Invitation for"
+      "change-settings": "Change settings",
+      "danger-zone": "Danger Zone",
+      "delete": "Delete organization",
+      "delete-confirm": "Are you sure you want to delete this organization? This action will delete all associated members and cannot be undone.",
+      "deleted-success": "Organization successfully deleted",
+      "deleted-error": "Error deleting the organization"
     }
+  },  "notifications": {
+    "title": "Notifications",
+    "empty": "You don't have any notifications",
+    "invited_by": "Invited by",
+    "error_loading": "Error loading notifications",
+    "login_required": "Log in to view notifications",
+    "accepted_title": "Invitation accepted",
+    "accepted_message": "You joined {org} as a member",
+    "rejected_title": "Invitation rejected",
+    "rejected_message": "You rejected the invitation",
+    "error_title": "Error",
+    "error_accept": "Error accepting invitation",
+    "error_reject": "Error rejecting invitation"
+  },  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "ok": "OK",
+    "create": "Create"
   },
   "navigation": {
     "dashboard": {
       "organizations": "Organizations",
       "invitations": "Invitations"
     }
-  },
-  "project": {
-    "title": "Project",
-    "information": "Information",
-    "schedule": "Schedule",
-    "change-management": "Change Management"
+  },  "profile": {
+    "title": "My Profile",
+    "view": "View Profile",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading profile information...",
+    "personal_information": "Personal Information",
+    "account_information": "Account Information",
+    "name": "Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "email_note": "Email cannot be modified",
+    "phoneNumber": "Phone Number",
+    "profession": "Profession",
+    "userType": "User Type",
+    "password": "Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
+    "change_password": "Change password",
+    "picture_help": "Click on the camera icon to change your profile picture",
+    "success": {
+      "title": "Success",
+      "saved": "Profile updated successfully"
+    },    "error": {
+      "title": "Error",
+      "loading": "Error loading profile",
+      "saving": "Error saving changes",
+      "user_not_found": "User not found",
+      "person_not_found": "Person information not found",
+      "password_mismatch": "Passwords do not match",
+      "password_too_short": "Password must be at least 6 characters",
+      "image_upload": "Error uploading image",
+      "image_too_large": "Image is too large (max 2MB)"
+    },
+    "uploading_image": "Uploading image..."
+  },  "projects": {
+    "title": "Projects",
+    "create": "New project",
+    "empty": "No projects available",
+    "empty_member": "No projects available for you",
+    "create_prompt": "Create your first project by clicking \"New project\"!",
+    "loading": "Loading projects...",
+    "error": "Error loading projects",
+    "status": {
+      "active": "Active",
+      "completed": "Completed",
+      "on_hold": "On hold",
+      "cancelled": "Cancelled",
+      "planning": "Planning"
+    },
+    "access_denied": "You don't have permission to view this project",
+    "view_details": "View details",
+    "create_dialog": {
+      "title": "Create new project",
+      "name": "Project name",
+      "name_placeholder": "Enter project name",
+      "description": "Description",
+      "description_placeholder": "Enter project description",
+      "budget": "Budget",
+      "start_date": "Start date",
+      "end_date": "End date"
+    },
+    "section": {
+      "information": "Information",
+      "schedule": "Schedule",
+      "change-management": "Change Management",
+      "settings": "Settings",
+      "working-team": "Working Team"
+    },
+    "information": "Project Information",
+    "working-team": {
+      "title": "Working Team",
+      "add-member": {
+        "title": "Add Member",
+        "subtitle": "Add members to the project team",
+        "first-step": "Step 1: Select members to assign for the project",
+        "first-step-placeholder": "Search by name or email",
+        "first-step-select": "Selecting...",
+        "first-step-button": "Continue with the role assignment",
+        "second-step": {
+          "title": "Step 2: Assign roles and specializations",
+          "description": "For each member, select the role. If the role is specialized, you can also assign a specialization.",
+          "table": {
+            "name": "Name",
+            "role": "Role",
+            "specialty": "Specialization",
+            "status": "Status"
+          },
+          "back-button": "Back to selection",
+          "button": "Add members to the project"
+        },
+        "no-members": "No members availabled"
+      },
+      "role": "Role",
+      "specialty": "Specialization",
+      "no-members": "No members in this project",
+      "reload-data": "Reload Data"
+      
+    },
+    "settings": {
+      "title": "Project Settings",
+      "description": "Project Description",
+      "description_placeholder": "Enter a detailed description of the project",
+      "status": "Project Status",
+      "status_placeholder": "Select project status",
+      "update": "Update Project",
+      "danger_zone": "Danger Zone",
+      "delete": "Delete Project",
+      "delete_dialog": {
+        "title": "Confirm Deletion",
+        "message": "Are you sure you want to delete this project? This action cannot be undone."
+      },
+      "success": {
+        "title": "Success",
+        "updated": "Project successfully updated",
+        "deleted": "Project successfully deleted"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "Could not load project information",
+        "updating_title": "Error",
+        "updating_message": "Could not update project",
+        "deleting_title": "Error",
+        "deleting_message": "Could not delete project",
+        "empty_description": "Project description cannot be empty",
+        "no_status": "Project status must be selected"
+      },
+      "no_changes": "No changes to save"
+    }
+    
   }
 }

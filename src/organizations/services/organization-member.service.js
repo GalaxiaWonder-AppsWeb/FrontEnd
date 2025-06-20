@@ -1,9 +1,11 @@
 import { createService } from '../../shared/services/create.service.js'
 import { HttpVerb } from '../../shared/services/http-verb.js'
 
-export const organizationMemberService = createService('/members', {
+export const organizationMemberService = createService('/organization/members', {
+    getAll:         { verb: HttpVerb.GET },
+    getById:        { verb: HttpVerb.GET, path: ':id', fullPath: true },
     create:         { verb: HttpVerb.POST },
-    delete:         { verb: HttpVerb.DELETE, path: ':id' },
-    getByOrgId:     { verb: HttpVerb.GET, path: '', fullPath: true },
-    getByPersonAndOrgId:  { verb: HttpVerb.GET, path: '', fullPath: true }
+    update:         { verb: HttpVerb.PATCH, path: ':id' },
+    delete:         { verb: HttpVerb.DELETE, path: ':id', fullPath: true },
+    getByPersonId:  { verb: HttpVerb.GET, path: 'by-person-id/:personId', fullPath: true }
 })

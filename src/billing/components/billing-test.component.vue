@@ -1,6 +1,5 @@
 <script>
 import { billingService } from '../services/billing.service.js'
-import { PersonId } from '../../iam/model/person.entity.js'
 import { Invoice } from '../model/invoice.entity.js'
 import { Money } from '../../shared/model/money.js'
 
@@ -17,8 +16,11 @@ export default {
   methods: {
     async testCreateInvoice() {
       try {
-        const payer = new PersonId()
-        payer.value = this.payerId
+        const payer = parseInt(this.payerId)
+        if (isNaN(payer)) {
+          this.message = 'Payer ID must be a number'
+          return
+        }
 
         const invoice = new Invoice({
           payer: payer,
@@ -50,7 +52,8 @@ export default {
 
     async testGetById() {
       try {
-        const res = await billingService.getById({ id: this.invoiceId })
+        const id = parseInt(this.invoiceId)
+        const res = await billingService.getById(id)
         this.message = `Invoice: ${res.id}`
         console.log(res)
       } catch (err) {
@@ -60,7 +63,8 @@ export default {
 
     async testGetByPayer() {
       try {
-        const res = await billingService.getByPayerId(this.payerId)
+        const payerId = parseInt(this.payerId)
+        const res = await billingService.getByPayerId(payerId)
         this.invoices = res
         this.message = `Fetched ${res.length} invoices for payer`
         console.log(res)
@@ -71,7 +75,8 @@ export default {
 
     async testDelete() {
       try {
-        await billingService.delete({ id: this.invoiceId })
+        const id = parseInt(this.invoiceId)
+        await billingService.delete(id)
         this.message = `Deleted invoice ${this.invoiceId}`
         this.invoiceId = ''
       } catch (err) {

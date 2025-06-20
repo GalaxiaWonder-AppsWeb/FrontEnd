@@ -1,5 +1,16 @@
 {
+  "navigation-toolbar": {
+    "back": "Volver",
+    "all_organizations": "Todas las Organizaciones"
+  },
   "register": {
+    "errors": {
+      "email-taken": "Este correo electrónico ya está en uso",
+      "invalid-phone": "Número de teléfono inválido",
+      "missing-role": "Debes seleccionar un rol",
+      "missing-profession": "La profesión es obligatoria para trabajadores"
+    },
+    "checking-email": "Verificando correo electrónico...",
     "title": "Registro de Usuario",
     "name": "Nombre",
     "last-name": "Apellido",
@@ -12,8 +23,8 @@
     "roles": {
       "title": "Rol",
       "choose-role": "Selecciona un rol",
-      "worker": "Trabajador",
-      "client": "Cliente"
+      "worker": "USUARIO DE ORGANIZACIÓN",
+      "client": "USUARIO CLIENTE"
     }
   },
   "login": {
@@ -23,9 +34,9 @@
     "submit": "Ingresar",
     "no-account": "¿No tienes una cuenta aún?",
     "go-register": "Registrate aquí"
-  },
-  "organization": {
+  },  "organization": {
     "title": "Organización",
+    "all": "Todas las Organizaciones",
     "section": {
       "information":"Información",
       "projects": "Proyectos",
@@ -43,43 +54,217 @@
         "create": "Crear organización",
         "cancel": "Cancelar"
       }
-    },
-    "info-organization": {
+    },    "info-organization": {
       "business-name": "Nombre del negocio",
       "ruc": "RUC",
       "creation-date": "Fecha de Creación",
       "contractor": "Contratista"
-    },
-    "edit-organization": {
+    },    "members": {
+      "invite": "Invitar Miembro",
+      "empty": "Esta organización no tiene miembros aún",
+      "joined": "Se unió el",
+      "remove": "Eliminar",
+      "removed_title": "Miembro eliminado",
+      "removed_message": "El miembro ha sido eliminado de la organización",
+      "error_loading": "Error al cargar los miembros",
+      "error_title": "Error",
+      "error_remove": "No se pudo eliminar al miembro",
+      "no_permission": "Sin permisos",
+      "creator_only": "Solo el creador puede realizar esta acción",
+      "confirm_remove_title": "Confirmar eliminación",
+      "confirm_remove_message": "¿Estás seguro que deseas eliminar a {name} de la organización?"
+    },    "invite": {
+      "title": "Invitar Miembros",
+      "search": "Buscar trabajadores por nombre o correo",
+      "button": "Invitar",
+      "no_results": "No se encontraron trabajadores con ese criterio de búsqueda",
+      "pending": "Invitaciones pendientes",
+      "error_search": "Error al buscar trabajadores",
+      "error_invitations": "Error al cargar invitaciones",
+      "success_title": "Invitación enviada",
+      "success_message": "{name} ha sido invitado a la organización",
+      "error_title": "Error al enviar invitación",
+      "error_message": "No se pudo enviar la invitación",
+      "sending": "Enviando invitación",
+      "please_wait": "Por favor espere...",
+      "status": {
+        "pending": "Pendiente",
+        "accepted": "Aceptada",
+        "rejected": "Rechazada"      }
+    },    "edit-organization": {
       "title": "Editar organización",
       "legal-name": "Nombre legal",
       "commercial-name": "Nombre comercial",
-      "change-settings": "Guardar cambios"
-    },
-    "member": {
-      "membersTitle": "Miembros actuales",
-      "noMembers": "No hay miembros registrados.",
-      "role": {
-        "title": "Rol",
-        "Contractor": "Contratista",
-        "Worker": "Trabajador"
-      },
-      "since": "Desde",
-      "invitationsTitle": "Invitaciones",
-      "noInvitations": "No hay invitaciones registradas.",
-      "invitationFor": "Invitación para"
+      "change-settings": "Guardar cambios",
+      "danger-zone": "Zona de Peligro",
+      "delete": "Eliminar organización",
+      "delete-confirm": "¿Estás seguro de que deseas eliminar esta organización? Esta acción eliminará todos los miembros asociados y no se puede deshacer.",
+      "deleted-success": "Organización eliminada correctamente",
+      "deleted-error": "Error al eliminar la organización"
     }
+  },  "notifications": {
+    "title": "Notificaciones",
+    "empty": "No tienes notificaciones",
+    "invited_by": "Invitado por",
+    "error_loading": "Error al cargar notificaciones",
+    "login_required": "Inicia sesión para ver notificaciones",
+    "accepted_title": "Invitación aceptada",
+    "accepted_message": "Te has unido a {org} como miembro",
+    "rejected_title": "Invitación rechazada",
+    "rejected_message": "Has rechazado la invitación",
+    "error_title": "Error",
+    "error_accept": "Error al aceptar la invitación",
+    "error_reject": "Error al rechazar la invitación"
+  },  "common": {
+    "yes": "Sí",
+    "no": "No",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "ok": "Aceptar",
+    "create": "Crear"
+  },  "auth": {
+    "logout": "Cerrar sesión",
+    "logout_success": "Sesión cerrada correctamente",
+    "access_denied": "Acceso denegado",
+    "insufficient_permissions": "No tienes permisos suficientes para acceder a esta página",
+    "contractor_only": "Solo el contratista puede acceder a esta sección",
+    "login_required": "Inicia sesión para acceder a esta página"
   },
   "navigation": {
     "dashboard": {
       "organizations": "Organizaciones",
       "invitations": "Invitaciones"
     }
-  },
-  "project": {
-    "title": "Proyecto",
-    "information": "Información",
-    "schedule": "Cronograma",
-    "change-management": "Gestión del cambio"
+  },  
+  "projects": {
+    "title": "Proyectos",
+    "create": "Nuevo proyecto",
+    "empty": "No hay proyectos disponibles",
+    "empty_member": "No hay proyectos disponibles para ti",
+    "create_prompt": "¡Crea tu primer proyecto haciendo clic en \"Nuevo Proyecto\"!",
+    "loading": "Cargando proyectos...",
+    "error": "Error al cargar proyectos",
+    "status": {
+      "active": "Activo",
+      "completed": "Completado",
+      "on_hold": "En espera",
+      "cancelled": "Cancelado",
+      "planning": "Planificación"
+    },
+    "access_denied": "No tienes permiso para ver este proyecto",
+    "view_details": "Ver detalles",    "create_dialog": {
+      "title": "Crear nuevo proyecto",
+      "name": "Nombre del proyecto",
+      "name_placeholder": "Ingrese el nombre del proyecto",
+      "description": "Descripción",
+      "description_placeholder": "Ingrese una descripción del proyecto",
+      "budget": "Presupuesto",
+      "start_date": "Fecha de inicio",
+      "end_date": "Fecha de finalización"
+    },
+    "section": {
+      "information": "Información",
+      "schedule": "Calendario",
+      "change-management": "Gestión de Cambios",
+      "settings": "Configuraciones",
+      "working-team": "Equipo de Trabajo"
+    },
+    "information": "Información del Proyecto",
+    "working-team": {
+      "title": "Equipo de Trabajo",
+      "add-member": {
+        "title": "Agregar Miembro",
+        "subtitle": "Agregar miembros al equipo del proyecto",
+        "first-step": "Paso 1: Selecciona miembros para agregar al proyecto",
+        "first-step-placeholder": "Buscar por nombre o correo electrónico",
+        "first-step-select": "Seleccionando...",
+        "first-step-button": "Continuar con la asignación de roles",
+        "second-step": {
+          "title": "Paso 2: Asignar roles y especialidades",
+          "description": "Para cada miembro, asigna un rol. Si el rol es Especialista, debes asignar una especialidad",
+          "table": {
+            "name": "Nombre",
+            "role": "Rol",
+            "specialty": "Especialidad",
+            "status": "Estado"
+          },
+          "back-button": "Volver a selección",
+          "button": "Agregar miembros al proyecto"
+        },
+        "no-members": "No hay miembros disponibles"
+      },
+      "role": "Rol",
+      "specialty": "Especialidad",
+      "no-members": "No hay miembros en este proyecto",
+      "reload-data": "Recargar Datos"
+    },
+    "settings": {
+      "title": "Configuración del Proyecto",
+      "description": "Descripción del Proyecto",
+      "description_placeholder": "Ingrese una descripción detallada del proyecto",
+      "status": "Estado del Proyecto",
+      "status_placeholder": "Seleccione el estado del proyecto",
+      "update": "Actualizar Proyecto",
+      "danger_zone": "Zona de Peligro",
+      "delete": "Eliminar Proyecto",
+      "delete_dialog": {
+        "title": "Confirmar Eliminación",
+        "message": "¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer."
+      },
+      "success": {
+        "title": "Éxito",
+        "updated": "Proyecto actualizado exitosamente",
+        "deleted": "Proyecto eliminado exitosamente"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "No se pudo cargar la información del proyecto",
+        "updating_title": "Error",
+        "updating_message": "No se pudo actualizar el proyecto",
+        "deleting_title": "Error",
+        "deleting_message": "No se pudo eliminar el proyecto",
+        "empty_description": "La descripción del proyecto no puede estar vacía",
+        "no_status": "Debe seleccionar un estado para el proyecto"
+      },
+      "no_changes": "No hay cambios para guardar"
+    }
+  },"profile": {
+    "title": "Mi Perfil",
+    "view": "Ver Perfil",
+    "edit": "Editar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando información del perfil...",
+    "personal_information": "Información Personal",
+    "account_information": "Información de la Cuenta",
+    "name": "Nombre",
+    "lastName": "Apellido",
+    "email": "Correo Electrónico",
+    "email_note": "El correo electrónico no puede ser modificado",
+    "phoneNumber": "Teléfono",
+    "profession": "Profesión",
+    "userType": "Tipo de Usuario",
+    "password": "Contraseña",
+    "new_password": "Nueva Contraseña",
+    "confirm_password": "Confirmar Contraseña",
+    "change_password": "Cambiar contraseña",
+    "picture_help": "Haz clic en el icono de cámara para cambiar tu foto de perfil",
+    "success": {
+      "title": "Éxito",
+      "saved": "Perfil actualizado correctamente"
+    },    "error": {
+      "title": "Error",
+      "loading": "Error al cargar el perfil",
+      "saving": "Error al guardar los cambios",
+      "user_not_found": "Usuario no encontrado",
+      "person_not_found": "Información de la persona no encontrada",
+      "password_mismatch": "Las contraseñas no coinciden",
+      "password_too_short": "La contraseña debe tener al menos 6 caracteres",
+      "image_upload": "Error al subir la imagen",
+      "image_too_large": "La imagen es demasiado grande (máximo 2MB)"
+    },
+    "uploading_image": "Subiendo imagen..."
   }
 }

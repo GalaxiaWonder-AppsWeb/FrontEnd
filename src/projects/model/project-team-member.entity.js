@@ -1,16 +1,20 @@
-import {OrganizationMemberId} from '../../organizations/model/organization-member.entity.js'
 import {ProjectRole} from "./project-role.js";
 import {Specialty} from "./specialty.js";
 
 export class ProjectTeamMember {
     constructor({
-                    id = new ProjectTeamMemberId(),
+                    id = null,
                     role,
                     specialty,
-                    memberId = new OrganizationMemberId()
+                    organizationMemberId = null,
+                    projectId = null
                 } = {}) {
-        if (!(id instanceof ProjectTeamMemberId)) {
-            throw new Error('Id must be a valid ProjectTeamMemberId instance.');
+        if (typeof id !== 'number' && id !== null) {
+            throw new Error('id must be a number or null.');
+        }
+
+        if (typeof projectId !== 'number' && projectId !== null) {
+            throw new Error('projectId must be a number or null.');
         }
 
         if (!Object.values(ProjectRole).includes(role)) {
@@ -33,35 +37,29 @@ export class ProjectTeamMember {
             }
         }
 
-        if (!(memberId instanceof OrganizationMemberId) || !memberId.value) {
-            throw new Error('MemberId must be a valid OrganizationMemberId instance with a value.');
+        if (!ProjectRole || !Specialty) {
+            throw new Error('Missing required enums: ProjectRole or Specialty.');
+        }
+
+
+        if (typeof organizationMemberId !== 'number') {
+                throw new Error('organizationMemberId must be a numeric value.');
         }
 
         this.id = id;
         this.role = role; // Esperando a que definas ProjectRole o lo que corresponda
         this.specialty = specialty || null; // Esperando definición de Specialty
-        this.memberId = memberId;
+        this.organizationMemberId = organizationMemberId;
+        this.projectId = projectId || null; // Asegurando que projectId sea un número o null
     }
 
     toJSON() {
-        console.log('Valor de this.id antes de serializar:', this.id);
         return {
-            id: this.id.value,
+            id: this.id,
             role: this.role,
             specialty: this.specialty,
-            memberId: this.memberId.value
-        };
-    }
-}
-
-export class ProjectTeamMemberId {
-    constructor(value) {
-        this.value = value || crypto.randomUUID();
-    }
-
-    toJSON() {
-        return {
-            value: this.value
+            organizationMemberId: this.organizationMemberId,
+            projectId: this.projectId
         };
     }
 }

@@ -2,18 +2,19 @@
 import {defineComponent} from "vue";
 import LanguageSwitcher from "./public/components/language-switcher.component.vue";
 import RegisterComponent from "./iam/components/register-form.component.vue"
-import OrganizationTest from "./organizations/components/organization-test.component.vue";
+//import OrganizationTest from "./organizations/components/organization-test.component.vue";
 import BillingTest from "./billing/components/billing-test.component.vue";
 import SubscriptionWorkspaceTest from "./subscription/components/subscription-test.component.vue";
 
 export default defineComponent({
-  components: {SubscriptionWorkspaceTest, BillingTest, OrganizationTest, LanguageSwitcher, RegisterComponent},
+  components: {SubscriptionWorkspaceTest, BillingTest, LanguageSwitcher, RegisterComponent},
 })
 </script>
 
 <template>
-  <router-view></router-view>
-  <!--<subscription-workspace-test></subscription-workspace-test>-->
+  <pv-toast />
+  <pv-confirm-dialog></pv-confirm-dialog>
+  <router-view/>
 </template>
 
 <style scoped>

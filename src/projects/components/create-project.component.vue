@@ -21,7 +21,6 @@ export default {
       visible: false,
       loading: false,
       organizationData: null,
-      creatorId: null,
       form: {
         name: '',
         description: '',
@@ -29,46 +28,14 @@ export default {
         startingDate: new Date(),
         endingDate: new Date(new Date().setMonth(new Date().getMonth() + 6)), // Default 6 months from now
       },
-      message: ''
+      message: '',
+      contractingEntityId: ''
     }
   },
-  methods: {    
-    async loadOrganizationData() {/*
-      try {
-        // Obtener información de la organización para identificar al creador
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/organizations/${this.organizationId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Error al cargar la organización: ${response.statusText}`);
-        }
-        
-        this.organizationData = await response.json();
-        if (!this.organizationData.createdBy) {
-          throw new Error('La organización no tiene un creador asignado');
-        }
-        
-        this.creatorId = this.organizationData.createdBy;
-        
-        } catch (error) {
-        console.error("Error al cargar datos de la organización:", error);
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo cargar la información de la organización',
-          life: 3000
-        });
-      }
-    */},
+  methods: {
       async createProject() {
       try {
         this.loading = true;
-        
         // Verificar si el usuario tiene permisos para crear proyectos (debe ser Contractor)
         if (!this.user || this.user.activeOrganizationRole !== 'Contractor') {
           this.$toast.add({
@@ -80,51 +47,23 @@ export default {
           this.loading = false;
           return;
         }
-        
-        // Asegurarnos que tenemos la información del creador de la organización
-        if (!this.creatorId) {
-          await this.loadOrganizationData();
-          if (!this.creatorId) {
-            throw new Error('No se pudo identificar al creador de la organización');
-          }
-        }
-        
+
         // Validate dates
         if (new Date(this.form.endingDate) <= new Date(this.form.startingDate)) {
           throw new Error('La fecha de finalización debe ser posterior a la fecha de inicio');
         }
-        
+
         // Create project
         const newProject = {
           name: this.form.name,
           description: this.form.description,
-          status: ProjectStatus.BASIC_STUDIES,
           budget: this.form.budget,
           startingDate: this.form.startingDate,
           endingDate: this.form.endingDate,
-          schedule: {},
-          team: [],          
           organizationId: parseInt(this.organizationId),
-          createdAt: new Date(),
-          createdBy: this.user?.personId || null, // El usuario actual que está creando el proyecto
-          contractor: this.creatorId // El creador de la organización
+          createdAt: new Date()
         };
-        
-        // Call API to create project
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify(newProject)
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Error al crear proyecto: ${response.statusText}`);
-        }
-        
-        const createdProject = await response.json();
+
         this.visible = false;
         
         // Show success message
@@ -151,16 +90,6 @@ export default {
         this.loading = false;
       }
     },
-    
-    showDialog() {
-      this.visible = true;
-      
-      // Cargar datos de la organización cuando se abre el diálogo
-      if (!this.creatorId) {
-        this.loadOrganizationData();
-      }
-    },
-    
     resetForm() {
       this.form = {
         name: '',
@@ -170,25 +99,6 @@ export default {
         endingDate: new Date(new Date().setMonth(new Date().getMonth() + 6))
       };
     }
-  },  created() {
-    // Get user from localStorage
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      this.user = JSON.parse(userData);
-      
-      // Verificar si el usuario tiene el rol necesario para crear proyectos
-      if (this.user.activeOrganizationRole !== 'Contractor') {
-        console.warn('Advertencia: Usuario sin permisos para crear proyectos está accediendo al componente CreateProject');
-        // No cargar los datos de la organización si el usuario no tiene permisos
-        return;
-      }
-    } else {
-      console.warn('No hay datos de usuario en localStorage');
-      return;
-    }
-    
-    // Cargar datos de la organización solo si el usuario es Contractor
-    this.loadOrganizationData();
   },
   computed: {
     isFormValid() {
@@ -272,6 +182,17 @@ export default {
             />
           </div>
         </div>
+
+        <div class="form-group">
+          <label for="contractingEntityEmail">{{ $t('projects.create_dialog.contracting_entity_email') }}</label>
+          <pv-input-text
+              id="contractingEntityEmail"
+              v-model="form.contractingEntityId"
+              class="w-full"
+              :placeholder="$t('projects.create_dialog.contracting_entity_email_placeholder')"
+          />
+        </div>
+
 
         <div class="dialog-actions">
           <pv-button 

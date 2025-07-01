@@ -1,7 +1,7 @@
 import { createService } from '../../shared/services/create.service.js'
 import { HttpVerb } from '../../shared/services/http-verb.js'
 
-export const projectService = createService('/projects', {
+export const projectService = createService('/project', {
     getAll:         { verb: HttpVerb.GET },
     getById:        { verb: HttpVerb.GET, path: ':id', fullPath: true },
     getByCreatedBy: { verb: HttpVerb.GET },

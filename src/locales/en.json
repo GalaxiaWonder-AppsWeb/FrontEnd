@@ -201,7 +201,9 @@
       "description_placeholder": "Enter project description",
       "budget": "Budget",
       "start_date": "Start date",
-      "end_date": "End date"
+      "end_date": "End date",
+      "contracting_entity_email": "Contracting entity email",
+      "contracting_entity_email_placeholder": "Enter contracting entity email"
     },
     "section": {
       "information": "Information",

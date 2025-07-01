@@ -1,11 +1,32 @@
 <script>
 import { useRoute } from 'vue-router';
 import CreateProject from '../../projects/components/create-project.component.vue';
+import {projectService} from "../../projects/services/project.service.js";
 
 export default {
   name: "OrganizationProjects",
   components: {
     CreateProject
+  },
+  created() {
+    // Cargar usuario actual (según como lo manejes)
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.currentUser = JSON.parse(userData);
+    }
+    /// Opción 1: solo el id
+    const orgId = localStorage.getItem('organizationId');
+    if (orgId) {
+      this.organizationId = JSON.parse(orgId); // Esto será un número o string
+    }
+    // Opción 2: objeto
+    const org = localStorage.getItem('organization');
+    if (org) {
+      this.organizationId = JSON.parse(org).id;
+    }
+    console.log(this.organizationId);
+    // Carga los proyectos
+    this.loadProjects();
   },
   data() {
     return {
@@ -22,11 +43,40 @@ export default {
     };
   },
   computed: {
-
+    canCreateProject() {
+      // Considera que currentUser se setea correctamente en mounted o created
+      return this.currentUser && this.currentUser.activeOrganizationRole === 'Contractor';
+    },
+    filteredProjects() {
+      // Si tienes algún filtro para mostrar proyectos
+      return this.projects;
+    }
   },
   methods: {
-
-
+    async loadProjects() {
+      this.loading = true;
+      try {
+        // Llama a tu servicio para cargar los proyectos
+        // Ejemplo: this.projects = await projectService.getAll({ organizationId: this.organizationId });
+        // Aquí deberías implementar el fetch real
+        this.projects = await projectService.getById(this.currentUser.personId)
+      } catch (e) {
+        this.error = e.message || 'Error al cargar proyectos';
+      } finally {
+        this.loading = false;
+      }
+    },
+    // Este método se ejecuta al crearse un nuevo proyecto
+    async handleProjectCreated(newProjectId) {
+      // Puedes recargar toda la lista, o solo agregar el nuevo proyecto si tienes el detalle
+      await this.loadProjects();
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Proyecto creado',
+        detail: 'El proyecto ha sido creado exitosamente.',
+        life: 3000
+      });
+    }
   }
 }
 </script>

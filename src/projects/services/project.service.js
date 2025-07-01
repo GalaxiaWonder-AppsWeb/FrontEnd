@@ -6,6 +6,7 @@ export const projectService = createService('/project', {
     getById:        { verb: HttpVerb.GET, path: ':id', fullPath: true },
     getByCreatedBy: { verb: HttpVerb.GET },
     create:         { verb: HttpVerb.POST },
-    update:         { verb: HttpVerb.PUT, path: ':id' },
+    updateName:         { verb: HttpVerb.PATCH, path: ':id/name' },
+    updateDescription:  { verb: HttpVerb.PATCH, path: ':id/description' },
     delete:         { verb: HttpVerb.DELETE, path: ':id' }
 })

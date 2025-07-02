@@ -55,6 +55,29 @@
             {{ $t('projects.settings.error.no_status') }}
           </small>
         </div>
+        <div class="p-field">
+          <label for="startDate">{{ $t('projects.settings.start_date') }}</label>
+          <pv-date-picker
+              id="startDate"
+              v-model="startDate"
+              :placeholder="$t('projects.settings.start_date_placeholder')"
+              :minDate="null"
+              showIcon
+              required
+          />
+        </div>
+        <div class="p-field">
+          <label for="endDate">{{ $t('projects.settings.end_date') }}</label>
+          <pv-date-picker
+              id="endDate"
+              v-model="endDate"
+              :placeholder="$t('projects.settings.end_date_placeholder')"
+              :minDate="startDate"
+              showIcon
+              required
+          />
+        </div>
+
 
         <pv-button
             class="p-button"
@@ -116,6 +139,8 @@ export default {
   },
   data() {
     return {
+      startDate: null,
+      endDate: null,
       projectId: null,
       organizationId: null,
       originalProject: null,
@@ -143,7 +168,9 @@ export default {
           (
               this.name !== this.originalProject?.name ||
               this.description !== this.originalProject?.description ||
-              this.status !== this.originalProject?.status
+              this.status !== this.originalProject?.status ||
+              this.startDate !== this.originalProject?.startDate ||
+              this.endDate !== this.originalProject?.endDate
           )
       );
     },
@@ -153,7 +180,15 @@ export default {
               this.name !== this.originalProject.name ||
               this.description !== this.originalProject.description ||
               this.status !== this.originalProject.status
+              || this.startDate?.toISOString() !== this.originalProject.startDate?.toISOString()
+              || this.endDate?.toISOString() !== this.originalProject.endDate?.toISOString()
           );
+    },
+    hasDateRangeChanged() {
+      return (
+          this.startDate?.toISOString() !== this.originalProject?.startDate?.toISOString() ||
+          this.endDate?.toISOString() !== this.originalProject?.endDate?.toISOString()
+      );
     }
   },
   methods: {
@@ -168,18 +203,25 @@ export default {
         }
         // Trae el proyecto desde el backend (¡verifica el objeto que retorna!)
         const res = await projectService.getById({ id: this.projectId });
+
+        this.startDate = res.startDate ? new Date(res.startDate) : null;
+        this.endDate = res.endDate ? new Date(res.endDate) : null;
         console.log('Project loaded:', res);
 
         // Llenar los campos del formulario con los valores actuales
         this.name = res.projectName || res.name || '';
         this.description = res.description || '';
+        this.startDate = res.startDate ? new Date(res.startDate) : null;
+        this.endDate = res.endDate ? new Date(res.endDate) : null;
         this.status = res.status || null;
 
         // Guardar el proyecto original para comparar cambios
         this.originalProject = {
           name: this.name,
           description: this.description,
-          status: this.status
+          status: this.status,
+          startDate: this.startDate,
+          endDate: this.endDate
         };
       } catch (err) {
         console.error('Error loading project:', err);
@@ -206,6 +248,13 @@ export default {
         }
         if (!this.status) {
           throw new Error(this.$t('projects.settings.error.no_status'));
+        }
+        if (this.hasDateRangeChanged) {
+          await projectService.updateDateRange({
+            projectId: this.projectId,
+            startDate: this.startDate,
+            endDate: this.endDate
+          });
         }
         // Actualización de nombre, descripción y estado (status)
         // Puedes actualizar cada campo con su endpoint PATCH correspondiente o uno solo según tu backend

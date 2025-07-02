@@ -30,24 +30,13 @@ export default {
     async loadContractingEntity() {
       if (!this.project?.contractingEntityId) return;
 
-      // Opción 2: espera solo el id
-      console.log('XDda',this.project.contractingEntityId);
-
       const contractingEntity = await personService.getById(this.project.contractingEntityId);
-
-      console.log('contractingEntity:', contractingEntity, 'typeof:', typeof contractingEntity);
 
       this.contractingEntity = contractingEntity;
     },
     async loadContractor() {
       if (!this.project?.contractor) return;
-
-      // Opción 2: espera solo el id
-      console.log('XDda',this.project.contractor);
-
       const contractor = await personService.getById(this.project.contractor);
-
-      console.log('contractor:', contractor, 'typeof:', typeof contractor);
 
       this.contractor = contractor;
     },
@@ -55,18 +44,12 @@ export default {
       this.loading = true;
       this.error = null;
       // Logs para debug de tipos y valores
-      console.log('projectId:', this.projectId, 'typeof:', typeof this.projectId);
       try {
         // Llama al projectService con el parámetro que espera tu helper (ajusta si es projectId o id)
         const params = { id: parseInt(this.projectId) };
-        console.log('Llamando projectService.getById con:', params, 'typeof:', typeof params.id);
-
         // Haz la llamada
         const response = await projectService.getById(params);
-        console.log('Respuesta de projectService.getById:', response, 'typeof:', typeof response);
-
         const project = await projectService.getById({ id: this.projectId });
-        console.log('Respuesta de projectService.getById:', project, 'typeof:', typeof project);
 
 
         // Aquí asignas directo:
@@ -82,15 +65,8 @@ export default {
             throw new Error(`Error al cargar proyecto: ${response.status} ${errMsg}`);
           }
           const project = await response.json();
-          console.log('Proyecto recibido:', project, 'typeof:', typeof project);
           this.project = project;
         }
-        // Si tu service retorna JSON directo, comenta lo de arriba y usa esto:
-        // else {
-        //   console.log('Proyecto recibido (json directo):', response, 'typeof:', typeof response);
-        //   this.project = response;
-        // }
-
         // Cargar información del creador y contratista si existen
 
       } catch (error) {

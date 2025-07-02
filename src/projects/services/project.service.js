@@ -10,6 +10,7 @@ export const projectService = createService('/project', {
     create:                         { verb: HttpVerb.POST },
     updateName:                     { verb: HttpVerb.PATCH, path: ':id/name' },
     updateDescription:              { verb: HttpVerb.PATCH, path: ':id/description' },
+    updateStatus:                  { verb: HttpVerb.PATCH, path: ':id/status' },
     updateDateRange:                { verb: HttpVerb.PATCH, path: ':projectId/date-range' },
     delete:                         { verb: HttpVerb.DELETE, path: ':id' }
 })

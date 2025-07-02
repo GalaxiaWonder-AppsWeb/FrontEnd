@@ -2,40 +2,54 @@
   <div class="settings-container">
     <form @submit.prevent="handleUpdate" class="p-fluid form-grid register-card">
       <h1 class="form-title">{{ $t('projects.settings.title') }}</h1>
-
-      <!-- Mostrar un loader mientras se carga la información -->
       <div v-if="loading" class="loading-container">
         <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
         <p>{{ $t('projects.loading') }}</p>
       </div>
-
       <div v-else>
+        <!-- Campo para editar el nombre -->
+        <div class="p-field">
+          <label for="name">{{ $t('projects.settings.name') }}</label>
+          <pv-input-text
+              id="name"
+              v-model="name"
+              :placeholder="$t('projects.settings.name_placeholder')"
+              required
+              :class="{ 'p-invalid': name.trim() === '' }"
+          />
+          <small v-if="name.trim() === ''" class="p-error">
+            {{ $t('projects.settings.error.empty_name') || 'El nombre no puede estar vacío.' }}
+          </small>
+        </div>
+
+        <!-- Descripción -->
         <div class="p-field">
           <label for="description">{{ $t('projects.settings.description') }}</label>
-          <pv-textarea 
-            id="description" 
-            v-model="description" 
-            rows="5" 
-            :placeholder="$t('projects.settings.description_placeholder')"
-            required 
-            :class="{ 'p-invalid': description.trim() === '' }"
+          <pv-textarea
+              id="description"
+              v-model="description"
+              rows="5"
+              :placeholder="$t('projects.settings.description_placeholder')"
+              required
+              :class="{ 'p-invalid': description.trim() === '' }"
           />
           <small v-if="description.trim() === ''" class="p-error">
             {{ $t('projects.settings.error.empty_description') }}
           </small>
         </div>
 
+        <!-- Estado -->
         <div class="p-field">
-          <label for="status">{{ $t('projects.settings.status') }}</label>          
-          <pv-select 
-            id="status" 
-            v-model="status" 
-            :options="statusOptions" 
-            optionLabel="label"
-            optionValue="value"
-            :placeholder="$t('projects.settings.status_placeholder')"
-            required 
-            :class="{ 'p-invalid': status === null }"
+          <label for="status">{{ $t('projects.settings.status') }}</label>
+          <pv-select
+              id="status"
+              v-model="status"
+              :options="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              :placeholder="$t('projects.settings.status_placeholder')"
+              required
+              :class="{ 'p-invalid': status === null }"
           />
           <small v-if="status === null" class="p-error">
             {{ $t('projects.settings.error.no_status') }}
@@ -43,32 +57,32 @@
         </div>
 
         <pv-button
-          class="p-button"
-          :label="$t('projects.settings.update')"
-          icon="pi pi-save"
-          type="submit"
-          :disabled="!isValid"
-          :loading="saving"
-          :class="{ 'p-button-outlined': !hasChanges }"
-          v-tooltip="!hasChanges ? $t('projects.settings.no_changes') : ''"
+            class="p-button"
+            :label="$t('projects.settings.update')"
+            icon="pi pi-save"
+            type="submit"
+            :disabled="!isValid"
+            :loading="saving"
+            :class="{ 'p-button-outlined': !hasChanges }"
+            v-tooltip="!hasChanges ? $t('projects.settings.no_changes') : ''"
         />
 
-        <p :class="messageClass">{{message}}</p>
-        
+        <p :class="messageClass">{{ message }}</p>
+
         <div class="danger-zone">
           <h2>{{ $t('projects.settings.danger_zone') }}</h2>
           <div class="delete-section">
             <pv-button
-              class="p-button-danger p-button-outlined"
-              :label="$t('projects.settings.delete')"
-              icon="pi pi-trash"
-              @click="showDeleteConfirmation"
+                class="p-button-danger p-button-outlined"
+                :label="$t('projects.settings.delete')"
+                icon="pi pi-trash"
+                @click="showDeleteConfirmation"
             />
           </div>
         </div>
       </div>
     </form>
-    
+
     <pv-dialog v-model:visible="deleteDialogVisible" :modal="true" :closable="false" :header="$t('projects.settings.delete_dialog.title')" class="delete-dialog">
       <p>{{ $t('projects.settings.delete_dialog.message') }}</p>
       <template #footer>
@@ -81,12 +95,10 @@
 
 <script>
 import { projectService } from '../services/project.service.js';
-import { ProjectAssembler } from '../services/project.assembler.js';
-import { Project } from '../model/project.entity.js';
 import { ProjectStatus } from '../model/project-status.js';
 import { ProjectStatusLabels } from '../services/project-status-labels.js';
 import { useRoute, useRouter } from 'vue-router';
-import { Button as PvButton, Textarea as PvTextarea, Select as PvSelect, Dialog as PvDialog } from "primevue";
+import { Button as PvButton, Textarea as PvTextarea, Select as PvSelect, Dialog as PvDialog, InputText as PvInputText } from "primevue";
 
 export default {
   name: 'ProjectSettings',
@@ -94,21 +106,22 @@ export default {
     PvButton,
     PvTextarea,
     PvSelect,
-    PvDialog
+    PvDialog,
+    PvInputText
   },
   setup() {
     const router = useRouter();
     const route = useRoute();
     return { router, route };
-  },  data() {
+  },
+  data() {
     return {
       projectId: null,
       organizationId: null,
       originalProject: null,
+      name: '',
       description: '',
       status: null,
-      originalDescription: '',
-      originalStatus: null,
       message: '',
       messageClass: 'confirm-message',
       loading: false,
@@ -120,45 +133,59 @@ export default {
         value: ProjectStatus[key]
       }))
     };
-  },  computed: {
+  },
+  computed: {
     isValid() {
-      // Comprobar que hay datos válidos y que se ha cambiado algo
-      return this.description?.trim() !== '' && 
-        this.status !== null && 
-        (this.description !== this.originalProject?.description || 
-         this.status !== this.originalProject?.status);
+      return (
+          this.name.trim() !== '' &&
+          this.description.trim() !== '' &&
+          this.status !== null &&
+          (
+              this.name !== this.originalProject?.name ||
+              this.description !== this.originalProject?.description ||
+              this.status !== this.originalProject?.status
+          )
+      );
     },
-    
     hasChanges() {
-      // Comprobar si se ha modificado algún campo
-      return this.originalProject && 
-        (this.description !== this.originalProject.description ||
-         this.status !== this.originalProject.status);
+      return this.originalProject &&
+          (
+              this.name !== this.originalProject.name ||
+              this.description !== this.originalProject.description ||
+              this.status !== this.originalProject.status
+          );
     }
   },
-  methods: {    async loadProject() {
+  methods: {
+    async loadProject() {
       try {
         this.loading = true;
         this.projectId = this.route.params.projectId;
         this.organizationId = this.route.params.orgId;
-        
+
         if (!this.projectId) {
           throw new Error('Project ID not found');
         }
-        
+        // Trae el proyecto desde el backend (¡verifica el objeto que retorna!)
         const res = await projectService.getById({ id: this.projectId });
-        this.originalProject = ProjectAssembler.toEntityFromResource(res);
-        this.description = this.originalProject.description;
-        this.status = this.originalProject.status;
-        
-        // Guardar los valores originales para comparar cambios
-        this.originalDescription = this.description;
-        this.originalStatus = this.status;
+        console.log('Project loaded:', res);
+
+        // Llenar los campos del formulario con los valores actuales
+        this.name = res.projectName || res.name || '';
+        this.description = res.description || '';
+        this.status = res.status || null;
+
+        // Guardar el proyecto original para comparar cambios
+        this.originalProject = {
+          name: this.name,
+          description: this.description,
+          status: this.status
+        };
       } catch (err) {
         console.error('Error loading project:', err);
         this.message = err.message;
-        this.messageClass = 'error-message';        
-        this.$toast.add({
+        this.messageClass = 'error-message';
+        this.$toast?.add?.({
           severity: 'error',
           summary: this.$t('projects.settings.error.loading_title'),
           detail: this.$t('projects.settings.error.loading_message'),
@@ -167,71 +194,46 @@ export default {
       } finally {
         this.loading = false;
       }
-    },    async handleUpdate() {
+    },
+    async handleUpdate() {
       try {
         this.saving = true;
-          // Validar que la descripción no esté vacía
+        if (!this.name || this.name.trim() === '') {
+          throw new Error(this.$t('projects.settings.error.empty_name') || 'El nombre no puede estar vacío.');
+        }
         if (!this.description || this.description.trim() === '') {
           throw new Error(this.$t('projects.settings.error.empty_description'));
         }
-        
-        // Validar que el status esté seleccionado
         if (!this.status) {
           throw new Error(this.$t('projects.settings.error.no_status'));
         }
-          // Obtener el valor original del contratista
-        const contractorOriginalId = this.originalProject.contractor || this.originalProject.contractor;
-        // Crear el proyecto actualizado con los nuevos valores
-        const updatedProject = new Project({
-          id: this.projectId,
-          name: this.originalProject.name,
-          description: this.description,
-          status: this.status,
-          budget: this.originalProject.budget,
-          startingDate: this.originalProject.startingDate,
-          endingDate: this.originalProject.endingDate,
-          schedule: this.originalProject.schedule,
-          team: this.originalProject.team,
-          organizationId: this.originalProject.organizationId,
-          // Pasar el ID del contratista directamente como valor primitivo
-          contractor: contractorOriginalId,
-          contractingEntityId: this.originalProject.contractingEntityId,
-          createdBy: this.originalProject.createdBy,
-          createdAt: this.originalProject.createdAt
-        });
-        
-        // Preparar el objeto para la actualización
-        const projectData = updatedProject.toJSON();
-        
-        // Asegurarnos de que el ID del contratista se mantiene exactamente igual que en el servidor
-        // Obtener directamente del objeto original sin procesamiento
-        const rawContractorValue = this.originalProject.contractor || this.originalProject.contractor;
-        // Asignar el valor original directamente
-        projectData.contractor = rawContractorValue;
-        
-        // Enviar la actualización al servidor
-        const res = await projectService.update({
-          id: this.projectId,
-          ...projectData
-        });
-          this.message = this.$t('projects.settings.success.updated');
+        // Actualización de nombre, descripción y estado (status)
+        // Puedes actualizar cada campo con su endpoint PATCH correspondiente o uno solo según tu backend
+
+        await projectService.updateName({ id: this.projectId, name: this.name });
+        await projectService.updateDescription({ id: this.projectId, description: this.description });
+        await projectService.updateStatus?.({ id: this.projectId, status: this.status }); // Solo si existe el endpoint
+
+        this.message = this.$t('projects.settings.success.updated');
         this.messageClass = 'confirm-message';
-        
-        this.$toast.add({
+        this.$toast?.add?.({
           severity: 'success',
           summary: this.$t('projects.settings.success.title'),
           detail: this.$t('projects.settings.success.updated'),
           life: 3000
         });
-        
-        // Actualizar el proyecto original con los nuevos valores
-        this.originalProject = updatedProject;
-        this.originalDescription = this.description;
-        this.originalStatus = this.status;      } catch (err) {
+
+        // Actualiza los datos originales
+        this.originalProject = {
+          name: this.name,
+          description: this.description,
+          status: this.status
+        };
+      } catch (err) {
         console.error('Error updating project:', err);
         this.message = err.message;
         this.messageClass = 'error-message';
-          this.$toast.add({
+        this.$toast?.add?.({
           severity: 'error',
           summary: this.$t('projects.settings.error.updating_title'),
           detail: this.$t('projects.settings.error.updating_message'),
@@ -241,40 +243,30 @@ export default {
         this.saving = false;
       }
     },
-    
     showDeleteConfirmation() {
       this.deleteDialogVisible = true;
     },
-      async handleDeleteProject() {
+    async handleDeleteProject() {
       try {
         this.deleting = true;
         this.message = '';
-        
-        // Eliminar el proyecto
         await projectService.delete({ id: this.projectId });
-        
-        // Cerrar el diálogo de confirmación
         this.deleteDialogVisible = false;
-          // Mostrar mensaje de éxito
-        this.$toast.add({
+        this.$toast?.add?.({
           severity: 'success',
           summary: this.$t('projects.settings.success.title'),
           detail: this.$t('projects.settings.success.deleted'),
           life: 3000
         });
-        
-        // Redirigir al usuario a la lista de proyectos
         setTimeout(() => {
           this.router.push(`/organizations/${this.organizationId}/projects`);
         }, 1500);
-      } catch (err) {        console.error('Error deleting project:', err);
+      } catch (err) {
+        console.error('Error deleting project:', err);
         this.message = this.$t('projects.settings.error.deleting_message');
         this.messageClass = 'error-message';
-        
-        // Obtener más detalles del error si están disponibles
         const errorMessage = err.message || this.$t('projects.settings.error.deleting_message');
-        
-        this.$toast.add({
+        this.$toast?.add?.({
           severity: 'error',
           summary: this.$t('projects.settings.error.deleting_title'),
           detail: errorMessage,
@@ -284,19 +276,16 @@ export default {
         this.deleting = false;
       }
     },
-    
     setupStatusOptions() {
-      // Determinar el idioma actual
       const currentLocale = this.$i18n.locale || 'en';
-      
-      // Crear opciones para el dropdown de status
       const labels = ProjectStatusLabels[currentLocale] || ProjectStatusLabels.en;
       this.statusOptions = Object.values(ProjectStatus).map(status => ({
         label: labels[status] || status,
         value: status
       }));
     },
-  },  created() {
+  },
+  created() {
     this.loadProject();
     this.setupStatusOptions();
   },
@@ -304,9 +293,10 @@ export default {
     '$i18n.locale': function() {
       this.setupStatusOptions();
     }
-  },
+  }
 };
 </script>
+
 
 <style scoped>
 .settings-container {

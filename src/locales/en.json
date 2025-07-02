@@ -244,6 +244,8 @@
       
     },
     "settings": {
+      "name": "Project Name",
+      "name_placeholder": "Enter project name",
       "title": "Project Settings",
       "description": "Project Description",
       "description_placeholder": "Enter a detailed description of the project",

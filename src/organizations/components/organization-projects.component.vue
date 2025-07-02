@@ -18,7 +18,6 @@ export default {
     }
 
     this.organizationId = route.params.orgId;
-    console.log("organizationId:", this.organizationId);
 
     if (this.organizationId && this.currentUser && this.currentUser.personId) {
       this.loadProjects();
@@ -52,17 +51,13 @@ export default {
     async loadProjects() {
       this.loading = true;
       try {
-        console.log("organizationIdppep:", parseInt(this.organizationId));
-        console.log("personId:", this.currentUser?.personId);
-
         // Llama al servicio y guarda la respuesta en una variable temporal
         const response = await organizationService.getByPersonAndOrganizationId({
           organizationId: parseInt(this.organizationId),
           personId: this.currentUser.personId
         });
 
-        // Log del resultado real de la API
-        console.log("DATA TRAÍDA DEL BACKEND:", response);
+
 
         // Si tu backend retorna un array directamente, usa esto:
         this.projects = response;

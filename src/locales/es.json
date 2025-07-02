@@ -205,6 +205,8 @@
       "reload-data": "Recargar Datos"
     },
     "settings": {
+      "name": "Nombre del Proyecto",
+      "name_placeholder": "Ingrese el nombre del proyecto",
       "title": "Configuración del Proyecto",
       "description": "Descripción del Proyecto",
       "description_placeholder": "Ingrese una descripción detallada del proyecto",

@@ -64,6 +64,13 @@
         type="submit"
         :disabled="!role || (['Contractor', 'Specialist'].includes(role) )"
     />
+
+    <!-- Enlace al login debajo del botón -->
+    <div class="login-link">
+      <router-link to="/login">
+        {{ $t('register.go-to-login') || "¿Ya tienes cuenta? Inicia sesión aquí" }}
+      </router-link>
+    </div>
   </form>
 
 </template>

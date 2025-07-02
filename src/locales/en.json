@@ -24,6 +24,7 @@
     "password": "Password",
     "submit": "Register",
     "successful-register": "successfully registered",
+    "go-to-login": "¿Already have an account? Log in here",
     "roles": {
       "title": "Role",
       "choose-role": "Choose a role",

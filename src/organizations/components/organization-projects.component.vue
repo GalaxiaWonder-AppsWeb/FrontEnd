@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router';
 import CreateProject from '../../projects/components/create-project.component.vue';
 import {projectService} from "../../projects/services/project.service.js";
+import { organizationService } from "../../organizations/services/organization.service.js";
 
 export default {
   name: "OrganizationProjects",
@@ -9,24 +10,19 @@ export default {
     CreateProject
   },
   created() {
-    // Cargar usuario actual (según como lo manejes)
+    const route = useRoute();
     const userData = localStorage.getItem('user');
     if (userData) {
       this.currentUser = JSON.parse(userData);
+      this.userRole = this.currentUser.activeOrganizationRole; // Nuevo
     }
-    /// Opción 1: solo el id
-    const orgId = localStorage.getItem('organizationId');
-    if (orgId) {
-      this.organizationId = JSON.parse(orgId); // Esto será un número o string
+
+    this.organizationId = route.params.orgId;
+    console.log("organizationId:", this.organizationId);
+
+    if (this.organizationId && this.currentUser && this.currentUser.personId) {
+      this.loadProjects();
     }
-    // Opción 2: objeto
-    const org = localStorage.getItem('organization');
-    if (org) {
-      this.organizationId = JSON.parse(org).id;
-    }
-    console.log(this.organizationId);
-    // Carga los proyectos
-    this.loadProjects();
   },
   data() {
     return {
@@ -56,10 +52,24 @@ export default {
     async loadProjects() {
       this.loading = true;
       try {
-        // Llama a tu servicio para cargar los proyectos
-        // Ejemplo: this.projects = await projectService.getAll({ organizationId: this.organizationId });
-        // Aquí deberías implementar el fetch real
-        this.projects = await projectService.getById(this.currentUser.personId)
+        console.log("organizationIdppep:", parseInt(this.organizationId));
+        console.log("personId:", this.currentUser?.personId);
+
+        // Llama al servicio y guarda la respuesta en una variable temporal
+        const response = await organizationService.getByPersonAndOrganizationId({
+          organizationId: parseInt(this.organizationId),
+          personId: this.currentUser.personId
+        });
+
+        // Log del resultado real de la API
+        console.log("DATA TRAÍDA DEL BACKEND:", response);
+
+        // Si tu backend retorna un array directamente, usa esto:
+        this.projects = response;
+
+        // Si tu backend retorna { data: [...] }
+        // this.projects = response.data;
+
       } catch (e) {
         this.error = e.message || 'Error al cargar proyectos';
       } finally {
@@ -149,19 +159,19 @@ export default {
     <div v-else class="projects-grid">
       <div v-for="project in filteredProjects" :key="project.id" class="project-card">
         <div class="project-header">
-          <h3>{{ project.name }}</h3>
+          <h3>{{ project.projectName }}</h3>
           <div>
-            <pv-tag v-if="project.status" :severity="getStatusSeverity(project.status)" :value="project.status" class="mr-2" />
+            <pv-tag v-if="project.status" :value="project.status" class="mr-2" />
             <!-- Mostrar tag del rol en el proyecto si eres Worker -->
-            <pv-tag v-if="userRole === 'Worker'" severity="info" :value="getProjectRole(project)" />
+            <pv-tag v-if="userRole === 'Worker'" severity="info" />
           </div>
         </div>
         
         <p class="project-description">{{ project.description || 'Sin descripción' }}</p>
         
         <div class="project-footer">
-          <span class="start-date" v-if="project.startingDate">
-            <i class="pi pi-calendar"></i> {{ new Date(project.startingDate).toLocaleDateString() }}
+          <span class="start-date" v-if="project.startDate">
+            <i class="pi pi-calendar"></i> {{ new Date(project.startDate).toLocaleDateString() }}
           </span>
           <pv-button 
             icon="pi pi-eye" 

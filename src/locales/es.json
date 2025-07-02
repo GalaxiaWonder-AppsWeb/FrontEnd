@@ -20,6 +20,7 @@
     "password": "Contraseña",
     "submit": "Registrarse",
     "successful-register": "exitosamente registrado",
+    "go-to-login": "Inicia sesión aquí",
     "roles": {
       "title": "Rol",
       "choose-role": "Selecciona un rol",

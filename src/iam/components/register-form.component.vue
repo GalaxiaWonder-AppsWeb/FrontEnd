@@ -248,4 +248,17 @@ label {
   width: 100% !important;
 }
 
+.login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+.login-link a {
+  color: #1976d2;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+
 </style>

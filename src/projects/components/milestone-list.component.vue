@@ -6,6 +6,7 @@ import { Milestone } from '../model/milestone.entity.js';
 import MilestoneCard from './milestone-card.component.vue';
 import MilestoneEdit from './milestone-edit.component.vue';
 import TaskList from './task-list.component.vue';
+import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
   projectId: {
@@ -19,6 +20,7 @@ const props = defineProps({
 });
 
 // Data
+const toast = useToast();
 const milestones = ref([]);
 const loading = ref(false);
 const error = ref(null);
@@ -82,83 +84,77 @@ const confirmDeleteMilestone = async () => {
 
 
 // Save milestone (create or update)
-const saveMilestone = async (milestone) => {
+const saveMilestone = async (milestone, original = null) => {
   try {
-    loading.value = true;    // Format dates properly and ensure all required fields are included with proper types
-    // Parse id to numeric if it's a string
+    loading.value = true;
     let milestoneId = milestone.id;
-    if (typeof milestoneId === 'string' && !isNaN(Number(milestoneId))) {
-      milestoneId = Number(milestoneId);
-    }
-    
-    // Ensure projectId is numeric
+    if (typeof milestoneId === 'string') milestoneId = Number(milestoneId);
     let projectId = milestone.projectId || props.projectId;
-    if (typeof projectId === 'string' && !isNaN(Number(projectId))) {
-      projectId = Number(projectId);
-    }
-    
-    const milestoneData = {
-      id: milestoneId,
-      name: milestone.name,
-      projectId: projectId,
-      startDate: milestone.startDate instanceof Date 
-        ? milestone.startDate.toISOString() 
-        : new Date(milestone.startDate).toISOString(),
-      endDate: milestone.endDate instanceof Date 
-        ? milestone.endDate.toISOString() 
-        : new Date(milestone.endDate).toISOString(),
-      startingDate: milestone.startDate instanceof Date 
-        ? milestone.startDate.toISOString() 
-        : new Date(milestone.startDate).toISOString(),
-      endingDate: milestone.endDate instanceof Date 
-        ? milestone.endDate.toISOString() 
-        : new Date(milestone.endDate).toISOString(),
-      items: milestone.items || []
-    };
-    
-    // Get the API base URL from environment
-    const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-      // Determine if this is an update or create operation
-    if (milestoneId) {      
-      // Update existing milestone - use the parsed numeric ID
-      const url = `${apiBaseUrl}/milestones/${milestoneId}`;
-      try {
-        const response = await fetch(url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(milestoneData)
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error response:', errorText);
-          throw new Error(`API call failed with status: ${response.status}. Details: ${errorText}`);
-        }
-        
-        const updatedData = await response.json();
-        } catch (error) {
-        console.error('Error during milestone update:', error);
-        throw error;
-      }
-    } else {
-      // Create new milestone
-      const url = `${apiBaseUrl}/milestones`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(milestoneData)
+    if (typeof projectId === 'string') projectId = Number(projectId);
+
+    // CREACIÓN
+    if (!milestoneId) {
+      await milestoneService.create({
+        name: milestone.name,
+        description: milestone.description,
+        projectId: projectId,
+        startDate: toIsoString(milestone.startDate),
+        endDate: toIsoString(milestone.endDate),
       });
-      
-      if (!response.ok) {
-        throw new Error(`API call failed with status: ${response.status}`);
-      }
+      toast.add({
+        severity: 'success',
+        summary: 'Milestone creado',
+        detail: 'El milestone fue creado correctamente.',
+        life: 3000,
+      });
+      await loadMilestones();
+      editDialogVisible.value = false;
+      return;
     }
-    
+
+    // EDICIÓN
+    // Comparar con el original si lo tienes
+    if (original) {
+      // Solo actualiza lo que cambió
+      if (milestone.name !== original.name) {
+        await milestoneService.updateName({ id: milestoneId, name: milestone.name });
+      }
+      if (milestone.description !== original.description) {
+        await milestoneService.updateDescription({ id: milestoneId, description: milestone.description });
+      }
+      if (
+          toIsoString(milestone.startDate) !== toIsoString(original.startDate) ||
+          toIsoString(milestone.endDate) !== toIsoString(original.endDate)
+      ) {
+        await milestoneService.updateDate({
+          id: milestoneId,
+          startDate: toIsoString(milestone.startDate),
+          endDate: toIsoString(milestone.endDate),
+        });
+      }
+      toast.add({
+        severity: 'success',
+        summary: 'Milestone editado',
+        detail: 'El milestone fue editado correctamente.',
+        life: 3000,
+      });
+    } else {
+      // Si no tienes "original", llama los 3 PATCH por defecto
+      await milestoneService.updateName({ id: milestoneId, name: milestone.name });
+      await milestoneService.updateDescription({ id: milestoneId, description: milestone.description });
+      await milestoneService.updateDateRange({
+        id: milestoneId,
+        startDate: toIsoString(milestone.startDate),
+        endDate: toIsoString(milestone.endDate),
+      });
+      toast.add({
+        severity: 'success',
+        summary: 'Milestone editado',
+        detail: 'El milestone fue editado correctamente.',
+        life: 3000,
+      });
+    }
+
     await loadMilestones();
     editDialogVisible.value = false;
   } catch (err) {
@@ -169,6 +165,13 @@ const saveMilestone = async (milestone) => {
     selectedMilestone.value = null;
   }
 };
+
+// Utilidad para convertir fechas
+function toIsoString(date) {
+  if (!date) return null;
+  return date instanceof Date ? date.toISOString() : new Date(date).toISOString();
+}
+
 
 // View tasks for a milestone
 const viewTasks = (milestone) => {

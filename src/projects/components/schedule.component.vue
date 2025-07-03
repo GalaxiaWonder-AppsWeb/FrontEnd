@@ -25,13 +25,13 @@ const projectId = computed(() => {
   if (props.projectId !== undefined && props.projectId !== null) {
     return typeof props.projectId === 'number' ? props.projectId : Number(props.projectId);
   }
-  
+
   // Si no está en los props, intentamos obtenerlo de la ruta
   if (route.params.projectId) {
     const routeProjectId = Number(route.params.projectId);
     return routeProjectId;
   }
-  
+
   console.warn("Could not find valid projectId in props or route");
   return null;
 });
@@ -94,10 +94,10 @@ const handleCreateMilestone = async (milestone) => {
       startingDate: milestone.startDate,
       endingDate: milestone.endDate
     };
-    
+
     // Get the API base URL from environment
     const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-    
+
     // Use direct API call for creating milestone
     const url = `${apiBaseUrl}/milestones`;
     const response = await fetch(url, {
@@ -107,14 +107,14 @@ const handleCreateMilestone = async (milestone) => {
       },
       body: JSON.stringify(milestoneData)
     });
-    
+
     if (!response.ok) {
       throw new Error(`API call failed with status: ${response.status}`);
     }
-    
+
     // Close dialog
     createMilestoneDialogVisible.value = false;
-    
+
     // Refresh the milestone list
     if (activeTab.value === 'milestones') {
       const milestoneListRefValue = milestoneListRef.value;
@@ -182,7 +182,7 @@ const handleCreateMilestone = async (milestone) => {
     <!-- Schedule Content -->
     <div class="schedule-content">
       <!-- Milestones Tab -->
-      <div v-if="activeTab === 'milestones'" class="milestones-container">        <!-- List View -->        <div v-if="viewMode === 'list'" class="list-view">          <milestone-list 
+      <div v-if="activeTab === 'milestones'" class="milestones-container">        <!-- List View -->        <div v-if="viewMode === 'list'" class="list-view">          <milestone-list
             ref="milestoneListRef"
             :projectId="projectId"
             @view-tasks="viewMilestoneTasks"

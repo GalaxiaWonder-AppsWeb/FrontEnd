@@ -31,37 +31,14 @@ const viewTasksDialogVisible = ref(false);
 
 // Load milestones - exposed to parent components
 const loadMilestones = async () => {
+  loading.value = true;
+  error.value = null;
   try {
-    loading.value = true;
-    error.value = null;
-    
-    // Get the API base URL from environment
-    const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';    // Convertir projectId a número si es posible
-    const projectIdInput = props.projectId;
-    // Intentamos convertir a número si no es ya un número
-    const projectId = typeof projectIdInput === 'number' ? projectIdInput : Number(projectIdInput);
-    
-    // Verificar si es un valor numérico válido
-    if (projectId === null || projectId === undefined || isNaN(projectId)) {
-      console.error('Error: Invalid or missing project ID:', projectIdInput);
-      error.value = 'Missing or invalid project ID. Please select a valid project.';
-      loading.value = false;
-      return;
-    }
-      // Use direct fetch call to ensure correct URL formatting
-    // JSON Server syntax for filtering by a field
-    const url = `${apiBaseUrl}/milestones?projectId=${projectId}`;
-    // Make the direct API call
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    // Convert to entities
-    milestones.value = MilestoneAssembler.toEntitiesFromResponse(data);
-    } catch (err) {
+    const projectId = Number(props.projectId);
+    if (isNaN(projectId)) throw new Error('Invalid project ID');
+    const response = await milestoneService.getByProjectId({ projectId });
+    milestones.value = Array.isArray(response) ? response : [];
+  } catch (err) {
     console.error('Error loading milestones:', err);
     error.value = 'Failed to load milestones. Please try again.';
   } finally {
@@ -69,24 +46,13 @@ const loadMilestones = async () => {
   }
 };
 
+
 // Expose the loadMilestones method to parent components
 defineExpose({
   loadMilestones
 });
 
 // Create new milestone
-const createMilestone = () => {
-  // Create a new milestone with default values
-  selectedMilestone.value = new Milestone({
-    name: 'New Milestone',
-    startDate: new Date(),
-    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-    items: []
-  });
-  
-  editDialogVisible.value = true;
-};
-
 // Edit milestone
 const editMilestone = (milestone) => {
   selectedMilestone.value = milestone;
@@ -103,35 +69,17 @@ const deleteMilestone = (milestone) => {
 const confirmDeleteMilestone = async () => {
   try {
     loading.value = true;
-    
-    // Get the API base URL from environment
-    const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-      // Parse the ID to ensure it's a number if it's stored as a string
-    let milestoneId = selectedMilestone.value.id;
-    if (typeof milestoneId === 'string' && !isNaN(Number(milestoneId))) {
-      milestoneId = Number(milestoneId);
-    }
-    
-    // Use direct API call for deleting milestone
-    const url = `${apiBaseUrl}/milestones/${milestoneId}`;
-    const response = await fetch(url, {
-      method: 'DELETE'
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
-    }
-    
+    await milestoneService.delete({ id: selectedMilestone.value.id });
     await loadMilestones();
     deleteDialogVisible.value = false;
   } catch (err) {
-    console.error('Error deleting milestone:', err);
     error.value = 'Failed to delete milestone. Please try again.';
   } finally {
     loading.value = false;
     selectedMilestone.value = null;
   }
 };
+
 
 // Save milestone (create or update)
 const saveMilestone = async (milestone) => {

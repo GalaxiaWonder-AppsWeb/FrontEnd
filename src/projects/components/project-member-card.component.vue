@@ -1,15 +1,12 @@
 <!-- src/projects/components/project-member-card.component.vue -->
 <template>
   <pv-card class="mb-3 shadow-2 border-round-xl">
-    <template #title>      <div class="flex justify-between items-center">
+    <template #title>
+      <div class="flex justify-between items-center">
         <div class="font-semibold text-lg">
-          {{ person.name }} {{ person.lastName }}
+          {{ member.firstName }} {{ member.lastName }}
         </div>
-        <div class="flex gap-2">
-          <pv-button icon="pi pi-pencil" severity="info" text rounded @click="$emit('edit', member)" />
-          <pv-button icon="pi pi-trash" severity="danger" text rounded @click="$emit('remove', member)" 
-                    v-tooltip.top="'Eliminar miembro del proyecto'" />
-        </div>
+
       </div>
     </template>
 
@@ -20,6 +17,12 @@
       </div>
       <div v-if="member.role === 'SPECIALIST'" class="text-sm">
         {{ $t('projects.working-team.specialty') }}: {{ member.specialty }}
+      </div>
+
+      <div class="flex gap-2">
+        <pv-button icon="pi pi-pencil" severity="info" text rounded @click="$emit('edit', member)" />
+        <pv-button icon="pi pi-trash" severity="danger" text rounded @click="$emit('remove', member)"
+                   v-tooltip.top="'Eliminar miembro del proyecto'" />
       </div>
     </template>
   </pv-card>
@@ -44,4 +47,8 @@ export default {
 
 <style scoped>
 /* Personaliza más si deseas */
+  pv-card {
+    padding: 1rem;
+    margin-bottom: 1rem!important;
+  }
 </style>

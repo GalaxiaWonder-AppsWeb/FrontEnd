@@ -218,6 +218,12 @@
       "title": "Working Team",
       "add-member": {
         "title": "Add Member",
+        "organization-member": "Members of the organization",
+        "organization-member-placeholder": "Select organization member",
+        "role": "Member Roles",
+        "role-placeholder": "Select member role",
+        "cancel": "Cancel",
+        "add": "Add Member",
         "subtitle": "Add members to the project team",
         "first-step": "Step 1: Select members to assign for the project",
         "first-step-placeholder": "Search by name or email",

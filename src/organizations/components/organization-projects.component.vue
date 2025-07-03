@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import CreateProject from '../../projects/components/create-project.component.vue';
 import {projectService} from "../../projects/services/project.service.js";
-import { organizationService } from "../../organizations/services/organization.service.js";
+import { organizationService } from "../services/organization.service.js";
 
 export default {
   name: "OrganizationProjects",

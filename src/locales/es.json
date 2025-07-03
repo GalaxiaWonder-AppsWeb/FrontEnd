@@ -180,6 +180,12 @@
       "title": "Equipo de Trabajo",
       "add-member": {
         "title": "Agregar Miembro",
+        "organization-member": "Miembros de la Organización",
+        "organization-member-placeholder": "Selecciona un miembro de la organización",
+        "role": "Rol del Miembro",
+        "role-placeholder": "Selecciona un rol para el miembro",
+        "cancel": "Cancelar",
+        "add": "Agregar al Proyecto",
         "subtitle": "Agregar miembros al equipo del proyecto",
         "first-step": "Paso 1: Selecciona miembros para agregar al proyecto",
         "first-step-placeholder": "Buscar por nombre o correo electrónico",

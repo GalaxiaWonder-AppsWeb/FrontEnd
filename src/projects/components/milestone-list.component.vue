@@ -258,7 +258,7 @@ onMounted(loadMilestones);
       :maximizable="true"
     >
       <div v-if="selectedMilestone" class="tasks-dialog-content">
-        <task-list :milestone-id="selectedMilestone.id" />
+        <task-list :project-id="projectId" :milestone-id="selectedMilestone.id" />
       </div>
       <template #footer>
         <pv-button label="Close" icon="pi pi-times" class="p-button-text" @click="closeDialogs" />

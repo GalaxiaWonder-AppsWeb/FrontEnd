@@ -1,236 +1,200 @@
-<script setup>
-import { ref, reactive, watch, computed } from 'vue';
-import { Task } from '../model/task.entity.js';
-import { TaskStatus } from '../model/task-status.js';
-import { Specialty } from '../model/specialty.js';
-import Dropdown from 'primevue/dropdown';
-
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    required: true
-  },
-  milestoneId: {
-    type: Number,
-    required: true
-  }
-});
-
-// Register the Dropdown component for use in this component only
-const PvDropdown = Dropdown;
-
-const emit = defineEmits(['update:visible', 'create', 'cancel']);
-
-// Form data
-const formData = reactive({
-  name: '',
-  specialty: Specialty.ARCHITECTURE,
-  startingDate: new Date(),
-  dueDate: new Date(new Date().setDate(new Date().getDate() + 7)),
-});
-
-// Form validation
-const errors = reactive({
-  name: null,
-  dates: null
-});
-
-// Reset form to initial state
-const resetForm = () => {
-  formData.name = '';
-  formData.specialty = Specialty.ARCHITECTURE;
-  formData.startingDate = new Date();
-  formData.dueDate = new Date(new Date().setDate(new Date().getDate() + 7));
-  
-  // Clear errors
-  errors.name = null;
-  errors.dates = null;
-};
-
-// Specialties for dropdown
-const specialties = Object.keys(Specialty).map(key => ({
-  label: Specialty[key],
-  value: Specialty[key]
-}));
-
-// Validate form
-const validateForm = () => {
-  let isValid = true;
-  
-  // Validate name
-  if (!formData.name || formData.name.trim() === '') {
-    errors.name = 'Task name is required';
-    isValid = false;
-  } else {
-    errors.name = null;
-  }
-  
-  // Validate dates
-  if (!formData.startingDate || !formData.dueDate) {
-    errors.dates = 'Start and due dates are required';
-    isValid = false;
-  } else if (formData.dueDate < formData.startingDate) {
-    errors.dates = 'Due date cannot be earlier than start date';
-    isValid = false;
-  } else {
-    errors.dates = null;
-  }
-  
-  return isValid;
-};
-
-// Create task
-const createTask = () => {
-  if (!validateForm()) {
-    return;
-  }
-    try {
-    const task = new Task({
-      name: formData.name,
-      specialty: formData.specialty,
-      status: TaskStatus.DRAFT,
-      startingDate: formData.startingDate,
-      dueDate: formData.dueDate,
-      milestoneId: props.milestoneId,
-      responsible: null
-    });
-    
-    emit('create', task);
-    resetForm();
-  } catch (error) {
-    console.error('Error creating task:', error);
-  }
-};
-
-// Cancel and close dialog
-const cancelCreate = () => {
-  resetForm();
-  emit('cancel');
-};
-
-// Update visible property
-const updateVisible = (value) => {
-  emit('update:visible', value);
-};
-
-// Min date for end date (can't be before start date)
-const minDueDate = computed(() => {
-  return formData.startingDate || new Date();
-});
-
-// Reset form when dialog opens
-watch(() => props.visible, (newValue) => {
-  if (newValue === true) {
-    resetForm();
-  }
-});
-</script>
-
 <template>
-  <pv-dialog 
-    :visible="visible" 
-    @update:visible="updateVisible"
-    :modal="true"
-    :closable="false"
-    :style="{ width: '500px' }"
-    header="Create New Task"
+  <pv-dialog
+      :visible="visible"
+      @update:visible="close"
+      :modal="true"
+      header="Crear nueva tarea"
+      style="width: 32rem"
   >
-    <div class="form-container">
-      <div class="form-field">
-        <label for="name">Task Name*</label>
-        <pv-input-text 
-          id="name" 
-          v-model="formData.name" 
-          class="w-full" 
-          :class="{ 'p-invalid': errors.name }"
-          autofocus
-        />
+    <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
+      <div class="p-field mb-4">
+        <label>Nombre de la tarea *</label>
+        <pv-input-text v-model="task.name" required :class="{ 'p-invalid': errors.name }" />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
-      </div>        <div class="form-field">
-        <label for="specialty">Specialty*</label>
-        <pv-select 
-          id="specialty" 
-          v-model="formData.specialty" 
-          :options="specialties" 
-          optionLabel="label" 
-          optionValue="value"
-          placeholder="Select a specialty" 
-          class="w-full"
+      </div>
+      <div class="p-field mb-4">
+        <label>Descripción *</label>
+        <pv-input-text v-model="task.description" rows="3" required :class="{ 'p-invalid': errors.description }" />
+        <small v-if="errors.description" class="p-error">{{ errors.description }}</small>
+      </div>
+      <div class="p-field mb-4">
+        <label>Task Budget *</label>
+        <pv-input-text v-model="task.taskBudget" rows="3" required :class="{ 'p-invalid': errors.taskBudget }" />
+        <small v-if="errors.taskBudget" class="p-error">{{ errors.taskBudget }}</small>
+      </div>
+      <div class="p-field mb-4">
+        <label>Especialidad requerida *</label>
+        <pv-select
+            v-model="task.specialty"
+            :options="specialtyOptions"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="'Seleccionar especialidad'"
         />
       </div>
-      
-      <div class="form-dates">
-        <div class="form-field">
-          <label for="startingDate">Start Date*</label>
-          <pv-date-picker 
-            id="startingDate" 
-            v-model="formData.startingDate" 
-            dateFormat="dd/mm/yy" 
-            showIcon 
-            class="w-full" 
-            :class="{ 'p-invalid': errors.dates }"
-          />
+      <div class="p-field mb-4">
+        <label>Responsable</label>
+        <pv-select
+            v-model="task.personId"
+            :options="filteredMembers"
+            optionLabel="fullName"
+            optionValue="personId"
+            :placeholder="'Seleccionar responsable'"
+            :showClear="true"
+        />
+        <small class="p-info">Opcional. Puede dejarse vacío para asignar después.</small>
+      </div>
+      <div class="p-field p-d-flex gap-2 mb-4">
+        <div>
+          <label>Fecha inicio *</label>
+          <pv-date-picker v-model="task.startDate" required showIcon />
         </div>
-        
-        <div class="form-field">
-          <label for="dueDate">Due Date*</label>
-          <pv-date-picker 
-            id="dueDate" 
-            v-model="formData.dueDate" 
-            dateFormat="dd/mm/yy" 
-            showIcon 
-            class="w-full" 
-            :class="{ 'p-invalid': errors.dates }"
-            :minDate="minDueDate"
-          />
+        <div>
+          <label>Fecha fin *</label>
+          <pv-date-picker v-model="task.endDate" required showIcon :minDate="task.startDate" />
         </div>
       </div>
-      <small v-if="errors.dates" class="p-error">{{ errors.dates }}</small>
-    </div>
-    
-    <template #footer>
-      <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
-        <pv-button label="Create" icon="pi pi-check" @click="createTask" />
+      <div class="p-d-flex p-jc-end gap-2 mt-4 mb-4">
+        <pv-button type="button" label="Cancelar" @click="close" class="p-button-text" />
+        <pv-button type="submit" label="Crear tarea" icon="pi pi-check" :loading="loading" />
       </div>
-    </template>
+      <small v-if="error" class="p-error">{{ error }}</small>
+    </form>
   </pv-dialog>
 </template>
 
+<script>
+import { taskService } from '../services/task.service.js'
+import { projectTeamMemberService } from '../services/project-team-member.service.js'
+import { Specialty } from "../model/specialty.js";
+import { TaskStatus} from "../model/task-status.js";
+import {Task} from "../model/task.entity.js";
+
+export default {
+  name: 'CreateTask',
+  props: {
+    visible: Boolean,
+    milestoneId: { type: [Number, String], required: true },
+    projectId: { type: [Number, String], required: true }
+  },
+  data() {
+    return {
+      task: {
+        name: '',
+        description: '',
+        specialty: '',
+        taskBudget: 0,
+        personId: null,
+        startDate: null,
+        endDate: null
+      },
+      members: [],
+      specialtyOptions: Object.entries(Specialty).map(([key, value]) => ({
+        label: key.charAt(0) + key.slice(1).toLowerCase(), // O usa $t('specialty.'+key) si tienes traducción
+        value
+      })),
+      loading: false,
+      errors: {},
+      error: ''
+    }
+  },
+  computed: {
+    filteredMembers() {
+      if (!this.task.specialty) return this.members
+      // Filtra miembros cuya especialidad coincida
+      return this.members.filter(m =>
+          m.specialty && m.specialty.toLowerCase() === this.task.specialty.toLowerCase()
+      )
+    }
+  },
+  watch: {
+    visible(val) {
+      console.log('[DEBUG] Watcher visible:', val)
+      if (val) {
+        this.resetForm()
+        this.loadMembers()
+      }
+    }
+  },
+  mounted() {
+    console.log('[DEBUG] mounted - projectId:', this.projectId)
+    this.loadMembers()
+  },
+  methods: {
+    async loadMembers() {
+      try {
+        console.log('[DEBUG] projectId:', this.projectId)
+        const res = await projectTeamMemberService.getProjectTeamMembersByProjectId({ projectId: this.projectId })
+        console.log('[DEBUG] Respuesta de miembros del backend:', res)
+        // Transforma la data a lo que necesitas para el dropdown
+        this.members = (res || []).map(m => ({
+          personId: m.personId,
+          fullName: `${m.firstName} ${m.lastName}` + (m.specialty ? ` (${m.specialty})` : ''),
+          specialty: m.specialty
+        }))
+        console.log('[DEBUG] members procesados para dropdown:', this.members)
+      } catch (e) {
+        this.error = 'Error cargando miembros del proyecto'
+      }
+    },
+    validate() {
+      this.errors = {}
+      if (!this.task.name) this.errors.name = 'El nombre es obligatorio'
+      if (!this.task.description) this.errors.description = 'La descripción es obligatoria'
+      if (!this.task.specialty) this.errors.specialty = 'Selecciona una especialidad'
+      if (!this.task.startDate || !this.task.endDate) this.errors.dates = 'Fechas obligatorias'
+      return Object.keys(this.errors).length === 0
+    },
+    async handleSubmit() {
+      let status = TaskStatus.DRAFT
+      if (this.task.personId) status = TaskStatus.PENDING
+      if (!this.validate()) return
+      this.loading = true
+      try {
+        await taskService.create({
+          ...this.task,
+          milestoneId: Number(this.milestoneId),
+          projectId: Number(this.projectId),
+          status,
+          personId: this.task.personId || undefined // permite que vaya vacío
+        })
+        this.$emit('created')
+        this.$toast.add({ severity: 'success', summary: 'Tarea creada', life: 2000 })
+        this.close()
+      } catch (e) {
+        this.error = e.message || 'Error al crear la tarea'
+      } finally {
+        this.loading = false
+      }
+    },
+    close() {
+      this.$emit('update:visible', false)
+    },
+    resetForm() {
+      this.task = { name: '', description: '', specialty: '', personId: null, startDate: null, endDate: null }
+      this.error = ''
+      this.errors = {}
+    }
+  },
+  created() {
+    console.log('[DEBUG] created - projectId:', this.projectId)
+    if (!this.projectId) {
+      console.warn('[CreateTaskComponent] projectId no recibido o es undefined');
+    }
+  },
+}
+</script>
+
 <style scoped>
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
+.gap-2 {
   gap: 0.5rem;
 }
-
-.form-dates {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.mt-4 {
+  margin-top: 1rem;
 }
 
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
+.p-field {
+  margin-bottom: 1.5rem;
 
-label {
-  font-weight: 500;
-}
-
-.p-invalid {
-  border-color: var(--red-500);
-}
-
-.p-error {
-  color: var(--red-500);
 }
 </style>

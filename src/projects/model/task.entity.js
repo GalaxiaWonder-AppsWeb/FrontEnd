@@ -7,6 +7,7 @@ export class Task extends ScheduleItem {    constructor({
                     id = null,
                     name = '',
                     specialty,
+                    taskBudget = 0,
                     status = TaskStatus.DRAFT,
                     startingDate = new Date(),
                     dueDate = new Date(),
@@ -47,6 +48,7 @@ export class Task extends ScheduleItem {    constructor({
         this.id = typeof id === 'number' ? id : null;
         this.name = name;
         this.specialty = specialty;
+        this.taskBudget = taskBudget;
         this.status = status;        this.startingDate = startingDate;
         this.dueDate = dueDate;
         //this.submission = submission;
@@ -60,6 +62,10 @@ export class Task extends ScheduleItem {    constructor({
 
     getDueDate() {
         return this.dueDate;
+    }
+
+    getTaskBudget() {
+        return this.taskBudget;
     }
 
     assignResponsible(responsible) {
@@ -79,6 +85,7 @@ export class Task extends ScheduleItem {    constructor({
             id: this.id,
             name: this.name,
             specialty: this.specialty,
+            taskBudget: this.taskBudget,
             status: this.status,
             startingDate: this.startingDate,
             dueDate: this.dueDate,

@@ -211,7 +211,7 @@ const handleCreateMilestone = async (milestone) => {
       
       <!-- Tasks Tab -->
       <div v-else-if="activeTab === 'tasks'" class="tasks-container">
-        <task-list v-if="selectedMilestoneId" :milestoneId="selectedMilestoneId" />      </div>
+        <task-list v-if="selectedMilestoneId" :project-id="projectId" :milestoneId="selectedMilestoneId" />      </div>
     </div>
     
     <!-- Create Milestone Dialog -->    <create-milestone

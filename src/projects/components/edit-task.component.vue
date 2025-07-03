@@ -1,251 +1,192 @@
-<script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue';
-import { Task } from '../model/task.entity.js';
-import { TaskStatus } from '../model/task-status.js';
-import { Specialty } from '../model/specialty.js';
-
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    required: true
-  },
-  task: {
-    type: Object,
-    required: true
-  }
-});
-
-
-const emit = defineEmits(['update:visible', 'save', 'cancel']);
-
-// Form data
-const formData = reactive({
-  id: null,
-  name: '',
-  specialty: null,
-  status: null,
-  startingDate: null,
-  dueDate: null,
-  responsible: null
-});
-
-// Form validation
-const errors = reactive({
-  name: null,
-  specialty: null,
-  dates: null
-});
-
-// Initialize form data when task changes
-watch(() => props.task, (newTask) => {
-  if (newTask) {
-    formData.id = newTask.id;
-    formData.name = newTask.name;
-    formData.specialty = newTask.specialty;
-    formData.status = newTask.status;
-    formData.startingDate = newTask.startingDate instanceof Date 
-      ? new Date(newTask.startingDate) 
-      : new Date(newTask.startingDate);
-    formData.dueDate = newTask.dueDate instanceof Date 
-      ? new Date(newTask.dueDate) 
-      : new Date(newTask.dueDate);
-    formData.responsible = newTask.responsible;
-  }
-}, { immediate: true });
-
-// Available options for specialty and status
-const specialties = computed(() => 
-  Object.entries(Specialty).map(([key, value]) => ({ label: value, value }))
-);
-
-const statuses = computed(() => 
-  Object.entries(TaskStatus).map(([key, value]) => ({ label: value, value }))
-);
-
-// Validate the form
-const validateForm = () => {
-  let valid = true;
-  
-  // Validate name
-  if (!formData.name || formData.name.trim() === '') {
-    errors.name = 'Task name is required';
-    valid = false;
-  } else {
-    errors.name = null;
-  }
-  
-  // Validate specialty
-  if (!formData.specialty) {
-    errors.specialty = 'Please select a specialty';
-    valid = false;
-  } else {
-    errors.specialty = null;
-  }
-  
-  // Validate dates
-  if (!formData.startingDate || !formData.dueDate) {
-    errors.dates = 'Both start and due dates are required';
-    valid = false;
-  } else if (formData.dueDate < formData.startingDate) {
-    errors.dates = 'Due date cannot be earlier than start date';
-    valid = false;
-  } else {
-    errors.dates = null;
-  }
-  
-  return valid;
-};
-
-// Handle save button click
-const handleSave = () => {
-  if (!validateForm()) return;
-  
-  try {
-    const task = new Task({
-      id: formData.id,
-      name: formData.name,
-      specialty: formData.specialty,
-      status: formData.status || TaskStatus.DRAFT,
-      startingDate: formData.startingDate,
-      dueDate: formData.dueDate,
-      responsible: formData.responsible || 0, // This is temporary until we implement the assign responsible
-      milestoneId: props.task.milestoneId || 0 // Assuming task has a milestoneId
-    });
-    
-    emit('save', task);
-  } catch (error) {
-    console.error('Error creating task:', error);
-    // Handle specific validation errors if needed
-  }
-};
-
-// Close the dialog
-const handleCancel = () => {
-  emit('cancel');
-};
-
-// Update visibility
-const updateVisible = (value) => {
-  emit('update:visible', value);
-};
-</script>
-
 <template>
-  <pv-dialog 
-    :visible="visible" 
-    @update:visible="updateVisible"
-    :modal="true"
-    :closable="false"
-    :style="{ width: '500px' }"
-    :header="task.id ? 'Edit Task' : 'Create New Task'"
+  <pv-dialog
+      :visible="visible"
+      @update:visible="close"
+      :modal="true"
+      header="Editar tarea"
+      style="width: 32rem"
   >
-    <div class="form-container">
-      <div class="form-field">
-        <label for="name">Task Name*</label>
-        <pv-input-text 
-          id="name" 
-          v-model="formData.name" 
-          :class="{ 'p-invalid': errors.name }"
-          class="w-full" 
-        />
+    <form @submit.prevent="handleEdit" class="flex flex-col gap-4">
+      <div class="p-field mb-4">
+        <label>Nombre de la tarea *</label>
+        <pv-input-text v-model="task.name" required :class="{ 'p-invalid': errors.name }" />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
       </div>
-        <div class="form-field">
-        <label for="specialty">Specialty*</label>
-        <pv-select 
-          id="specialty" 
-          v-model="formData.specialty" 
-          :options="specialties" 
-          optionLabel="label" 
-          optionValue="value"
-          :class="{ 'p-invalid': errors.specialty }"
-          class="w-full" 
-        />
-        <small v-if="errors.specialty" class="p-error">{{ errors.specialty }}</small>
+      <div class="p-field mb-4">
+        <label>Descripción *</label>
+        <pv-input-textarea v-model="task.description" rows="3" required :class="{ 'p-invalid': errors.description }" />
+        <small v-if="errors.description" class="p-error">{{ errors.description }}</small>
       </div>
-        <div class="form-field" v-if="task.id">
-        <label for="status">Status</label>
-        <pv-select 
-          id="status" 
-          v-model="formData.status" 
-          :options="statuses" 
-          optionLabel="label" 
-          optionValue="value"
-          class="w-full" 
+      <div class="p-field mb-4">
+        <label>Responsable</label>
+        <pv-select
+            v-model="task.personId"
+            :options="members"
+            optionLabel="fullName"
+            optionValue="personId"
+            :placeholder="'Seleccionar responsable'"
+            :showClear="true"
         />
+        <pv-checkbox v-model="removePerson" label="Remover responsable" />
+        <small class="p-info">Opcional. Puede dejarse vacío para asignar después.</small>
       </div>
-      
-      <div class="dates-container">
-        <div class="form-field">
-          <label for="startingDate">Start Date*</label>
-          <pv-date-picker 
-            id="startingDate" 
-            v-model="formData.startingDate" 
-            :showIcon="true"
-            :class="{ 'p-invalid': errors.dates }"
-            class="w-full"
-            dateFormat="dd/mm/yy"
-          />
+      <div class="p-field p-d-flex gap-2 mb-4">
+        <div>
+          <label>Fecha inicio *</label>
+          <pv-date-picker v-model="task.startDate" required showIcon />
         </div>
-        
-        <div class="form-field">
-          <label for="dueDate">Due Date*</label>
-          <pv-date-picker 
-            id="dueDate" 
-            v-model="formData.dueDate" 
-            :showIcon="true"
-            :class="{ 'p-invalid': errors.dates }"
-            class="w-full"
-            dateFormat="dd/mm/yy"
-          />
+        <div>
+          <label>Fecha fin *</label>
+          <pv-date-picker v-model="task.endDate" required showIcon :minDate="task.startDate" />
         </div>
       </div>
-      <small v-if="errors.dates" class="p-error">{{ errors.dates }}</small>
-    </div>
-    
-    <template #footer>
-      <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="handleCancel" />
-        <pv-button label="Save" icon="pi pi-check" @click="handleSave" />
+      <div class="p-d-flex p-jc-end gap-2 mt-4 mb-4">
+        <pv-button type="button" label="Cancelar" @click="close" class="p-button-text" />
+        <pv-button type="submit" label="Guardar cambios" icon="pi pi-check" :loading="loading" />
       </div>
-    </template>
+      <small v-if="error" class="p-error">{{ error }}</small>
+    </form>
   </pv-dialog>
 </template>
 
+<script>
+import { taskService } from '../services/task.service.js'
+import { projectTeamMemberService } from '../services/project-team-member.service.js'
+import { Specialty } from "../model/specialty.js";
+import { TaskStatus } from "../model/task-status.js";
+
+export default {
+  name: 'EditTask',
+  props: {
+    visible: Boolean,
+    taskToEdit: { type: Object, required: true }, // La tarea original
+    milestoneId: { type: [Number, String], required: true },
+    projectId: { type: [Number, String], required: true }
+  },
+  data() {
+    return {
+      task: {
+        name: '',
+        description: '',
+        specialty: '',
+        personId: null,
+        startDate: null,
+        endDate: null,
+        status: ''
+      },
+      members: [],
+      specialtyOptions: Object.entries(Specialty).map(([key, value]) => ({
+        label: key.charAt(0) + key.slice(1).toLowerCase(),
+        value
+      })),
+      loading: false,
+      errors: {},
+      error: '',
+      removePerson: false
+    }
+  },
+  watch: {
+    visible(val) {
+      if (val) {
+        this.resetForm();
+        this.loadMembers();
+      }
+    },
+    taskToEdit: {
+      immediate: true,
+      handler(newTask) {
+        if (newTask) {
+          // Copia profunda para editar
+          this.task = { ...newTask };
+          this.removePerson = false;
+        }
+      }
+    }
+  },
+  methods: {
+    async loadMembers() {
+      try {
+        const res = await projectTeamMemberService.getProjectTeamMembersByProjectId({ projectId: this.projectId })
+        this.members = (res || []).map(m => ({
+          personId: m.personId,
+          fullName: `${m.firstName} ${m.lastName}` + (m.specialty ? ` (${m.specialty})` : ''),
+          specialty: m.specialty
+        }))
+      } catch (e) {
+        this.error = this.$t ? this.$t('tasks.error_loading_members') : 'Error cargando miembros del proyecto';
+      }
+    },
+    validate() {
+      this.errors = {}
+      if (!this.task.name) this.errors.name = this.$t ? this.$t('tasks.error_name_required') : 'El nombre es obligatorio';
+      if (!this.task.description) this.errors.description = this.$t ? this.$t('tasks.error_description_required') : 'La descripción es obligatoria';
+      if (!this.task.startDate || !this.task.endDate) this.errors.dates = this.$t ? this.$t('tasks.error_dates_required') : 'Fechas obligatorias';
+      return Object.keys(this.errors).length === 0
+    },
+    async handleEdit() {
+      if (!this.validate()) return;
+      this.loading = true;
+      try {
+        // Payload solo con campos que cambiaron o son requeridos
+        const payload = {
+          name: this.task.name,
+          description: this.task.description,
+          specialty: this.task.specialty,
+          startDate: this.task.startDate,
+          endDate: this.task.endDate,
+          milestoneId: Number(this.milestoneId),
+          projectId: Number(this.projectId),
+        };
+
+        // Status según la lógica de negocio
+        if (this.removePerson) {
+          payload.removePerson = true;
+          payload.status = TaskStatus.DRAFT;
+        } else if (this.task.personId) {
+          payload.personId = this.task.personId;
+          payload.status = TaskStatus.PENDING;
+        }
+
+        await taskService.update({ id: this.task.id, ...payload });
+
+        this.$toast.add({
+          severity: 'success',
+          summary: this.$t ? this.$t('tasks.updated_success') : 'Tarea actualizada',
+          life: 2000
+        });
+        this.$emit('updated');
+        this.close();
+      } catch (e) {
+        this.error = e.message || (this.$t ? this.$t('tasks.updated_error') : 'Error al actualizar la tarea');
+      } finally {
+        this.loading = false;
+      }
+    },
+    close() {
+      this.$emit('update:visible', false);
+    },
+    resetForm() {
+      if (this.taskToEdit) {
+        this.task = { ...this.taskToEdit };
+      } else {
+        this.task = { name: '', description: '', specialty: '', personId: null, startDate: null, endDate: null, status: '' };
+      }
+      this.removePerson = false;
+      this.error = '';
+      this.errors = {};
+    }
+  }
+}
+</script>
+
 <style scoped>
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
+.gap-2 {
   gap: 0.5rem;
 }
-
-.dates-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+.mb-4 {
+  margin-bottom: 1rem;
 }
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-label {
-  font-weight: 500;
-}
-
-.p-invalid {
-  border-color: var(--red-500);
-}
-
-.p-error {
-  color: var(--red-500);
+.p-field {
+  margin-bottom: 1.5rem;
 }
 </style>

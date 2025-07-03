@@ -20,6 +20,7 @@
     "password": "Contraseña",
     "submit": "Registrarse",
     "successful-register": "exitosamente registrado",
+    "go-to-login": "Inicia sesión aquí",
     "roles": {
       "title": "Rol",
       "choose-role": "Selecciona un rol",
@@ -154,7 +155,8 @@
       "planning": "Planificación"
     },
     "access_denied": "No tienes permiso para ver este proyecto",
-    "view_details": "Ver detalles",    "create_dialog": {
+    "view_details": "Ver detalles",
+    "create_dialog": {
       "title": "Crear nuevo proyecto",
       "name": "Nombre del proyecto",
       "name_placeholder": "Ingrese el nombre del proyecto",
@@ -162,7 +164,9 @@
       "description_placeholder": "Ingrese una descripción del proyecto",
       "budget": "Presupuesto",
       "start_date": "Fecha de inicio",
-      "end_date": "Fecha de finalización"
+      "end_date": "Fecha de finalización",
+      "contracting_entity_email": "Email de la entidad contratante",
+      "contracting_entity_email_placeholder": "Ingrese el correo electrónico de la entidad contratante"
     },
     "section": {
       "information": "Información",
@@ -176,6 +180,12 @@
       "title": "Equipo de Trabajo",
       "add-member": {
         "title": "Agregar Miembro",
+        "organization-member": "Miembros de la Organización",
+        "organization-member-placeholder": "Selecciona un miembro de la organización",
+        "role": "Rol del Miembro",
+        "role-placeholder": "Selecciona un rol para el miembro",
+        "cancel": "Cancelar",
+        "add": "Agregar al Proyecto",
         "subtitle": "Agregar miembros al equipo del proyecto",
         "first-step": "Paso 1: Selecciona miembros para agregar al proyecto",
         "first-step-placeholder": "Buscar por nombre o correo electrónico",
@@ -201,9 +211,15 @@
       "reload-data": "Recargar Datos"
     },
     "settings": {
+      "name": "Nombre del Proyecto",
+      "name_placeholder": "Ingrese el nombre del proyecto",
       "title": "Configuración del Proyecto",
       "description": "Descripción del Proyecto",
       "description_placeholder": "Ingrese una descripción detallada del proyecto",
+      "end_date": "Fecha de Finalización",
+        "end_date_placeholder": "Seleccione la fecha de finalización del proyecto",
+        "start_date": "Fecha de Inicio",
+        "start_date_placeholder": "Seleccione la fecha de inicio del proyecto",
       "status": "Estado del Proyecto",
       "status_placeholder": "Seleccione el estado del proyecto",
       "update": "Actualizar Proyecto",

@@ -1,5 +1,7 @@
 <script>
 import { useRoute, useRouter } from 'vue-router';
+import { projectService } from "../services/project.service.js";
+import {personService} from "../../shared/services/person.service.js";
 
 export default {
   name: "ProjectInformation",  data() {
@@ -9,12 +11,15 @@ export default {
       project: null,
       creatorName: null,
       contractorName: null,
+      contractingEntity: null,
+      contractor: null,
       loading: false,
       error: null
     };
   },
   computed: {
     projectId() {
+      // projectId de la ruta SIEMPRE string
       return this.route.params.projectId;
     },
     organizationId() {
@@ -22,31 +27,48 @@ export default {
     }
   },
   methods: {
+    async loadContractingEntity() {
+      if (!this.project?.contractingEntityId) return;
+
+      const contractingEntity = await personService.getById(this.project.contractingEntityId);
+
+      this.contractingEntity = contractingEntity;
+    },
+    async loadContractor() {
+      if (!this.project?.contractor) return;
+      const contractor = await personService.getById(this.project.contractor);
+
+      this.contractor = contractor;
+    },
     async loadProject() {
       this.loading = true;
       this.error = null;
-      
+      // Logs para debug de tipos y valores
       try {
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/projects/${this.projectId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        // Llama al projectService con el parámetro que espera tu helper (ajusta si es projectId o id)
+        const params = { id: parseInt(this.projectId) };
+        // Haz la llamada
+        const response = await projectService.getById(params);
+        const project = await projectService.getById({ id: this.projectId });
+
+
+        // Aquí asignas directo:
+        this.project = project;
+
+        await this.loadContractingEntity(); // Llama después de cargar el proyecto
+        await this.loadContractor();
+
+        // Si tu service retorna Response, parsea el JSON
+        if (response && response.ok !== undefined) {
+          if (!response.ok) {
+            const errMsg = await response.text();
+            throw new Error(`Error al cargar proyecto: ${response.status} ${errMsg}`);
           }
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Error al cargar proyecto: ${response.statusText}`);        }
-          this.project = await response.json();
-        
+          const project = await response.json();
+          this.project = project;
+        }
         // Cargar información del creador y contratista si existen
-        if (this.project.createdBy) {
-          await this.loadCreatorInfo(this.project.createdBy);
-        }
-        
-        if (this.project.contractor) {
-          await this.loadContractorInfo(this.project.contractor);
-        }
+
       } catch (error) {
         console.error('Error cargando proyecto:', error);
         this.error = `No se pudo cargar el proyecto: ${error.message}`;
@@ -54,69 +76,9 @@ export default {
         this.loading = false;
       }
     },
-      async loadPersonInfo(personId, field) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000'}/persons/${personId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        
-        if (response.ok) {
-          const person = await response.json();
-          if (person) {
-            return `${person.name} ${person.lastName || ''}`;
-          }
-        }
-        return null;
-      } catch (error) {
-        console.error(`Error cargando información de la persona ${personId}:`, error);
-        return null;
-      }
-    },
-      async loadCreatorInfo(personId) {
-      this.creatorName = await this.loadPersonInfo(personId, 'creatorName');
-    },
-    
-    async loadContractorInfo(personId) {
-      this.contractorName = await this.loadPersonInfo(personId, 'contractorName');
-    },
-    
     goBack() {
       this.router.push(`/organizations/${this.organizationId}/projects`);
     },
-    
-    getStatusSeverity(status) {
-      // Asigna un color basado en el estado del proyecto
-      switch (status?.toLowerCase()) {
-        case 'basic studies':
-        case 'estudios básicos':
-          return 'info';
-        case 'design in progress':
-        case 'diseño en progreso':
-          return 'warning';
-        case 'under review':
-        case 'en revisión':
-          return 'warning';
-        case 'change requested':
-        case 'cambio solicitado':
-          return 'danger';
-        case 'change pending':
-        case 'cambio pendiente':
-          return 'danger';
-        case 'rejected':
-        case 'rechazado':
-          return 'danger';
-        case 'approved':
-        case 'aprobado':
-          return 'success';
-        default:
-          return 'secondary';
-      }
-    },
-    
     formatDate(dateString) {
       if (!dateString) return '';
       const date = new Date(dateString);
@@ -152,8 +114,8 @@ export default {
     
     <div v-else-if="project" class="project-content">
       <div class="project-header">
-        <h1>{{ project.name }}</h1>
-        <pv-tag v-if="project.status" :severity="getStatusSeverity(project.status)" :value="project.status" />
+        <h1>{{ project.projectName }}</h1>
+        <pv-tag v-if="project.status" :value="project.status" />
       </div>
       
       <div class="info-card">
@@ -171,38 +133,22 @@ export default {
           
           <div class="info-item">
             <span class="label">Fecha de inicio</span>
-            <span class="value">{{ formatDate(project.startingDate) || 'No especificada' }}</span>
+            <span class="value">{{ formatDate(project.startDate) || 'No especificada' }}</span>
           </div>
             <div class="info-item">
             <span class="label">Fecha de finalización</span>
-            <span class="value">{{ formatDate(project.endingDate) || 'No especificada' }}</span>
+            <span class="value">{{ formatDate(project.endDate) || 'No especificada' }}</span>
           </div>          <div class="info-item">
             <span class="label">Contratista</span>
-            <span class="value">{{ contractorName || 'No especificado' }} <small v-if="contractorName && project.contractor">(ID: {{ project.contractor }})</small></span>
+            <span class="value">{{ contractor.email || 'No especificado' }} <small v-if="contractorName && project.contractor">(ID: {{ project.contractor }})</small></span>
           </div>
           
           <div class="info-item">
-            <span class="label">Creado por</span>
-            <span class="value">{{ creatorName || 'No especificado' }} <small v-if="creatorName && project.createdBy">(ID: {{ project.createdBy }})</small></span>
+            <span class="label">Entidad Contratante</span>
+            <span class="value">{{ contractingEntity.email || 'No especificado' }} <small v-if="creatorName && project.contractor">(ID: {{ contractingEntity.email }})</small></span>
           </div>
-          
-          <div class="info-item">
-            <span class="label">Fecha de creación</span>
-            <span class="value">{{ formatDate(project.createdAt) || 'No especificada' }}</span>
-          </div>
+
         </div>
-      </div>
-      
-      <!-- Placeholder para funcionalidades futuras -->
-      <div class="feature-placeholder">
-        <h3>Próximamente</h3>
-        <p>Esta sección incluirá las siguientes funcionalidades:</p>
-        <ul>
-          <li>Gestión de cronogramas</li>
-          <li>Gestión de cambios</li>
-          <li>Administración del equipo del proyecto</li>
-          <li>Informes y métricas</li>
-        </ul>
       </div>
     </div>
     

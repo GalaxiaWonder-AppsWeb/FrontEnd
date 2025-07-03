@@ -24,6 +24,7 @@
     "password": "Password",
     "submit": "Register",
     "successful-register": "successfully registered",
+    "go-to-login": "¿Already have an account? Log in here",
     "roles": {
       "title": "Role",
       "choose-role": "Choose a role",
@@ -201,7 +202,9 @@
       "description_placeholder": "Enter project description",
       "budget": "Budget",
       "start_date": "Start date",
-      "end_date": "End date"
+      "end_date": "End date",
+      "contracting_entity_email": "Contracting entity email",
+      "contracting_entity_email_placeholder": "Enter contracting entity email"
     },
     "section": {
       "information": "Information",
@@ -215,6 +218,12 @@
       "title": "Working Team",
       "add-member": {
         "title": "Add Member",
+        "organization-member": "Members of the organization",
+        "organization-member-placeholder": "Select organization member",
+        "role": "Member Roles",
+        "role-placeholder": "Select member role",
+        "cancel": "Cancel",
+        "add": "Add Member",
         "subtitle": "Add members to the project team",
         "first-step": "Step 1: Select members to assign for the project",
         "first-step-placeholder": "Search by name or email",
@@ -241,9 +250,15 @@
       
     },
     "settings": {
+      "name": "Project Name",
+      "name_placeholder": "Enter project name",
       "title": "Project Settings",
       "description": "Project Description",
       "description_placeholder": "Enter a detailed description of the project",
+      "start_date": "Start Date",
+      "start_date_placeholder": "Select start date",
+      "end_date": "End Date",
+      "end_date_placeholder": "Select end date",
       "status": "Project Status",
       "status_placeholder": "Select project status",
       "update": "Update Project",

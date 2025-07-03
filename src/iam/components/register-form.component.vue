@@ -64,6 +64,13 @@
         type="submit"
         :disabled="!role || (['Contractor', 'Specialist'].includes(role) )"
     />
+
+    <!-- Enlace al login debajo del botón -->
+    <div class="login-link">
+      <router-link to="/login">
+        {{ $t('register.go-to-login') || "¿Ya tienes cuenta? Inicia sesión aquí" }}
+      </router-link>
+    </div>
   </form>
 
 </template>
@@ -240,5 +247,18 @@ label {
 ::v-deep(.p-password-input) {
   width: 100% !important;
 }
+
+.login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+.login-link a {
+  color: #1976d2;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+
 
 </style>

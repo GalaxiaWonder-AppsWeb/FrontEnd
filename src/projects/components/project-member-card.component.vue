@@ -20,7 +20,6 @@
       </div>
 
       <div class="flex gap-2">
-        <pv-button icon="pi pi-pencil" severity="info" text rounded @click="$emit('edit', member)" />
         <pv-button icon="pi pi-trash" severity="danger" text rounded @click="$emit('remove', member)"
                    v-tooltip.top="'Eliminar miembro del proyecto'" />
       </div>

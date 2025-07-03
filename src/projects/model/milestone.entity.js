@@ -4,6 +4,7 @@ export class Milestone {
     constructor({
                     id = null,
                     name = '',
+                    description = '',
                     startDate = new Date(),
                     endDate = new Date(),
                     projectId = null,
@@ -11,6 +12,10 @@ export class Milestone {
                 }) {
         if (!name || typeof name !== 'string') {
             throw new Error('Name is required and must be a non-empty string')
+        }
+
+        if (!description || typeof description !== 'string') {
+            throw new Error('Description is required and must be a non-empty string')
         }
 
         if (!(startDate instanceof Date)) {
@@ -35,6 +40,7 @@ export class Milestone {
         }
         
         this.name = name
+        this.description = description
         this.startDate = startDate
         this.endDate = endDate
         
@@ -55,6 +61,13 @@ export class Milestone {
             throw new Error('New name is required and must be a non-empty string')
         }
         this.name = newName
+    }
+
+    updateDescription(newDescription) {
+        if (!newDescription || typeof newDescription !== 'string') {
+            throw new Error('New description is required and must be a non-empty string')
+        }
+        this.description = newDescription
     }
 
     updateStartDate(newStartDate) {
@@ -84,7 +97,8 @@ export class Milestone {
             throw new Error('Item not found in the milestone');
         }
         this.items.splice(index, 1);
-    }    toJSON() {
+    }
+    toJSON() {
         // Ensure id is numeric if it can be parsed
         const numericId = this.id ? (typeof this.id === 'string' && !isNaN(Number(this.id)) ? Number(this.id) : this.id) : null;
         const numericProjectId = this.projectId ? (typeof this.projectId === 'string' && !isNaN(Number(this.projectId)) ? Number(this.projectId) : this.projectId) : null;
@@ -92,6 +106,7 @@ export class Milestone {
         return {
             id: numericId,
             name: this.name,
+            description: this.description,
             startDate: this.startDate,
             endDate: this.endDate,
             startingDate: this.startDate, // Include both formats for compatibility

@@ -6,6 +6,7 @@ import { Milestone } from '../model/milestone.entity.js';
 import MilestoneCard from './milestone-card.component.vue';
 import MilestoneEdit from './milestone-edit.component.vue';
 import TaskList from './task-list.component.vue';
+import { useToast } from 'primevue/usetoast';
 
 const props = defineProps({
   projectId: {
@@ -19,6 +20,7 @@ const props = defineProps({
 });
 
 // Data
+const toast = useToast();
 const milestones = ref([]);
 const loading = ref(false);
 const error = ref(null);
@@ -31,37 +33,14 @@ const viewTasksDialogVisible = ref(false);
 
 // Load milestones - exposed to parent components
 const loadMilestones = async () => {
+  loading.value = true;
+  error.value = null;
   try {
-    loading.value = true;
-    error.value = null;
-    
-    // Get the API base URL from environment
-    const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';    // Convertir projectId a número si es posible
-    const projectIdInput = props.projectId;
-    // Intentamos convertir a número si no es ya un número
-    const projectId = typeof projectIdInput === 'number' ? projectIdInput : Number(projectIdInput);
-    
-    // Verificar si es un valor numérico válido
-    if (projectId === null || projectId === undefined || isNaN(projectId)) {
-      console.error('Error: Invalid or missing project ID:', projectIdInput);
-      error.value = 'Missing or invalid project ID. Please select a valid project.';
-      loading.value = false;
-      return;
-    }
-      // Use direct fetch call to ensure correct URL formatting
-    // JSON Server syntax for filtering by a field
-    const url = `${apiBaseUrl}/milestones?projectId=${projectId}`;
-    // Make the direct API call
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    // Convert to entities
-    milestones.value = MilestoneAssembler.toEntitiesFromResponse(data);
-    } catch (err) {
+    const projectId = Number(props.projectId);
+    if (isNaN(projectId)) throw new Error('Invalid project ID');
+    const response = await milestoneService.getByProjectId({ projectId });
+    milestones.value = Array.isArray(response) ? response : [];
+  } catch (err) {
     console.error('Error loading milestones:', err);
     error.value = 'Failed to load milestones. Please try again.';
   } finally {
@@ -69,24 +48,13 @@ const loadMilestones = async () => {
   }
 };
 
+
 // Expose the loadMilestones method to parent components
 defineExpose({
   loadMilestones
 });
 
 // Create new milestone
-const createMilestone = () => {
-  // Create a new milestone with default values
-  selectedMilestone.value = new Milestone({
-    name: 'New Milestone',
-    startDate: new Date(),
-    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-    items: []
-  });
-  
-  editDialogVisible.value = true;
-};
-
 // Edit milestone
 const editMilestone = (milestone) => {
   selectedMilestone.value = milestone;
@@ -103,29 +71,10 @@ const deleteMilestone = (milestone) => {
 const confirmDeleteMilestone = async () => {
   try {
     loading.value = true;
-    
-    // Get the API base URL from environment
-    const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-      // Parse the ID to ensure it's a number if it's stored as a string
-    let milestoneId = selectedMilestone.value.id;
-    if (typeof milestoneId === 'string' && !isNaN(Number(milestoneId))) {
-      milestoneId = Number(milestoneId);
-    }
-    
-    // Use direct API call for deleting milestone
-    const url = `${apiBaseUrl}/milestones/${milestoneId}`;
-    const response = await fetch(url, {
-      method: 'DELETE'
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API call failed with status: ${response.status}`);
-    }
-    
+    await milestoneService.delete({ id: selectedMilestone.value.id });
     await loadMilestones();
     deleteDialogVisible.value = false;
   } catch (err) {
-    console.error('Error deleting milestone:', err);
     error.value = 'Failed to delete milestone. Please try again.';
   } finally {
     loading.value = false;
@@ -133,84 +82,79 @@ const confirmDeleteMilestone = async () => {
   }
 };
 
+
 // Save milestone (create or update)
-const saveMilestone = async (milestone) => {
+const saveMilestone = async (milestone, original = null) => {
   try {
-    loading.value = true;    // Format dates properly and ensure all required fields are included with proper types
-    // Parse id to numeric if it's a string
+    loading.value = true;
     let milestoneId = milestone.id;
-    if (typeof milestoneId === 'string' && !isNaN(Number(milestoneId))) {
-      milestoneId = Number(milestoneId);
-    }
-    
-    // Ensure projectId is numeric
+    if (typeof milestoneId === 'string') milestoneId = Number(milestoneId);
     let projectId = milestone.projectId || props.projectId;
-    if (typeof projectId === 'string' && !isNaN(Number(projectId))) {
-      projectId = Number(projectId);
-    }
-    
-    const milestoneData = {
-      id: milestoneId,
-      name: milestone.name,
-      projectId: projectId,
-      startDate: milestone.startDate instanceof Date 
-        ? milestone.startDate.toISOString() 
-        : new Date(milestone.startDate).toISOString(),
-      endDate: milestone.endDate instanceof Date 
-        ? milestone.endDate.toISOString() 
-        : new Date(milestone.endDate).toISOString(),
-      startingDate: milestone.startDate instanceof Date 
-        ? milestone.startDate.toISOString() 
-        : new Date(milestone.startDate).toISOString(),
-      endingDate: milestone.endDate instanceof Date 
-        ? milestone.endDate.toISOString() 
-        : new Date(milestone.endDate).toISOString(),
-      items: milestone.items || []
-    };
-    
-    // Get the API base URL from environment
-    const apiBaseUrl = import.meta.env.VITE_PROPGMS_API_URL || 'http://localhost:3000';
-      // Determine if this is an update or create operation
-    if (milestoneId) {      
-      // Update existing milestone - use the parsed numeric ID
-      const url = `${apiBaseUrl}/milestones/${milestoneId}`;
-      try {
-        const response = await fetch(url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(milestoneData)
-        });
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Error response:', errorText);
-          throw new Error(`API call failed with status: ${response.status}. Details: ${errorText}`);
-        }
-        
-        const updatedData = await response.json();
-        } catch (error) {
-        console.error('Error during milestone update:', error);
-        throw error;
-      }
-    } else {
-      // Create new milestone
-      const url = `${apiBaseUrl}/milestones`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(milestoneData)
+    if (typeof projectId === 'string') projectId = Number(projectId);
+
+    // CREACIÓN
+    if (!milestoneId) {
+      await milestoneService.create({
+        name: milestone.name,
+        description: milestone.description,
+        projectId: projectId,
+        startDate: toIsoString(milestone.startDate),
+        endDate: toIsoString(milestone.endDate),
       });
-      
-      if (!response.ok) {
-        throw new Error(`API call failed with status: ${response.status}`);
-      }
+      toast.add({
+        severity: 'success',
+        summary: 'Milestone creado',
+        detail: 'El milestone fue creado correctamente.',
+        life: 3000,
+      });
+      await loadMilestones();
+      editDialogVisible.value = false;
+      return;
     }
-    
+
+    // EDICIÓN
+    // Comparar con el original si lo tienes
+    if (original) {
+      // Solo actualiza lo que cambió
+      if (milestone.name !== original.name) {
+        await milestoneService.updateName({ id: milestoneId, name: milestone.name });
+      }
+      if (milestone.description !== original.description) {
+        await milestoneService.updateDescription({ id: milestoneId, description: milestone.description });
+      }
+      if (
+          toIsoString(milestone.startDate) !== toIsoString(original.startDate) ||
+          toIsoString(milestone.endDate) !== toIsoString(original.endDate)
+      ) {
+        await milestoneService.updateDate({
+          id: milestoneId,
+          startDate: toIsoString(milestone.startDate),
+          endDate: toIsoString(milestone.endDate),
+        });
+      }
+      toast.add({
+        severity: 'success',
+        summary: 'Milestone editado',
+        detail: 'El milestone fue editado correctamente.',
+        life: 3000,
+      });
+    } else {
+      // Si no tienes "original", llama los 3 PATCH por defecto
+      await milestoneService.updateName({ id: milestoneId, name: milestone.name });
+      await milestoneService.updateDescription({ id: milestoneId, description: milestone.description });
+      await milestoneService.updateDateRange({
+        id: milestoneId,
+        startDate: toIsoString(milestone.startDate),
+        endDate: toIsoString(milestone.endDate),
+      });
+      toast.add({
+        severity: 'success',
+        summary: 'Milestone editado',
+        detail: 'El milestone fue editado correctamente.',
+        life: 3000,
+      });
+    }
+
     await loadMilestones();
     editDialogVisible.value = false;
   } catch (err) {
@@ -221,6 +165,13 @@ const saveMilestone = async (milestone) => {
     selectedMilestone.value = null;
   }
 };
+
+// Utilidad para convertir fechas
+function toIsoString(date) {
+  if (!date) return null;
+  return date instanceof Date ? date.toISOString() : new Date(date).toISOString();
+}
+
 
 // View tasks for a milestone
 const viewTasks = (milestone) => {

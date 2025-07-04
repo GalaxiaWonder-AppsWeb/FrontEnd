@@ -177,7 +177,8 @@
       "image_too_large": "Image is too large (max 2MB)"
     },
     "uploading_image": "Uploading image..."
-  },  "projects": {
+  },
+  "projects": {
     "title": "Projects",
     "create": "New project",
     "empty": "No projects available",
@@ -213,7 +214,16 @@
       "settings": "Settings",
       "working-team": "Working Team"
     },
-    "information": "Project Information",
+    "information": {
+      "back-to-projects": "Back to Projects",
+      "title": "General Information",
+      "description": "DESCRIPTION",
+      "budget": "BUDGET",
+      "start-date": "START DATE",
+      "end-date": "END DATE",
+      "contractor": "CONTRACTOR",
+      "contracting-entity-email": "CONTRACTING ENTITY EMAIL"
+    },
     "working-team": {
       "title": "Working Team",
       "add-member": {
@@ -285,6 +295,118 @@
       },
       "no_changes": "No changes to save"
     }
-    
+  },
+  "schedule": {
+    "title": "Schedule",
+    "add-milestone": "Add Milestone",
+    "not-milestones": "No milestones available",
+    "create-milestone": {
+      "title": "Create New Milestone",
+      "name": "Milestone Name",
+      "name-placeholder": "Enter milestone name",
+      "description": "Milestone Description",
+      "description-placeholder": "Enter milestone description",
+      "start-date": "Start Date",
+      "start-date-placeholder": "Select start date",
+      "end-date": "End Date",
+      "end-date-placeholder": "Select end date",
+      "key-point": "Milestones are key points in your project schedule that mark important phases or deliverables.",
+      "cancel": "Cancel",
+      "create": "Create"
+    },
+    "delete-milestone": {
+      "title": "Confirm Deletion",
+      "message": "Are you sure you want to delete this milestone? This will also delete all associated tasks.",
+      "no": "No",
+      "yes": "Yes"
+    },
+    "milestone-card": {
+      "tasks": "Tasks",
+      "view-tasks": "View Tasks"
+    },
+    "edit-milestone": {
+      "title": "Edit Milestone",
+      "name": "Milestone Name",
+      "name-placeholder": "Enter milestone name",
+      "description": "Milestone Description",
+      "description-placeholder": "Enter milestone description",
+      "start-date": "Start Date",
+      "start-date-placeholder": "Select start date",
+      "end-date": "End Date",
+      "end-date-placeholder": "Select end date",
+      "key-point": "Milestones help you organize tasks into logical groups or phases.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "success": {
+        "title": "Success",
+        "updated": "Milestone successfully updated"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "Could not load milestone information",
+        "updating_title": "Error",
+        "updating_message": "Could not update milestone"
+      }
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "create": "New Task",
+    "no-tasks": "No tasks available",
+    "close": "Close",
+    "create-task": {
+      "title": "Create New Task",
+      "name": "Task Name",
+      "name-placeholder": "Enter task name",
+      "description": "Task Description",
+      "description-placeholder": "Enter task description",
+      "budget": "Task Budget",
+      "specialty": "Required Specialization",
+      "specialty-placeholder": "Select specialization",
+      "responsible": "Responsible",
+      "responsible-placeholder": "Select responsible",
+      "responsible-optional": "Optional. You may leave this empty to assign later.",
+      "start-date": "Start Date",
+      "end-date": "End Date",
+      "cancel": "Cancel",
+      "create": "Create Task"
+    },
+    "edit-task": {
+      "title": "Edit Task",
+      "name": "Task Name",
+      "name-placeholder": "Enter task name",
+      "description": "Task Description",
+      "description-placeholder": "Enter task description",
+      "budget": "Task Budget",
+      "specialty": "Required Specialization",
+      "specialty-placeholder": "Select specialization",
+      "responsible": "Responsible",
+      "responsible-placeholder": "Select responsible",
+      "responsible-optional": "Optional. You may leave this empty to assign later.",
+      "start-date": "Start Date",
+      "end-date": "End Date",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "success": {
+        "title": "Success",
+        "updated": "Task successfully updated"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "Could not load task information",
+        "updating_title": "Error",
+        "updating_message": "Could not update task"
+      }
+    },
+    "task-card": {
+      "name": "Task Name",
+      "description": "Description",
+      "budget": "Budget",
+      "specialty": "Specialization",
+      "status": "Status",
+      "responsible": "Responsible",
+      "unassigned": "Unassigned",
+      "assign-responsible": "Assign Responsible"
+    }
   }
 }

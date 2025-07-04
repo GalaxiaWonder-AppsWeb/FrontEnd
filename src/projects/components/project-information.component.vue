@@ -96,7 +96,7 @@ export default {
     <div class="back-navigation">
       <pv-button 
         icon="pi pi-arrow-left" 
-        label="Volver a proyectos" 
+        :label="$t('projects.information.back-to-projects')"
         class="p-button-text" 
         @click="goBack"
       />
@@ -119,32 +119,32 @@ export default {
       </div>
       
       <div class="info-card">
-        <h2>Información general</h2>
+        <h2>{{ $t('projects.information.title') }}</h2>
         <div class="info-grid">
           <div class="info-item">
-            <span class="label">Descripción</span>
+            <span class="label">{{ $t('projects.information.description') }}</span>
             <span class="value">{{ project.description || 'Sin descripción' }}</span>
           </div>
           
           <div class="info-item">
-            <span class="label">Presupuesto</span>
+            <span class="label">{{ $t('projects.information.budget') }}</span>
             <span class="value">{{ project.budget ? `$${project.budget.toLocaleString()}` : 'No especificado' }}</span>
           </div>
           
           <div class="info-item">
-            <span class="label">Fecha de inicio</span>
+            <span class="label">{{ $t('projects.information.start-date') }}</span>
             <span class="value">{{ formatDate(project.startDate) || 'No especificada' }}</span>
           </div>
             <div class="info-item">
-            <span class="label">Fecha de finalización</span>
+            <span class="label">{{ $t('projects.information.end-date') }}</span>
             <span class="value">{{ formatDate(project.endDate) || 'No especificada' }}</span>
           </div>          <div class="info-item">
-            <span class="label">Contratista</span>
+            <span class="label">{{ $t('projects.information.contractor') }}</span>
             <span class="value">{{ contractor.email || 'No especificado' }} <small v-if="contractorName && project.contractor">(ID: {{ project.contractor }})</small></span>
           </div>
           
           <div class="info-item">
-            <span class="label">Entidad Contratante</span>
+            <span class="label">{{ $t('projects.information.contracting-entity-email') }}</span>
             <span class="value">{{ contractingEntity.email || 'No especificado' }} <small v-if="creatorName && project.contractor">(ID: {{ contractingEntity.email }})</small></span>
           </div>
 

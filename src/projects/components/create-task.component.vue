@@ -3,60 +3,60 @@
       :visible="visible"
       @update:visible="close"
       :modal="true"
-      header="Crear nueva tarea"
+      :header="$t('tasks.create-task.title')"
       style="width: 32rem"
   >
     <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
       <div class="p-field mb-4">
-        <label>Nombre de la tarea *</label>
+        <label>{{ $t('tasks.create-task.title') }}</label>
         <pv-input-text v-model="task.name" required :class="{ 'p-invalid': errors.name }" />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
       </div>
       <div class="p-field mb-4">
-        <label>Descripción *</label>
+        <label>{{ $t('tasks.create-task.description') }}</label>
         <pv-input-text v-model="task.description" rows="3" required :class="{ 'p-invalid': errors.description }" />
         <small v-if="errors.description" class="p-error">{{ errors.description }}</small>
       </div>
       <div class="p-field mb-4">
-        <label>Task Budget *</label>
-        <pv-input-text v-model="task.taskBudget" rows="3" required :class="{ 'p-invalid': errors.taskBudget }" />
-        <small v-if="errors.taskBudget" class="p-error">{{ errors.taskBudget }}</small>
+        <label>{{ $t('tasks.create-task.budget') }}</label>
+        <pv-input-text v-model="task.amount" rows="3" required :class="{ 'p-invalid': errors.amount }" />
+        <small v-if="errors.amount" class="p-error">{{ errors.amount }}</small>
       </div>
       <div class="p-field mb-4">
-        <label>Especialidad requerida *</label>
+        <label>{{ $t('tasks.create-task.specialty') }}</label>
         <pv-select
             v-model="task.specialty"
             :options="specialtyOptions"
             optionLabel="label"
             optionValue="value"
-            :placeholder="'Seleccionar especialidad'"
+            :placeholder="$t('tasks.create-task.specialty-placeholder')"
         />
       </div>
       <div class="p-field mb-4">
-        <label>Responsable</label>
+        <label>{{ $t('tasks.create-task.responsible') }}</label>
         <pv-select
             v-model="task.personId"
             :options="filteredMembers"
             optionLabel="fullName"
             optionValue="personId"
-            :placeholder="'Seleccionar responsable'"
+            :placeholder="$t('tasks.create-task.responsible-placeholder')"
             :showClear="true"
         />
-        <small class="p-info">Opcional. Puede dejarse vacío para asignar después.</small>
+        <small class="p-info">{{ $t('tasks.create-task.responsible-optional') }}</small>
       </div>
       <div class="p-field p-d-flex gap-2 mb-4">
         <div>
-          <label>Fecha inicio *</label>
+          <label>{{ $t('tasks.create-task.start-date') }}</label>
           <pv-date-picker v-model="task.startDate" required showIcon />
         </div>
         <div>
-          <label>Fecha fin *</label>
+          <label>{{ $t('tasks.create-task.end-date') }}</label>
           <pv-date-picker v-model="task.endDate" required showIcon :minDate="task.startDate" />
         </div>
       </div>
       <div class="p-d-flex p-jc-end gap-2 mt-4 mb-4">
-        <pv-button type="button" label="Cancelar" @click="close" class="p-button-text" />
-        <pv-button type="submit" label="Crear tarea" icon="pi pi-check" :loading="loading" />
+        <pv-button type="button" :label="$t('tasks.create-task.cancel')" @click="close" class="p-button-text" />
+        <pv-button type="submit" :label="$t('tasks.create-task.create')" icon="pi pi-check" :loading="loading" />
       </div>
       <small v-if="error" class="p-error">{{ error }}</small>
     </form>
@@ -83,7 +83,7 @@ export default {
         name: '',
         description: '',
         specialty: '',
-        taskBudget: 0,
+        amount: null,
         personId: null,
         startDate: null,
         endDate: null
@@ -155,6 +155,7 @@ export default {
           ...this.task,
           milestoneId: Number(this.milestoneId),
           projectId: Number(this.projectId),
+          amount: Number(this.task.amount),
           status,
           personId: this.task.personId || undefined // permite que vaya vacío
         })

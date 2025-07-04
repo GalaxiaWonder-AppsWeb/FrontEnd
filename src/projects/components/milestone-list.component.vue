@@ -205,7 +205,7 @@ onMounted(loadMilestones);
     </div>
 
     <div v-else-if="milestones.length === 0" class="empty-container">
-      <p>No milestones found. Click "Add Milestone" to create one.</p>
+      <p>{{ $t('schedule.not-milestones') }}</p>
     </div>
 
     <div v-else class="milestone-grid">
@@ -231,7 +231,7 @@ onMounted(loadMilestones);
     <!-- Delete Confirmation Dialog -->
     <pv-dialog
       v-model:visible="deleteDialogVisible"
-      header="Confirm Delete"
+      :header="$t('schedule.delete-milestone.title')"
       :modal="true"
       :closable="false"
       :style="{ width: '450px' }"
@@ -239,12 +239,12 @@ onMounted(loadMilestones);
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle" style="font-size: 2rem; color: var(--yellow-700)"></i>
         <span>
-          Are you sure you want to delete this milestone? This will also delete all associated tasks.
+          {{$t('schedule.delete-milestone.message')}}
         </span>
       </div>
       <template #footer>
-        <pv-button label="No" icon="pi pi-times" class="p-button-text" @click="closeDialogs" />
-        <pv-button label="Yes" icon="pi pi-check" class="p-button-danger" @click="confirmDeleteMilestone" />
+        <pv-button :label="$t('schedule.delete-milestone.no')" icon="pi pi-times" class="p-button-text" @click="closeDialogs" />
+        <pv-button :label="$t('schedule.delete-milestone.yes')" icon="pi pi-check" class="p-button-danger" @click="confirmDeleteMilestone" />
       </template>
     </pv-dialog>
 
@@ -261,7 +261,7 @@ onMounted(loadMilestones);
         <task-list :project-id="projectId" :milestone-id="selectedMilestone.id" />
       </div>
       <template #footer>
-        <pv-button label="Close" icon="pi pi-times" class="p-button-text" @click="closeDialogs" />
+        <pv-button :label="$t('tasks.close')" icon="pi pi-times" class="p-button-text" @click="closeDialogs" />
       </template>
     </pv-dialog>
   </div>

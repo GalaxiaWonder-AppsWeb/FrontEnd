@@ -9,7 +9,7 @@
       />
     </div>
 
-    <pv-dialog v-model:visible="showCreate" :modal="true" :header="$t('tasks.create_title')" :style="{width: '40rem'}">
+    <pv-dialog v-model:visible="showCreate" :modal="true"  :style="{width: '40rem'}">
       <create-task-component
           :project-id="projectId"
           :milestone-id="milestoneId"
@@ -19,13 +19,14 @@
       />
     </pv-dialog>
 
+
     <div v-if="loading" class="text-center p-4">
       <pv-progress-spinner style="width: 50px; height: 50px;" />
-      <div class="mt-2">{{ $t('tasks.loading') }}</div>
+      <div class="mt-2">xd</div>
     </div>
 
     <div v-else-if="tasks.length === 0" class="text-gray-500 text-center p-4">
-      {{ $t('tasks.no_tasks') }}
+      {{ $t('tasks.no-tasks') }}
     </div>
 
     <div v-else class="task-list-grid">

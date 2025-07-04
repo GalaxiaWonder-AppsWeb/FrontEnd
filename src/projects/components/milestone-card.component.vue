@@ -86,14 +86,14 @@ const handleEditClick = () => {
       <div class="milestone-stats">
         <div class="stat-item">
           <i class="pi pi-check-square"></i>
-          <span>{{ tasksCount }} Tasks</span>
+          <span>{{ tasksCount }} {{ $t('schedule.milestone-card.tasks') }}</span>
         </div>
       </div>
     </template>
 
     <template #footer>
       <pv-button 
-        label="View Tasks" 
+        :label="$t('schedule.milestone-card.view-tasks')"
         icon="pi pi-list" 
         class="w-full p-button-outlined" 
         @click="emit('view-tasks', milestone)"

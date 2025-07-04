@@ -175,7 +175,16 @@
       "settings": "Configuraciones",
       "working-team": "Equipo de Trabajo"
     },
-    "information": "Información del Proyecto",
+    "information": {
+      "back-to-projects": "Volver a proyectos",
+      "title": "Información general",
+      "description": "DESCRIPCIÓN",
+      "budget": "PRESUPUESTO",
+      "start-date": "FECHA DE INICIO",
+      "end-date": "FECHA DE FIN",
+      "contractor": "CONTRATISTA",
+      "contracting-entity-email": "CORREO DE LA ENTIDAD CONTRATANTE"
+    },
     "working-team": {
       "title": "Equipo de Trabajo",
       "add-member": {
@@ -282,5 +291,118 @@
       "image_too_large": "La imagen es demasiado grande (máximo 2MB)"
     },
     "uploading_image": "Subiendo imagen..."
+  },
+  "schedule": {
+    "title": "Cronograma",
+    "add-milestone": "Agregar hito",
+    "not-milestones": "No hay hitos disponibles",
+    "create-milestone": {
+      "title": "Crear nuevo hito",
+      "name": "Nombre del hito",
+      "name-placeholder": "Ingrese el nombre del hito",
+      "description": "Descripción del hito",
+      "description-placeholder": "Ingrese la descripción del hito",
+      "start-date": "Fecha de inicio",
+      "start-date-placeholder": "Seleccione la fecha de inicio",
+      "end-date": "Fecha de fin",
+      "end-date-placeholder": "Seleccione la fecha de fin",
+      "key-point": "Los hitos son puntos clave en el cronograma de tu proyecto que marcan fases o entregables importantes.",
+      "cancel": "Cancelar",
+      "create": "Crear"
+    },
+    "delete-milestone": {
+      "title": "Confirmar eliminación",
+      "message": "¿Está seguro de que desea eliminar este hito? Esto también eliminará todas las tareas asociadas.",
+      "no": "No",
+      "yes": "Sí"
+    },
+    "milestone-card": {
+      "tasks": "Tareas",
+      "view-tasks": "Ver tareas"
+    },
+    "edit-milestone": {
+      "title": "Editar hito",
+      "name": "Nombre del hito",
+      "name-placeholder": "Ingrese el nombre del hito",
+      "description": "Descripción del hito",
+      "description-placeholder": "Ingrese la descripción del hito",
+      "start-date": "Fecha de inicio",
+      "start-date-placeholder": "Seleccione la fecha de inicio",
+      "end-date": "Fecha de fin",
+      "end-date-placeholder": "Seleccione la fecha de fin",
+      "key-point": "Los hitos te ayudan a organizar tareas en grupos o fases lógicas.",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "success": {
+        "title": "Éxito",
+        "updated": "Hito actualizado correctamente"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "No se pudo cargar la información del hito",
+        "updating_title": "Error",
+        "updating_message": "No se pudo actualizar el hito"
+      }
+    }
+  },
+  "tasks": {
+    "title": "Tareas",
+    "create": "Nueva tarea",
+    "no-tasks": "No hay tareas disponibles",
+    "close": "Cerrar",
+    "create-task": {
+      "title": "Crear nueva tarea",
+      "name": "Nombre de la tarea",
+      "name-placeholder": "Ingrese el nombre de la tarea",
+      "description": "Descripción de la tarea",
+      "description-placeholder": "Ingrese la descripción de la tarea",
+      "budget": "Presupuesto de la tarea",
+      "specialty": "Especialidad requerida",
+      "specialty-placeholder": "Seleccionar especialidad",
+      "responsible": "Responsable",
+      "responsible-placeholder": "Seleccionar responsable",
+      "responsible-optional": "Opcional. Puede dejarse vacío para asignar después.",
+      "start-date": "Fecha de inicio",
+      "end-date": "Fecha de fin",
+      "cancel": "Cancelar",
+      "create": "Crear tarea"
+    },
+    "edit-task": {
+      "title": "Editar tarea",
+      "name": "Nombre de la tarea",
+      "name-placeholder": "Ingrese el nombre de la tarea",
+      "description": "Descripción de la tarea",
+      "description-placeholder": "Ingrese la descripción de la tarea",
+      "budget": "Presupuesto de la tarea",
+      "specialty": "Especialidad requerida",
+      "specialty-placeholder": "Seleccione la especialidad",
+      "responsible": "Responsable",
+      "responsible-placeholder": "Seleccione el responsable",
+      "responsible-optional": "Opcional. Puede dejar este campo vacío para asignar después.",
+      "start-date": "Fecha de inicio",
+      "end-date": "Fecha de fin",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar",
+      "success": {
+        "title": "Éxito",
+        "updated": "Tarea actualizada exitosamente"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "No se pudo cargar la información de la tarea",
+        "updating_title": "Error",
+        "updating_message": "No se pudo actualizar la tarea"
+      }
+    },
+    "task-card": {
+      "name": "Nombre de la tarea",
+      "description": "Descripción",
+      "budget": "Presupuesto",
+      "specialty": "Especialidad",
+      "status": "Estado",
+      "responsible": "Responsable",
+      "unassigned": "Sin asignar",
+      "assign-responsible": "Asignar responsable"
+    }
   }
 }

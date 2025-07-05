@@ -16,6 +16,28 @@
       }
     }
   },
+  "change-management": {
+    "title": "Change Management",
+    "form": {
+      "justification-label": "Request justification",
+      "submit-button": "Submit request",
+      "cancel-button": "Cancel"
+    },
+    "new-request-button": "New change request",
+    "success-message": "Your change request has been submitted.",
+    "no-requests": "No change requests yet.",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "project-label": "Project ID",
+    "check-date-label": "Reviewed on",
+    "pending": "Pending review",
+    "approve-button": "Approve",
+    "reject-button": "Reject",
+    "response-label": "Contractor response"
+  },
   "toolbar": {
     "client-area": "Client Area",
     "projects": "Projects",
@@ -202,6 +224,11 @@
     "uploading_image": "Uploading image..."
   },
   "projects": {
+    "budget_pie": {
+      "title": "Distribución del Presupuesto",
+      "tasks": "Presupuesto en Tareas",
+      "remainder": "Presupuesto sin Asignar"
+    },
     "title": "Projects",
     "create": "New project",
     "empty": "No projects available",

@@ -16,6 +16,28 @@
       }
     }
   },
+  "change-management": {
+    "title": "Gestión de Cambios",
+    "form": {
+      "justification-label": "Justificación de la solicitud",
+      "submit-button": "Enviar solicitud",
+      "cancel-button": "Cancelar"
+    },
+    "new-request-button": "Nueva solicitud de cambio",
+    "success-message": "Tu solicitud de cambio ha sido enviada.",
+    "no-requests": "Aún no hay solicitudes de cambio.",
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "project-label": "ID del proyecto",
+    "check-date-label": "Revisado el",
+    "pending": "Pendiente de revisión",
+    "approve-button": "Aprobar",
+    "reject-button": "Rechazar",
+    "response-label": "Respuesta del contratista"
+  },
   "toolbar": {
     "client-area": "Área de Cliente",
     "projects": "Proyectos Asociados",
@@ -163,6 +185,12 @@
     }
   },  
   "projects": {
+
+      "budget_pie": {
+        "title": "Distribución del Presupuesto",
+        "tasks": "Presupuesto en Tareas",
+        "remainder": "Presupuesto sin Asignar"
+      },
     "title": "Proyectos",
     "create": "Nuevo proyecto",
     "empty": "No hay proyectos disponibles",

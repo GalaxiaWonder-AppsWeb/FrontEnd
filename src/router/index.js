@@ -30,6 +30,9 @@ import Schedule from '../projects/components/schedule.component.vue'
 import ClientLayout from '../public/components/client-layout.component.vue'
 import ClientProjects from '../public/components/clients-projects.component.vue'
 
+// Change Process
+import ChangeProcess from '../projects/components/change-management.component.vue'
+
 const routes = [
     {
         path: "/client",
@@ -46,6 +49,12 @@ const routes = [
                 path: 'projects/:projectId/information',
                 name: 'client-project-information',
                 component: ProjectInformation,
+                meta: { requiresAuth: true }
+            },
+            {
+                path: 'projects/:projectId/client-change-management',
+                name: 'client-change-management',
+                component: ChangeProcess,
                 meta: { requiresAuth: true }
             }
         ]
@@ -147,6 +156,13 @@ const routes = [
                                 component: ProjectMembers,
                                 meta: { allowedRoles: ['Coordinator', 'Specialist'] } // Todos pueden acceder
 
+                            },
+                            {
+                                // Vista de gestión de cambios del proyecto
+                                path: 'change-management',
+                                name: 'change-management',
+                                component: ChangeProcess,
+                                meta: { allowedRoles: ['Contractor', 'COORDINATOR', 'Coordinator'] } // Todos pueden acceder
                             },
                             {                        // Nueva vista de configuración del proyecto
                                 path: 'settings',

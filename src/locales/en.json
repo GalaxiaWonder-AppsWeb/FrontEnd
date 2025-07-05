@@ -16,6 +16,27 @@
       }
     }
   },
+  "change-management": {
+    "title": "Change Management",
+    "form": {
+      "justification-label": "Request justification",
+      "submit-button": "Submit request",
+      "cancel-button": "Cancel"
+    },
+    "new-request-button": "New change request",
+    "success-message": "Request sent successfully!",
+    "no-requests": "No requests registered.",
+    "project-label": "Project",
+    "check-date-label": "Review date",
+    "pending": "Pending",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "approve-button": "Approve",
+    "reject-button": "Reject"
+  },
   "toolbar": {
     "client-area": "Client Area",
     "projects": "Projects",

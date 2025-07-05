@@ -16,6 +16,28 @@
       }
     }
   },
+  "change-management": {
+    "title": "Gestión de Cambios",
+    "form": {
+      "justification-label": "Justificación de la solicitud",
+      "submit-button": "Enviar solicitud",
+      "cancel-button": "Cancelar"
+    },
+    "new-request-button": "Nueva solicitud de cambio",
+    "success-message": "¡Solicitud enviada correctamente!",
+    "no-requests": "No hay solicitudes registradas.",
+    "project-label": "Proyecto",
+    "check-date-label": "Fecha de revisión",
+    "pending": "Pendiente",
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "approve-button": "Aprobar",
+    "reject-button": "Rechazar"
+  }
+,
   "toolbar": {
     "client-area": "Área de Cliente",
     "projects": "Proyectos Asociados",

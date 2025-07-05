@@ -14,11 +14,32 @@
         </div>
       </div>
     </div>
+
+    <!-- NAV CLIENTE: Solo cuando esté en información o gestión de cambios -->
+    <nav
+        v-if="$route.name === 'client-project-information' || $route.name === 'client-change-management'"
+        class="client-project-nav"
+    >
+      <pv-button
+          text
+          :label="$t('projects.section.information')"
+          :class="{ active: $route.name === 'client-project-information' }"
+          @click="$router.push({ name: 'client-project-information', params: { projectId: $route.params.projectId } })"
+      />
+      <pv-button
+          text
+          :label="$t('projects.section.change-management')"
+          :class="{ active: $route.name === 'client-change-management' }"
+          @click="$router.push({ name: 'client-change-management', params: { projectId: $route.params.projectId } })"
+      />
+    </nav>
+
     <main class="client-main">
       <router-view />
     </main>
   </div>
 </template>
+
 
 <script>
 import LanguageSwitcher from './language-switcher.component.vue'
@@ -126,4 +147,25 @@ export default {
   align-items: center;
   margin-top: 72px; /* Ajusta según la altura de tu toolbar */
 }
+.client-project-nav {
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  position: fixed;
+  top: 72px;
+  left: 0;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+  color: black;
+}
+.client-project-nav .p-button.active .p-button-label {
+  color: #1e3a8a !important;
+  font-weight: bold;
+}
+::v-deep(.p-button-label){
+  color: black;
+}
+
 </style>

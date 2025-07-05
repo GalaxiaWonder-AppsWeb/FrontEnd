@@ -21,6 +21,12 @@
           <span>{{ $t('client.projects.card.start_date') }}: <b>{{ formatDate(project.startDate) }}</b></span>
           <span>{{ $t('client.projects.card.end_date') }}: <b>{{ formatDate(project.endDate) }}</b></span>
         </div>
+        <pv-button
+            :label="$t('client.projects.card.view_details')"
+            icon="pi pi-eye"
+            class="mt-4"
+            @click="goToProject(project.id)"
+        />
       </div>
     </div>
   </div>
@@ -54,6 +60,10 @@ export default {
       if (!dateStr) return ''
       const date = new Date(dateStr)
       return date.toLocaleDateString('es-PE')
+    },
+    goToProject(projectId) {
+      // Esto debe coincidir con tu ruta definida para la información del proyecto de cliente
+      this.$router.push({ name: 'client-project-information', params: { projectId } })
     }
   }
 }

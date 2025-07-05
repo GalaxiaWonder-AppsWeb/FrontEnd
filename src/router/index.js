@@ -41,6 +41,12 @@ const routes = [
                 name: 'client-projects',
                 component: ClientProjects,
                 meta: { requiresAuth: true, allowedUserTypes: ['TYPE_CLIENT'] }
+            },
+            {
+                path: 'projects/:projectId/information',
+                name: 'client-project-information',
+                component: ProjectInformation,
+                meta: { requiresAuth: true }
             }
         ]
     },

@@ -2,9 +2,12 @@
 import { useRoute, useRouter } from 'vue-router';
 import { projectService } from "../services/project.service.js";
 import {personService} from "../../shared/services/person.service.js";
+import ProjectBudgetPie from "./project-budget-pie.component.vue";
 
 export default {
-  name: "ProjectInformation",  data() {
+  name: "ProjectInformation",
+  components: {ProjectBudgetPie},
+  data() {
     return {
       route: useRoute(),
       router: useRouter(),
@@ -157,6 +160,7 @@ export default {
       <pv-button label="Volver a la lista de proyectos" @click="goBack" />
     </div>
   </div>
+  <ProjectBudgetPie v-if="projectId" :projectId="projectId" />
 </template>
 
 <style scoped>

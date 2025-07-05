@@ -30,4 +30,12 @@ export default defineComponent({
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
 }
+.pie-3d canvas,
+canvas.pie-3d {
+  background: #fff !important;
+  color: #22223b !important;
+  border-radius: 50% !important;
+  box-shadow: 0 10px 28px -6px #818cf8, 0 2px 24px 0 #a7f3d0 !important;
+  border: 2px solid #f3f4f6 !important;
+}
 </style>

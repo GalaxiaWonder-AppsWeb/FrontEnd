@@ -24,18 +24,19 @@
       "cancel-button": "Cancel"
     },
     "new-request-button": "New change request",
-    "success-message": "Request sent successfully!",
-    "no-requests": "No requests registered.",
-    "project-label": "Project",
-    "check-date-label": "Review date",
-    "pending": "Pending",
+    "success-message": "Your change request has been submitted.",
+    "no-requests": "No change requests yet.",
     "status": {
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected"
     },
+    "project-label": "Project ID",
+    "check-date-label": "Reviewed on",
+    "pending": "Pending review",
     "approve-button": "Approve",
-    "reject-button": "Reject"
+    "reject-button": "Reject",
+    "response-label": "Contractor response"
   },
   "toolbar": {
     "client-area": "Client Area",
@@ -223,6 +224,11 @@
     "uploading_image": "Uploading image..."
   },
   "projects": {
+    "budget_pie": {
+      "title": "Distribución del Presupuesto",
+      "tasks": "Presupuesto en Tareas",
+      "remainder": "Presupuesto sin Asignar"
+    },
     "title": "Projects",
     "create": "New project",
     "empty": "No projects available",

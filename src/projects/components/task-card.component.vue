@@ -40,7 +40,7 @@ const formattedDate = (date) => {
 
 // Rango de fechas formateado
 const dateRange = computed(() => {
-  return `${formattedDate(props.task.startingDate)} - ${formattedDate(props.task.dueDate)}`;
+  return `${formattedDate(props.task.startDate)} - ${formattedDate(props.task.endDate)}`;
 });
 
 // Color del estado para mostrar en la etiqueta
@@ -76,7 +76,6 @@ onMounted(() => {
         <span class="task-title">{{ props.task.name }}</span>
         <div class="card-icons">
           <pv-button icon="pi pi-pencil" text rounded @click="emit('edit', props.task)" />
-          <pv-button icon="pi pi-trash" text rounded severity="danger" @click="emit('delete', props.task)" />
         </div>
       </div>
     </template>
@@ -88,23 +87,23 @@ onMounted(() => {
     <template #content>
       <div class="task-details">
         <div class="detail-row">
-          <span class="label">Especialidad:</span>
+          <span class="label">{{ $t('tasks.task-card.specialty') }}</span>
           <pv-tag :value="props.task.specialty" severity="success" />
         </div>
         
         <div class="detail-row">
-          <span class="label">Estado:</span>
+          <span class="label">{{ $t('tasks.task-card.status') }}</span>
           <pv-tag :value="props.task.status" :severity="statusColor" />
         </div>
         
         <div class="detail-row">
-          <span class="label">Responsable:</span>
+          <span class="label">{{ $t('tasks.task-card.responsible') }}</span>
           <div class="responsible-info">
             <span v-if="loadingResponsible" class="loading-text">
               <i class="pi pi-spin pi-spinner" style="font-size: 0.85rem;"></i> Cargando...
             </span>
             <span v-else-if="!props.task.responsible" class="unassigned">
-              <i class="pi pi-user-minus"></i> Sin asignar
+              <i class="pi pi-user-minus"></i> {{$t('tasks.task-card.unassigned')}}
             </span>
             <span v-else class="assigned">
               <i class="pi pi-user"></i> {{ responsibleName }}
@@ -127,7 +126,7 @@ onMounted(() => {
         <!-- Acciones estándar para tareas no asignadas al usuario -->
         <pv-button 
           icon="pi pi-user-plus" 
-          label="Asignar Responsable" 
+          :label="$t('tasks.task-card.assign-responsible')"
           class="w-full" 
           outlined 
           @click="emit('assign', props.task)" 

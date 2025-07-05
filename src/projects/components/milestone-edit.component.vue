@@ -132,11 +132,11 @@ const minEndDate = computed(() => {
     :modal="true"
     :closable="false"
     :style="{ width: '500px' }"
-    :header="isNewMilestone ? 'Create Milestone' : 'Edit Milestone'"
+    :header="$t('schedule.edit-milestone.title')"
   >
     <div class="form-container">
       <div class="form-field">
-        <label for="name">Milestone Name*</label>
+        <label for="name">{{ $t('schedule.edit-milestone.name') }}</label>
         <pv-input-text
           id="name"
           v-model="formData.name"
@@ -146,7 +146,7 @@ const minEndDate = computed(() => {
         />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
 
-        <label for="name">Milestone Description*</label>
+        <label for="name">{{ $t('schedule.edit-milestone.description') }}</label>
         <pv-input-text
             id="name"
             v-model="formData.description"
@@ -159,7 +159,7 @@ const minEndDate = computed(() => {
       
       <div class="form-dates">
         <div class="form-field">
-          <label for="startDate">Start Date*</label>
+          <label for="startDate">{{ $t('schedule.edit-milestone.start-date') }}</label>
           <pv-date-picker 
             id="startDate" 
             v-model="formData.startDate" 
@@ -171,7 +171,7 @@ const minEndDate = computed(() => {
         </div>
         
         <div class="form-field">
-          <label for="endDate">End Date*</label>
+          <label for="endDate">{{ $t('schedule.edit-milestone.end-date') }}</label>
           <pv-date-picker 
             id="endDate" 
             v-model="formData.endDate" 
@@ -188,15 +188,15 @@ const minEndDate = computed(() => {
       <div class="form-info">
         <i class="pi pi-info-circle"></i>
         <small>
-          Milestones help you organize tasks into logical groups or phases.
+          {{ $t('schedule.edit-milestone.key-point') }}
         </small>
       </div>
     </div>
     
     <template #footer>
       <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="cancel" />
-        <pv-button label="Save" icon="pi pi-check" @click="saveMilestone" />
+        <pv-button :label="$t('schedule.edit-milestone.cancel')" icon="pi pi-times" class="p-button-text" @click="cancel" />
+        <pv-button :label="$t('schedule.edit-milestone.save')" icon="pi pi-check" @click="saveMilestone" />
       </div>
     </template>
   </pv-dialog>

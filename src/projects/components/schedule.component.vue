@@ -135,7 +135,7 @@ const handleCreateMilestone = async (milestone) => {
     <!-- Schedule Header -->
     <div class="schedule-header">
       <div class="header-left">
-        <h1 class="schedule-title">Project Schedule</h1>
+        <h1 class="schedule-title">{{ $t('schedule.title') }}</h1>
         
         <!-- Navigation for task view -->
         <div v-if="activeTab === 'tasks'" class="navigation">
@@ -155,7 +155,7 @@ const handleCreateMilestone = async (milestone) => {
         <!-- Add milestone button (only on milestones tab) -->
         <pv-button 
           v-if="activeTab === 'milestones'"
-          label="Add Milestone" 
+          :label="$t('schedule.add-milestone')"
           icon="pi pi-plus" 
           @click="openCreateMilestone" 
         />
@@ -211,7 +211,7 @@ const handleCreateMilestone = async (milestone) => {
       
       <!-- Tasks Tab -->
       <div v-else-if="activeTab === 'tasks'" class="tasks-container">
-        <task-list v-if="selectedMilestoneId" :milestoneId="selectedMilestoneId" />      </div>
+        <task-list v-if="selectedMilestoneId" :project-id="projectId" :milestoneId="selectedMilestoneId" />      </div>
     </div>
     
     <!-- Create Milestone Dialog -->    <create-milestone

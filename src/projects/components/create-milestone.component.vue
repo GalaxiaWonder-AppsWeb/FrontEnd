@@ -97,30 +97,26 @@ export default {
     header="Create New Milestone"
   >
     <div class="form-container">
-      <div class="milestone-icon">
-        <i class="pi pi-flag"></i>
-        <h3>New Project Milestone</h3>
-      </div>
       
       <div class="form-field">
-        <label for="name">Milestone Name*</label>
+        <label for="name">{{ $t('schedule.create-milestone.name') }}</label>
         <pv-input-text 
           id="name" 
           v-model="formData.name" 
           class="w-full" 
           :class="{ 'p-invalid': errors.name }"
-          placeholder="Enter milestone name"
+          :placeholder="$t('schedule.create-milestone.name-placeholder')"
           autofocus
         />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
 
-        <label for="name">Milestone Description*</label>
+        <label for="name">{{ $t('schedule.create-milestone.description') }}</label>
         <pv-input-text
             id="name"
             v-model="formData.description"
             class="w-full"
             :class="{ 'p-invalid': errors.description }"
-            placeholder="Enter milestone name"
+            :placeholder="$t('schedule.create-milestone.description-placeholder')"
             autofocus
         />
         <small v-if="errors.description" class="p-error">{{ errors.description }}</small>
@@ -128,7 +124,7 @@ export default {
       
       <div class="form-dates">
         <div class="form-field">
-          <label for="startDate">Start Date*</label>
+          <label for="startDate">{{ $t('schedule.create-milestone.start-date') }}</label>
           <pv-date-picker 
             id="startDate" 
             v-model="formData.startDate" 
@@ -140,7 +136,7 @@ export default {
         </div>
         
         <div class="form-field">
-          <label for="endDate">End Date*</label>
+          <label for="endDate">{{ $t('schedule.create-milestone.end-date') }}</label>
           <pv-date-picker 
             id="endDate" 
             v-model="formData.endDate" 
@@ -157,15 +153,15 @@ export default {
       <div class="form-info">
         <i class="pi pi-info-circle"></i>
         <small>
-          Milestones are key points in your project schedule that mark important phases or deliverables.
+          {{ $t('schedule.create-milestone.key-point') }}
         </small>
       </div>
     </div>
     
     <template #footer>
       <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
-        <pv-button label="Create" icon="pi pi-check" @click="createMilestone" />
+        <pv-button :label="$t('schedule.create-milestone.cancel')" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
+        <pv-button :label="$t('schedule.create-milestone.create')" icon="pi pi-check" @click="createMilestone" />
       </div>
     </template>
   </pv-dialog>

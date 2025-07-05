@@ -26,7 +26,30 @@ import ProjectMembers from '../projects/components/project-members.component.vue
 import ProjectSettings from '../projects/components/project-setting.component.vue'
 import Schedule from '../projects/components/schedule.component.vue'
 
+// Client
+import ClientLayout from '../public/components/client-layout.component.vue'
+import ClientProjects from '../public/components/clients-projects.component.vue'
+
 const routes = [
+    {
+        path: "/client",
+        component: ClientLayout,
+        meta: { requiresAuth: true, allowedUserTypes: ['TYPE_CLIENT']},
+        children: [
+            {
+                path: 'projects',
+                name: 'client-projects',
+                component: ClientProjects,
+                meta: { requiresAuth: true, allowedUserTypes: ['TYPE_CLIENT'] }
+            },
+            {
+                path: 'projects/:projectId/information',
+                name: 'client-project-information',
+                component: ProjectInformation,
+                meta: { requiresAuth: true }
+            }
+        ]
+    },
     {
         path: '/',
         redirect: '/login'
@@ -148,7 +171,8 @@ const routes = [
 
                 ]
             }
-        ]    }
+        ]
+    }
 ]
 
 const router = createRouter({
@@ -156,5 +180,47 @@ const router = createRouter({
     routes
 })
 
+// BEFORE EACH GUARD PARA CONTROL DE ACCESO POR TIPO DE USUARIO
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login', '/register'];
+    const authRequired = to.matched.some(record => record.meta.requiresAuth);
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+
+    // Si no requiere auth, continuar
+    if (!authRequired) return next();
+
+    // Si no hay usuario autenticado, redirigir a login
+    if (!user) return next({ name: 'login' });
+
+    // --- PROTECCIÓN POR TIPO DE USUARIO ---
+    const allowedUserTypes = to.matched
+        .map(record => record.meta?.allowedUserTypes ?? [])
+        .filter(Boolean)
+        .flat();
+
+    if (allowedUserTypes.length > 0 && !allowedUserTypes.includes(user.userType)) {
+        // Si intenta entrar a ruta exclusiva de otro tipo, redirigir a su dashboard
+        if (user.userType === 'TYPE_CLIENT') {
+            return next({ name: 'client-projects' });
+        } else {
+            // Aquí puedes personalizar a dónde lo llevas si es otro tipo
+            return next({ name: 'organizations' });
+        }
+    }
+
+    // Si es TYPE_CLIENT, forzar navegación SOLO por /client/...
+    if (user.userType === 'TYPE_CLIENT' && !to.path.startsWith('/client')) {
+        return next({ name: 'client-projects' });
+    }
+
+    // Si NO es TYPE_CLIENT y trata de ir a /client, lo bloqueas
+    if (user.userType !== 'TYPE_CLIENT' && to.path.startsWith('/client')) {
+        return next({ name: 'organizations' });
+    }
+
+    // Si todo bien, dejar pasar
+    next();
+});
 
 export default router

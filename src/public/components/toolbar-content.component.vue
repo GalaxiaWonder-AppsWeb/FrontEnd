@@ -1,6 +1,7 @@
 <template>
   <div class="toolbar-container">
-    <!-- Parte superior fija -->    <pv-toolbar class="toolbar-top">
+    <!-- Parte superior fija -->
+    <pv-toolbar class="toolbar-top">
       <template #start>
         <div class="title-section">
           <!-- Botón de navegación hacia atrás, mostrado solo en vistas específicas -->
@@ -55,7 +56,9 @@
         </div>
         <LanguageSwitcher />
       </template>
-    </pv-toolbar>    <!-- Parte inferior: navegación dinámica -->    <nav class="toolbar-nav">
+    </pv-toolbar>
+    <!-- Parte inferior: navegación dinámica -->
+    <nav class="toolbar-nav">
       <template v-if="inOrganizationView">
         <!-- Opciones siempre visibles para todos los miembros -->
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
@@ -87,15 +90,14 @@
 <script>
 import { useRoute, useRouter } from 'vue-router'
 import LanguageSwitcher from './language-switcher.component.vue'
-//import NotificationBell from '../../organizations/components/notification-bell.component.vue'
 import { authService } from '../../iam/services/auth.service.js'
 
 export default {
   name: 'ToolbarComponent',
   components: {
-    LanguageSwitcher,
-    //NotificationBell
-  },  data() {
+    LanguageSwitcher
+  },
+  data() {
     return {
       route: useRoute(),
       router: useRouter(),
@@ -103,7 +105,8 @@ export default {
       isAuthenticated: false,
       showProfileMenu: false,
       isContractor: false,
-      isCoordinator: false
+      isCoordinator: false,
+      isClient: false
     }
   },
   async mounted() {
@@ -115,7 +118,13 @@ export default {
     if (this.inOrganizationView) {
       this.isContractor = await this.userHasRole('Contractor');
     }
-  },  async created() {
+  },
+  async created() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    this.isClient = user.userType === 'TYPE_CLIENT'
+    this.currentUser = user
+
+
     // Verificar el rol del usuario cuando se crea el componente
     if (this.inOrganizationView) {
       this.isContractor = this.userHasRole('Contractor');

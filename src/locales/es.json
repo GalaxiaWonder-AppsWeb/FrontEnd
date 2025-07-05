@@ -1,4 +1,27 @@
 {
+  "client": {
+    "layout": {
+      "title": "Área del Cliente"
+    },
+    "projects": {
+      "title": "Proyectos",
+      "card": {
+        "name": "Nombre del Proyecto",
+        "description": "Descripción",
+        "budget": "Presupuesto",
+        "start_date": "Fecha de Inicio",
+        "end_date": "Fecha de Fin",
+        "status": "Estado",
+        "view_details": "Ver Detalles"
+      }
+    }
+  },
+  "toolbar": {
+    "client-area": "Área de Cliente",
+    "projects": "Proyectos Asociados",
+    "logout": "Cerrar sesión",
+    "profile": "Perfil"
+  },
   "navigation-toolbar": {
     "back": "Volver",
     "all_organizations": "Todas las Organizaciones"

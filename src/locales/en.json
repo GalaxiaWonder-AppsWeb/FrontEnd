@@ -1,4 +1,27 @@
 {
+  "client": {
+    "layout": {
+      "title": "Client Area"
+    },
+    "projects": {
+      "title": "Projects",
+      "card": {
+        "name": "Project Name",
+        "description": "Description",
+        "budget": "Budget",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "status": "Status",
+        "view_details": "View Details"
+      }
+    }
+  },
+  "toolbar": {
+    "client-area": "Client Area",
+    "projects": "Projects",
+    "logout": "Sign out",
+    "profile": "Profile"
+  },
   "auth": {
     "logout": "Sign out",
     "logout_success": "Successfully signed out"

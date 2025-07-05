@@ -70,14 +70,12 @@ export default {
 </script>
 
 <style scoped>
-.client-projects {
 
-}
 .projects-title {
   font-weight: bold;
   font-size: 1.25rem;
   margin-bottom: 2rem;
-  color: #1e3a8a;
+  color: var(--color-primary) !important;
   text-align: center;
 }
 .projects-list {
@@ -88,6 +86,7 @@ export default {
   min-height: 120px;
   max-width: 420px;
   color: #22223b;
+  background-color: var(--color-neutral-light);
   border-radius: 18px;
   box-shadow: 0 4px 16px rgba(30,58,138,0.12);
   padding: 2rem 2.5rem;

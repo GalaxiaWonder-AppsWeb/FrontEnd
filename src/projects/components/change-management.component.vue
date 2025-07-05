@@ -1,6 +1,6 @@
 <template>
   <div class="change-management">
-    <h2>{{ $t('change-management.title') }}</h2>
+    <h2 class="change-management-title">{{ $t('change-management.title') }}</h2>
     <div v-if="isClient">
       <div v-if="showForm" class="request-form">
         <pv-textarea
@@ -204,10 +204,11 @@ export default {
 
 <style scoped>
 .change-management {
-  color: #22223b;
-  background: #f8f9fb;
-  min-height: 100vh;
-  padding: 2rem 0 0 0;
+  padding: 2rem;
+}
+
+.change-management-title{
+  color: var(--color-neutral-dark);
 }
 
 .request-form {
@@ -334,5 +335,10 @@ export default {
 .response-text {
   font-size: 0.97rem;
   color: #1e293b;
+}
+
+.p-button {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
 }
 </style>

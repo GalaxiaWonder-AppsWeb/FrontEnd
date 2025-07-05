@@ -5,6 +5,7 @@
     },
     "projects": {
       "title": "Proyectos",
+      "loading": "Cargando proyectos...",
       "card": {
         "name": "Nombre del Proyecto",
         "description": "Descripción",
@@ -65,7 +66,7 @@
     "password": "Contraseña",
     "submit": "Registrarse",
     "successful-register": "exitosamente registrado",
-    "go-to-login": "Inicia sesión aquí",
+    "go-to-login": "¿Ya tienes una cuenta? Inicia sesión aquí",
     "roles": {
       "title": "Rol",
       "choose-role": "Selecciona un rol",
@@ -244,6 +245,8 @@
         "organization-member-placeholder": "Selecciona un miembro de la organización",
         "role": "Rol del Miembro",
         "role-placeholder": "Selecciona un rol para el miembro",
+        "specialty": "Especialidad del Miembro",
+        "specialty-placeholder": "Selecciona una especialidad para el miembro",
         "cancel": "Cancelar",
         "add": "Agregar al Proyecto",
         "subtitle": "Agregar miembros al equipo del proyecto",
@@ -401,6 +404,12 @@
     "create": "Nueva tarea",
     "no-tasks": "No hay tareas disponibles",
     "close": "Cerrar",
+    "confirm_delete": "¿Estás seguro de que deseas eliminar esta tarea? Esta acción no se puede deshacer.",
+    "confirm_delete_title": "Confirmar eliminación",
+    "updated_success": "Tarea actualizada correctamente",
+    "created_success": "Tarea creada correctamente",
+    "error_loading": "Error al cargar las tareas",
+    "deleted_success": "Tarea eliminada correctamente",
     "create-task": {
       "title": "Crear nueva tarea",
       "name": "Nombre de la tarea",
@@ -454,6 +463,49 @@
       "responsible": "Responsable",
       "unassigned": "Sin asignar",
       "assign-responsible": "Asignar responsable"
+    }
+  },
+  "footer": {
+    "learn-about": {
+      "title": "Acerca de",
+      "privacy-policy": "Política de Privacidad"
+    },
+    "contact-us": "Contáctanos",
+    "rights": "Todos los derechos reservados."
+  },
+  "terms-and-conditions": {
+    "title": "Términos y Condiciones",
+    "introduction": {
+      "title": "Introducción",
+      "content": "Este documento establece los términos y condiciones de uso para ProP GMS, desarrollado por el equipo de Galaxia Wonder. Al acceder y utilizar esta plataforma, usted acepta estos términos."
+    },
+    "use-of-the-service": {
+      "title": "Uso del Servicio",
+      "content": "El usuario se compromete a hacer un uso responsable y ético de la plataforma, respetando las funcionalidades ofrecidas y evitando el mal uso."
+    },
+    "user-responsibility": {
+      "title": "Responsabilidad del Usuario",
+      "content": "El usuario es responsable de la veracidad de los datos que proporciona y del uso adecuado de la plataforma."
+    },
+    "responsibility-of-the-development-team": {
+      "title": "Responsabilidad del Equipo de Desarrollo",
+      "content": "El equipo se compromete a velar por el correcto funcionamiento del software, realizar el mantenimiento continuo y actuar de manera profesional y ética en todas las etapas del desarrollo."
+    },
+    "privacy-and-data-protection": {
+      "title": "Privacidad y Protección de Datos",
+      "content": "Se garantiza la confidencialidad y seguridad de los datos personales del usuario, y no serán compartidos con terceros sin consentimiento. Se aplican principios de privacidad por diseño y cumplimiento de la normativa vigente."
+    },
+    "intellectual-property": {
+      "title": "Propiedad Intelectual",
+      "content": "Todos los derechos de diseño, desarrollo y contenido pertenecen al equipo de desarrollo, salvo indicación contraria."
+    },
+    "ethical-and-professional-principles": {
+      "title": "Principios Éticos y Profesionales",
+      "content": "Nuestro equipo se rige por el Código de Ética Profesional de la ACM/IEEE y el Colegio de Ingenieros del Perú (CIP). Promovemos:\nTransparencia en la ingeniería de software.\nCompromiso con la calidad, equidad y accesibilidad.\nRespeto por los derechos de los usuarios y la sociedad."
+    },
+    "modifications-and-contact": {
+      "title": "Modificaciones y Contacto",
+      "content": "Nos reservamos el derecho de actualizar estos términos. Para consultas, contáctenos en:"
     }
   }
 }

@@ -1,4 +1,5 @@
 <template>
+  <pv-confirm-dialog />
   <div class="task-list-container">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">{{ $t('tasks.title') }}</h2>
@@ -22,7 +23,7 @@
 
     <div v-if="loading" class="text-center p-4">
       <pv-progress-spinner style="width: 50px; height: 50px;" />
-      <div class="mt-2">xd</div>
+      <div class="mt-2"></div>
     </div>
 
     <div v-else-if="tasks.length === 0" class="text-gray-500 text-center p-4">
@@ -35,6 +36,7 @@
           :key="task.id"
           :task="task"
           @edit="handleEditTask"
+          @delete="handleDelete"
       />
       <EditTask
           v-if="showEditDialog"
@@ -91,11 +93,41 @@ export default {
     }
   },
   methods: {
+    async handleDelete(task) {
+      // Confirmación antes de eliminar
+      const self = this
+      this.$confirm.require({
+        message: this.$t('tasks.confirm_delete') || '¿Deseas eliminar esta tarea?',
+        header: this.$t('tasks.confirm_delete_title') || 'Eliminar tarea',
+        icon: 'pi pi-exclamation-triangle',
+        accept: async () => {
+          try {
+            await taskService.delete(task.id)
+            await self.loadTasks()
+            self.$toast.add({
+              severity: 'success',
+              summary: this.$t('tasks.deleted_success') || 'Tarea eliminada',
+              life: 3000
+            })
+          } catch (e) {
+            self.$toast.add({
+              severity: 'error',
+              summary: this.$t('tasks.deleted_error') || 'Error al eliminar tarea',
+              detail: e.message,
+              life: 3000
+            })
+          } finally {
+            self.$confirm.close(); // <--- CIERRA el modal manualmente
+          }
+        }
+      })
+    },
     async loadTasks() {
       this.loading = true
       try {
         const response = await taskService.getByMilestoneId({ milestoneId: Number(this.milestoneId) })
         this.tasks = Array.isArray(response) ? response : []
+        console.log('Tareas:', this.tasks);
       } catch (e) {
         this.error = e.message || 'Error al cargar tareas'
       } finally {

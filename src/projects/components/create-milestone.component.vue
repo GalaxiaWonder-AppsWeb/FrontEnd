@@ -64,7 +64,7 @@ export default {
         };
         await milestoneService.create(payload);
 
-        this.$emit('milestone-created'); // O puedes pasarle el hito creado si el backend lo retorna
+        this.$emit('milestoneCreated'); // O puedes pasarle el hito creado si el backend lo retorna
         this.updateVisible(false);
         this.$toast?.add?.({
           severity: 'success',

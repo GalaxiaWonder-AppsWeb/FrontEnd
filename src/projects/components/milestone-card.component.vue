@@ -45,14 +45,6 @@ const handleEditClick = () => {
 
 <template>
   <pv-card class="milestone-card">
-    <template #header>
-      <div class="card-header-content">
-        <div class="milestone-progress">
-          <pv-progress-bar :value="progressPercentage" />
-          <span class="progress-text">{{ progressPercentage }}%</span>
-        </div>
-      </div>
-    </template>
     
     <template #title>
       <div class="card-title-container">
@@ -82,20 +74,11 @@ const handleEditClick = () => {
       <div class="milestone-dates">{{ dateRange }}</div>
     </template>
 
-    <template #content>
-      <div class="milestone-stats">
-        <div class="stat-item">
-          <i class="pi pi-check-square"></i>
-          <span>{{ tasksCount }} {{ $t('schedule.milestone-card.tasks') }}</span>
-        </div>
-      </div>
-    </template>
-
     <template #footer>
       <pv-button 
         :label="$t('schedule.milestone-card.view-tasks')"
         icon="pi pi-list" 
-        class="w-full p-button-outlined" 
+        class="view-tasks-btn"
         @click="emit('view-tasks', milestone)"
       />
     </template>
@@ -106,66 +89,109 @@ const handleEditClick = () => {
 .milestone-card {
   width: 100%;
   margin-bottom: 1rem;
-  border-left: 4px solid var(--primary-color);
+  background: var(--color-neutral-light, #F6FAF9);
+  border-radius: 14px;
+  border: 1.5px solid var(--color-primary-light, #E1E8EC);
+  box-shadow: 0 2px 18px 0 rgba(34,57,107,0.07), 0 1.5px 7px 0 rgba(0,0,0,0.06);
+  padding: 1.3rem 1.25rem 1.25rem 1.25rem;
+  transition: box-shadow 0.18s, border-color 0.18s;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.milestone-card:hover {
+  box-shadow: 0 6px 22px 0 rgba(34,57,107,0.15), 0 3px 12px 0 rgba(0,0,0,0.09);
+  border-color: var(--color-primary, #22396B);
 }
 
 .card-header-content {
-  padding: 0.5rem 1rem;
-  background-color: var(--surface-ground);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
 }
 
 .milestone-progress {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.progress-text {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.card-title-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  position: absolute;
+  top: 0.9rem;
+  left: 1.2rem;
+  color: var(--color-primary, #22396B);
+  font-size: 0.83rem;
+  font-weight: bold;
+  padding: 2px 12px;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px 0 rgba(250,185,0,0.08);
 }
 
 .milestone-title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-primary, #22396B);
+  letter-spacing: 0.01em;
 }
 
 .milestone-actions {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.5rem;
+}
+
+.milestone-actions .p-button {
+  background: var(--color-primary, #22396B) !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 50%;
+  padding: 0.45rem !important;
+  box-shadow: none;
+  transition: background 0.13s;
+}
+.milestone-actions .p-button:hover {
+  background: var(--color-secondary, #FAB900) !important;
+  color: var(--color-primary, #22396B) !important;
 }
 
 .milestone-dates {
-  color: var(--text-color-secondary);
-  font-size: 0.875rem;
+  color: var(--color-neutral-dark, #0C0C20);
+  font-size: 0.95rem;
+  margin: 0.4rem 0 0.8rem 0;
 }
 
-.milestone-stats {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.stat-item {
+.milestone-stats, .stat-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .stat-item i {
-  color: var(--primary-color);
+  color: var(--color-primary, #22396B);
+  font-size: 1.09rem;
+}
+.stat-item {
+  color: var(--color-neutral-dark, #0C0C20);
   font-size: 1rem;
 }
 
-:deep(.p-card-content) {
-  padding-top: 1rem;
+.view-tasks-btn {
+  background: var(--color-primary, #22396B) !important;
+  color: #fff !important;
+  border-radius: 7px !important;
+  border: none !important;
+  margin-top: 1rem;
+  font-weight: 500;
+  font-size: 1.02rem;
+  padding: 0.45rem 1.2rem !important;
+  box-shadow: 0 1.5px 7px 0 rgba(34,57,107,0.07);
+  transition: background 0.13s;
 }
+.view-tasks-btn:hover {
+  background: var(--color-secondary, #FAB900) !important;
+  color: var(--color-primary, #22396B) !important;
+}
+
+/* Si usas PrimeVue Card, ajusta el padding para un look limpio */
+:deep(.p-card-content) {
+  padding-top: 0.7rem !important;
+  padding-bottom: 0 !important;
+}
+
 </style>

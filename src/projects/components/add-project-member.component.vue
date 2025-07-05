@@ -10,7 +10,7 @@
       <!-- Selector de miembro -->
       <div class="p-field">
         <label>{{ $t('projects.working-team.add-member.organization-member') }}</label>
-        <pv-dropdown
+        <pv-select
             v-model="selectedMember"
             :options="members"
             optionLabel="email"
@@ -24,7 +24,7 @@
       <!-- Selector de rol -->
       <div class="p-field">
         <label>{{ $t('projects.working-team.add-member.role') }}</label>
-        <pv-dropdown
+        <pv-select
             v-model="selectedRole"
             :options="roleOptions"
             optionLabel="label"
@@ -40,7 +40,7 @@
         <label>{{ $t('projects.working-team.add-member.specialty') }}</label>
         <pv-input-text
             v-model="specialty"
-            :placeholder="$t('projects.members.specialty_placeholder')"
+            :placeholder="$t('projects.working-team.add-member.specialty-placeholder')"
             :disabled="loading"
             required
         />
@@ -72,9 +72,11 @@
 import { organizationService } from '../../organizations/services/organization.service.js';
 import { projectTeamMemberService } from '../services/project-team-member.service.js';
 import { ProjectRole } from '../model/project-role.js';
+import {Select as PvSelect} from "primevue";
 
 export default {
   name: 'AddProjectMember',
+  components: {PvSelect},
   props: {
     organizationId: { type: [String, Number], required: true },
     projectId: { type: [String, Number], required: true },

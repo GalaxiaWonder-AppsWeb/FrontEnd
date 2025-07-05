@@ -57,7 +57,7 @@ export default {
         } else {
           this.currentUserId = null;
         }
-        this.checkIfCreator();
+        await this.checkIfCreator();
       } catch (error) {
         console.error("Error loading current user:", error);
         this.currentUserId = null;
@@ -73,13 +73,7 @@ export default {
             return; // Evitamos la petición innecesaria
           }
         }
-        
-        // Si no tenemos el rol guardado, obtenemos la organización 
-        // (ahora con caché gracias a las modificaciones en organization.service.js)
-        const org = await import('../services/organization.service.js').then(m => m.organizationService.getById(this.organizationId));
-        const createdBy = org?.createdBy || (org?.data && org.data.createdBy);
-        this.isCreator = createdBy === this.currentUserId;
-        } catch (error) {
+      } catch (error) {
         console.error("Error al verificar el creador de la organización:", error);
         this.isCreator = false;
       }
@@ -90,6 +84,7 @@ export default {
       try {
         const response = await organizationService.getAllMembers(this.organizationId);
         const members = Array.isArray(response?.data) ? response.data : response;
+        console.log("members", members);
 
         // Mapea y normaliza la respuesta según lo que espera el card
         this.members = members.map(m => ({
@@ -112,10 +107,10 @@ export default {
         this.loading = false;
       }
     },
-
     openInviteDialog() {
       this.showInviteDialog = true;
-    },confirmRemoveMember(memberId, memberName) {
+    },
+    confirmRemoveMember(memberId, memberName) {
       if (!this.isCreator) {
         this.$toast.add({
           severity: 'error',

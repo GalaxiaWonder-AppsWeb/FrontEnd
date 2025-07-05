@@ -226,7 +226,7 @@ label {
 }
 
 .danger-zone h2 {
-  color: var(--red-600);
+  color: var(--red-600) !important;
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }

@@ -19,11 +19,21 @@ export default {
       showModal: false,
       projectId: null,
       organizationId: null,
+      currentUserId: null,
+      currentOrgRole: null,
+      currentProjectRole: null,
     }
   },
   created() {
     const orgId = this.$route.params.organizationId || this.$route.params.orgId;
     const projId = this.$route.params.projectId;
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.currentUserId = user.personId || user.id || null;
+    this.currentOrgRole = user.activeOrganizationRole || null;
+    this.currentProjectRole = user.activeProjectRole || null;
+    console.log('User data:', user);
+    this.currentUserRole = user.activeOrganizationRole || user.role || null; // Ajusta el campo según tu modelo
+    console.log('Current user role:', this.currentUserRole);
 
     this.organizationId = orgId ? Number(orgId) : 1
     this.projectId = projId ? Number(projId) : 1
@@ -33,6 +43,17 @@ export default {
     this.confirm = useConfirm()
   },
   methods: {
+    canRemoveMember(member) {
+      return (
+          this.currentOrgRole === 'Contractor' &&
+          this.currentProjectRole === 'Coordinator'
+      );
+    },
+    // Muestra el tacho si el miembro NO soy yo
+    showTrashForMember(member) {
+      // member.personId (o member.id) debe coincidir con tu currentUserId
+      return member.personId !== this.currentUserId;
+    },
     async loadMembers() {
       this.loading = true
       try {
@@ -67,7 +88,8 @@ export default {
         header: 'Confirmar eliminación',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
-          this.removeMember(member.id)
+          this.removeMember(member.id);
+          this.confirm.close();
         }
       })
     },
@@ -96,13 +118,10 @@ export default {
     getPersonName(member) {
       if (!member) return 'Miembro desconocido'
       // Si backend retorna el nombre directamente:
-      if (member.name && member.lastName) return `${member.name} ${member.lastName}`
+      if (member.firstName && member.lastName) return `${member.firstName} ${member.lastName}`
       if (member.email) return member.email
       return `Miembro ID: ${member.id}`
     },
-    getPersonEmail(member) {
-      return member && member.email ? member.email : ''
-    }
   }
 }
 </script>
@@ -137,7 +156,8 @@ export default {
       <div v-for="member in projectMembers" :key="member.id" class="h-full">
         <ProjectMemberCard
             :member="member"
-            :person="{ name: getPersonName(member), email: getPersonEmail(member) }"
+            :can-remove="canRemoveMember(member)"
+            :show-trash="showTrashForMember(member)"
             @remove="confirmRemoveMember(member)"
         />
       </div>

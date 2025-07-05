@@ -425,4 +425,27 @@ label {
 .p-invalid {
   border-color: #f44336 !important;
 }
+
+
+.p-field textarea,
+.pv-textarea,
+.p-inputtextarea {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: 120px !important;  /* Ajusta a tu preferencia */
+  min-height: 120px !important;
+  max-height: 120px !important;
+  resize: none !important;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.p-button-danger,
+.p-button-danger:enabled:hover,
+.p-button-danger:enabled:active,
+.p-button-danger.p-button-outlined {
+  background-color: #e53935 !important;
+  border-color: #e53935 !important;
+  color: #fff !important;
+}
 </style>

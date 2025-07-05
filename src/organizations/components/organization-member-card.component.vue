@@ -3,6 +3,11 @@ import { OrganizationMemberType } from '../model/organization-member-type.js';
 
 export default {
   name: "OrganizationMemberCard",
+  computed: {
+    OrganizationMemberType() {
+      return OrganizationMemberType
+    }
+  },
   props: {
     member: {
       type: Object,
@@ -86,7 +91,7 @@ export default {
       </div>
     </template>
 
-    <template #footer v-if="isCreator && member.personId !== currentUserId">
+    <template #footer v-if="isCreator && member.personId !== currentUserId && member.type !== OrganizationMemberType.CONTRACTOR">
       <div class="member-actions">
         <pv-button
             icon="pi pi-trash"

@@ -294,6 +294,7 @@ onMounted(loadMilestones);
   justify-content: center;
   padding: 2rem;
   text-align: center;
+  color: var(--color-neutral-dark);
 }
 
 .error-message {

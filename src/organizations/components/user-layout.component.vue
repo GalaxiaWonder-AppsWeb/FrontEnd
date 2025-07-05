@@ -40,4 +40,10 @@ export default {
   padding: 2rem;
   overflow-y: auto;
 }
+
+.p-button {
+  background: var(--color-primary) ;
+  border-color: var(--color-primary);
+  color: #fff ;
+}
 </style>

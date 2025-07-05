@@ -121,7 +121,7 @@ export default {
 }
 .mb-3 {
   margin-bottom: 1.5rem;
-  color: #fff;
+  color: var(--color-neutral-dark);
   text-shadow: 0 1px 8px rgba(218, 59, 59, 0.2);
   font-size: 1.6rem;
   font-weight: 700;

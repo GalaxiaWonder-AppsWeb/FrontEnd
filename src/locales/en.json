@@ -5,6 +5,7 @@
     },
     "projects": {
       "title": "Projects",
+      "loading": "Loading projects...",
       "card": {
         "name": "Project Name",
         "description": "Description",
@@ -282,6 +283,8 @@
         "organization-member-placeholder": "Select organization member",
         "role": "Member Roles",
         "role-placeholder": "Select member role",
+        "specialty": "Specialty",
+        "specialty-placeholder": "Select member specialty",
         "cancel": "Cancel",
         "add": "Add Member",
         "subtitle": "Add members to the project team",
@@ -403,7 +406,12 @@
     "title": "Tasks",
     "create": "New Task",
     "no-tasks": "No tasks available",
+    "created_success": "Task successfully created",
+    "confirm_delete": "Are you sure you want to delete this task? This action cannot be undone.",
+    "confirm_delete_title": "Confirm Deletion",
     "close": "Close",
+    "deleted_success": "Task successfully deleted",
+    "updated_success": "Task successfully updated",
     "create-task": {
       "title": "Create New Task",
       "name": "Task Name",
@@ -457,6 +465,49 @@
       "responsible": "Responsible",
       "unassigned": "Unassigned",
       "assign-responsible": "Assign Responsible"
+    }
+  },
+  "footer": {
+    "learn-about": {
+      "title": "Learn About",
+      "privacy-policy": "Privacy Policy"
+    },
+    "contact-us": "Contact Us",
+    "rights": "All rights reserved."
+  },
+  "terms-and-conditions": {
+    "title": "Terms & Conditions",
+    "introduction": {
+      "title": "Introduction",
+      "content": "This document establishes the terms and conditions of use for ProP GMS, developed by the Galaxia Wonder team. By accessing and using this platform, you agree to be bound by these terms."
+    },
+    "use-of-the-service": {
+      "title": "Use of the Service",
+      "content": "The user agrees to make responsible and ethical use of the platform, respecting the features offered and avoiding misuse."
+    },
+    "user-responsibility": {
+      "title": "User Responsibility",
+      "content": "The user is responsible for the accuracy of the data they provide and for the proper use of the platform."
+    },
+    "responsibility-of-the-development-team": {
+      "title": "Responsibility of the Development Team",
+      "content": "The team is committed to ensuring the software runs smoothly, performing ongoing maintenance, and acting professionally and ethically throughout all stages of development."
+    },
+    "privacy-and-data-protection": {
+      "title": "Privacy and Data Protection",
+      "content": "The confidentiality and security of the user's personal data is guaranteed, and it will not be shared with third parties without consent. Privacy by design principles and compliance with current regulations are adhered to."
+    },
+    "intellectual-property": {
+      "title": "Intellectual Property",
+      "content": "All design, development, and content rights belong to the development team unless otherwise stated."
+    },
+    "ethical-and-professional-principles": {
+      "title": "Ethical and Professional Principles",
+      "content": "Our team adheres to the ACM/IEEE Code of Professional Ethics and the College of Engineers of Peru (CIP). We promote:\nTransparency in software engineering.\nCommitment to quality, equity, and accessibility.\nRespect for the rights of users and society."
+    },
+    "modifications-and-contact": {
+      "title": "Modifications and Contact",
+      "content": "We reserve the right to update these terms. For questions, please contact us at:"
     }
   }
 }

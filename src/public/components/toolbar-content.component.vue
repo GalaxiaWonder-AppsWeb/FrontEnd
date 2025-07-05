@@ -74,7 +74,7 @@
         <pv-button text plain :label="$t(sectionTitle + '.section.schedule')" @click="goTo('schedule')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.working-team')" @click="goTo('working-team')" />
 
-        <pv-button text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
+        <pv-button v-if="isCoordinator" text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
         
         <pv-button v-if="isCoordinator" text plain :label="$t(sectionTitle + '.section.settings')" @click="goTo('settings')" />
       </template>
@@ -116,7 +116,7 @@ export default {
 
     // Verificar si el usuario es contratista
     if (this.inOrganizationView) {
-      this.isContractor = await this.userHasRole('Contractor');
+      this.isContractor = this.userHasRole('Contractor');
     }
   },
   async created() {
@@ -297,30 +297,7 @@ export default {
         if (isAuth) {
           // Obtener la información del usuario actual
           this.currentUser = authService.getCurrentUser();
-          
-          // Si no hay información del usuario, usamos información por defecto
-          if (!this.currentUser) {
-            this.currentUser = { 
-              name: "Usuario",
-              lastName: "Autenticado",
-              email: "usuario@ejemplo.com" 
-            };
-          } 
-          else if (this.currentUser.personId && !this.currentUser.profilePicture) {
-            // Si el usuario no tiene foto de perfil en localStorage, intentamos obtenerla
-            try {
-              const personData = await import('../../shared/services/person.service.js')
-                .then(module => module.personService.getById(this.currentUser.personId));
-                
-              if (personData && personData.profilePicture) {
-                // Actualizar el usuario en memoria y en localStorage
-                this.currentUser.profilePicture = personData.profilePicture;
-                localStorage.setItem('user', JSON.stringify(this.currentUser));
-              }
-            } catch (personError) {
-              console.error("Error fetching user profile picture:", personError);
-            }
-          }
+          console.log(this.currentUser)
         }
       } catch (error) {
         console.error("Error checking authentication:", error);
@@ -339,7 +316,8 @@ export default {
           !event.target.closest('[icon="pi pi-user"]')) {
         this.showProfileMenu = false;
       }
-    },    async logout() {
+    },
+    async logout() {
       try {
         // Limpiar el localStorage completamente para garantizar que no queden datos de sesión
         localStorage.clear();
@@ -364,7 +342,8 @@ export default {
           life: 3000
         });
       }
-    },    goToProfile() {
+    },
+    goToProfile() {
       this.showProfileMenu = false; // Cerrar el menú
       this.router.push('/profile');
       
@@ -575,6 +554,12 @@ export default {
 
 .custom-label .p-button-label {
   color: #ffffff; /* o el color que prefieras */
+}
+
+.p-button {
+  background: none !important;
+  border-color: white !important;
+  color: #fff !important;
 }
 
 </style>

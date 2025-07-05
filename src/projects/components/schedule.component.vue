@@ -18,6 +18,12 @@ const props = defineProps({
     required: false // Hacemos que no sea requerido ya que lo obtendremos de la ruta
   }
 });
+const milestoneListRef = ref(null)
+
+function handleMilestoneCreated() {
+  // Le pide al hijo que recargue los milestones
+  milestoneListRef.value?.loadMilestones?.()
+}
 
 // Obtener el projectId de la ruta o de los props
 const projectId = computed(() => {
@@ -50,9 +56,6 @@ const viewMode = ref('list'); // 'list' or 'calendar'
 const createMilestoneDialogVisible = ref(false);
 const loading = ref(false);
 const error = ref(null);
-
-// Reference to the milestone list component
-const milestoneListRef = ref(null);
 
 // Toggle between list and calendar view
 const toggleViewMode = () => {
@@ -114,12 +117,12 @@ const handleCreateMilestone = async (milestone) => {
 
     // Close dialog
     createMilestoneDialogVisible.value = false;
-
+    milestoneListRef.value?.loadMilestones?.()
     // Refresh the milestone list
     if (activeTab.value === 'milestones') {
       const milestoneListRefValue = milestoneListRef.value;
       if (milestoneListRefValue && typeof milestoneListRefValue.loadMilestones === 'function') {
-        milestoneListRefValue.loadMilestones();
+        await milestoneListRefValue.loadMilestones();
       }
     }
   } catch (err) {
@@ -159,39 +162,21 @@ const handleCreateMilestone = async (milestone) => {
           icon="pi pi-plus" 
           @click="openCreateMilestone" 
         />
-        
-        <!-- View mode toggle 
-        <pv-button-set>
-          <pv-button 
-            icon="pi pi-list" 
-            :class="{ 'p-button-outlined': viewMode !== 'list' }" 
-            @click="viewMode = 'list'"
-            tooltip="List View"
-          />
-          <pv-button 
-            icon="pi pi-calendar" 
-            :class="{ 'p-button-outlined': viewMode !== 'calendar' }" 
-            @click="viewMode = 'calendar'"
-            tooltip="Calendar View"
-          />
-        </pv-button-set>
-        -->
+
       </div>
     </div>
     
     <!-- Schedule Content -->
     <div class="schedule-content">
       <!-- Milestones Tab -->
-      <div v-if="activeTab === 'milestones'" class="milestones-container">        <!-- List View -->        <div v-if="viewMode === 'list'" class="list-view">          <milestone-list
+      <div v-if="activeTab === 'milestones'" class="milestones-container">
+        <!-- List View -->
+        <div v-if="viewMode === 'list'" class="list-view">
+          <milestone-list
             ref="milestoneListRef"
             :projectId="projectId"
             @view-tasks="viewMilestoneTasks"
           />
-          <!--
-          <div v-if="!props.projectId" class="error-message">
-            <p>Error: Project ID is undefined. Please make sure to provide a valid project ID.</p>
-          </div>
-          -->
         </div>
         
         <!-- Calendar View (placeholder, would require additional implementation) -->
@@ -214,10 +199,11 @@ const handleCreateMilestone = async (milestone) => {
         <task-list v-if="selectedMilestoneId" :project-id="projectId" :milestoneId="selectedMilestoneId" />      </div>
     </div>
     
-    <!-- Create Milestone Dialog -->    <create-milestone
+    <!-- Create Milestone Dialog -->
+  <create-milestone
       v-model:visible="createMilestoneDialogVisible"
       :projectId="projectId"
-      @create="handleCreateMilestone"
+      @milestoneCreated="handleMilestoneCreated"
       @cancel="createMilestoneDialogVisible = false"
     />
     
@@ -250,6 +236,7 @@ const handleCreateMilestone = async (milestone) => {
 .schedule-title {
   font-size: 1.75rem;
   margin: 0;
+  color: var(--color-neutral-dark);
 }
 
 .navigation {

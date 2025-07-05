@@ -24,7 +24,7 @@
         <pv-button
             :label="$t('client.projects.card.view_details')"
             icon="pi pi-eye"
-            class="mt-4"
+            class="mt-4 btn-details"
             @click="goToProject(project.id)"
         />
       </div>
@@ -114,5 +114,12 @@ export default {
   flex-direction: column;
   gap: 0.2rem;
 
+}
+
+.p-button-label{
+  color: #fff !important;
+}
+.btn-details .p-button-label {
+  color: var(--color-neutral-light) !important; /* Tu color */
 }
 </style>

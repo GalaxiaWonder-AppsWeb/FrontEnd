@@ -152,20 +152,24 @@ export default {
   justify-content: start;
   width: 100%;
   position: fixed;
-  top: 72px;
+  top: 69px;
   left: 0;
   gap: 1rem;
   padding: 0.75rem 1.5rem;
   background-color: #ffffff;
   border-bottom: 1px solid #ddd;
   color: black;
+  z-index: 1000;
 }
 .client-project-nav .p-button.active .p-button-label {
   color: #1e3a8a !important;
   font-weight: bold;
 }
-::v-deep(.p-button-label){
-  color: black;
-}
 
+
+.p-button {
+  background: none !important;
+  border-color: white !important;
+  color: var(--color-neutral-dark) !important;
+}
 </style>

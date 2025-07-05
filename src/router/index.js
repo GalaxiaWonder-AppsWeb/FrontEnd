@@ -168,7 +168,7 @@ const routes = [
                                 path: 'settings',
                                 name: 'project-settings',
                                 component: ProjectSettings,
-                                meta: { allowedRoles: ['Coordinator'] } // Solo el coordinador puede acceder
+                                meta: { allowedRoles: ['Coordinator', 'Contractor'] } // Solo el coordinador puede acceder
                             }
                         ]
                     },

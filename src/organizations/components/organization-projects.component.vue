@@ -280,7 +280,7 @@ export default {
 
 .start-date {
   font-size: 0.85rem;
-  color: #505050;
+  color: var(--color-primary-light);
   display: flex;
   align-items: center;
   font-weight: 500;

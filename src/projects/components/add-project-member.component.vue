@@ -1,5 +1,6 @@
 <template>
   <pv-dialog
+      v-if="isContractor"
       :visible="visible"
       @update:visible="close"
       :modal="true"
@@ -86,6 +87,7 @@ export default {
     return {
       members: [],
       selectedMember: null,
+      isContractor: false,
       selectedRole: null,
       specialty: '',
       loading: false,
@@ -124,6 +126,7 @@ export default {
       }
     },
     async handleAddMember() {
+      if (!this.isContractor) return;
       this.saving = true;
       this.message = '';
       this.messageType = '';
@@ -152,7 +155,15 @@ export default {
     close() {
       this.$emit('update:visible', false);
       this.$emit('close');
-    }
+    },
+    checkIfContractor() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      this.isContractor = user.activeOrganizationRole === 'Contractor';
+    },
+  },
+  mounted() {
+    this.checkIfContractor();
+    this.loadMembers();
   },
   watch: {
     visible(val) {

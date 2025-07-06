@@ -4,6 +4,7 @@
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">{{ $t('tasks.title') }}</h2>
       <pv-button
+          v-if="isContractor"
           :label="$t('tasks.create')"
           icon="pi pi-plus"
           @click="showCreate = true"
@@ -78,6 +79,7 @@ export default {
       showCreate: false,
       showEditDialog: false,
       selectedTask: null,
+      isContractor: false
     }
   },
   created() {
@@ -85,6 +87,9 @@ export default {
       this.projectId = this.$route.params.projectId
     }
     this.loadTasks()
+
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.isContractor = user.activeOrganizationRole === 'Contractor';
   },
   watch: {
     milestoneId: {

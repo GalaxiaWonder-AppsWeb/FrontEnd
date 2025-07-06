@@ -13,14 +13,6 @@
             aria-label="Volver"
             v-tooltip="$t('navigation-toolbar.back')"
           />
-          <!-- Enlace para volver a organizaciones cuando estamos en una organización específica -->
-          <pv-button
-            v-if="inOrganizationView"
-            icon="pi pi-th-large" 
-            :label="$t('organization.all')" 
-            class="p-button-text organizations-link custom-label"
-            @click="goToOrganizationsList"
-          />
           <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
         </div>
       </template>
@@ -409,13 +401,10 @@ export default {
 }
 
 ::v-deep(.p-button-label){
-  color: black;
+  color: var(--color-neutral-dark);
 }
 
-::v-deep(.p-button-label:hover){
-  text-decoration: underline;
-  background: white;
-}
+
 
 .toolbar-nav .p-button.p-button-text:hover {
   background-color: transparent !important;
@@ -550,7 +539,7 @@ export default {
 }
 
 .custom-label .p-button-label {
-  color: #ffffff; /* o el color que prefieras */
+  color: #ffffff !important; /* o el color que prefieras */
 }
 
 .p-button {

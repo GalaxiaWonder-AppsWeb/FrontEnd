@@ -70,7 +70,6 @@ export default {
 </script>
 
 <style scoped>
-
 .projects-title {
   font-weight: bold;
   font-size: 1.25rem;
@@ -79,7 +78,11 @@ export default {
   text-align: center;
 }
 .projects-list {
-
+  padding-bottom: 2rem !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
 }
 .project-card {
   min-width: 320px;
@@ -89,7 +92,7 @@ export default {
   background-color: var(--color-neutral-light);
   border-radius: 18px;
   box-shadow: 0 4px 16px rgba(30,58,138,0.12);
-  padding: 2rem 2.5rem;
+  padding: 2rem 2.5rem !important;
   display: flex;
   flex-direction: column;
   align-items: center;

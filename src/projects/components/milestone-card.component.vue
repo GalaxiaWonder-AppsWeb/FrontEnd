@@ -53,9 +53,9 @@ const isContractor = computed(() => {
   <pv-card class="milestone-card">
     
     <template #title>
-      <div class="card-title-container" v-if="isContractor">
+      <div class="card-title-container" >
         <h3 class="milestone-title">{{ milestone.name }}</h3>
-        <div class="milestone-actions">          <pv-button 
+        <div class="milestone-actions" v-if="isContractor">          <pv-button
             icon="pi pi-pencil" 
             text rounded 
             @click="handleEditClick"

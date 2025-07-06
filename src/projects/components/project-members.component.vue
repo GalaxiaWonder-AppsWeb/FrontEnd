@@ -4,7 +4,6 @@ import AddProjectMember from './add-project-member.component.vue'
 import { projectTeamMemberService } from '../services/project-team-member.service.js'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
-import { useRoute } from 'vue-router'
 
 export default {
   name: 'ProjectMembers',
@@ -20,8 +19,8 @@ export default {
       projectId: null,
       organizationId: null,
       currentUserId: null,
-      currentOrgRole: null,
       currentProjectRole: null,
+      isContractor: false,
     }
   },
   created() {
@@ -29,10 +28,9 @@ export default {
     const projId = this.$route.params.projectId;
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     this.currentUserId = user.personId || user.id || null;
-    this.currentOrgRole = user.activeOrganizationRole || null;
+    console.log(this.currentOrgRole, 'XD')
     this.currentProjectRole = user.activeProjectRole || null;
     console.log('User data:', user);
-    this.currentUserRole = user.activeOrganizationRole || user.role || null; // Ajusta el campo según tu modelo
     console.log('Current user role:', this.currentUserRole);
 
     this.organizationId = orgId ? Number(orgId) : 1
@@ -122,6 +120,14 @@ export default {
       if (member.email) return member.email
       return `Miembro ID: ${member.id}`
     },
+  },
+  computed: {
+    currentOrgRole() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      console.log('XD', user.activeOrganizationRole, 'XD')
+      return user.activeOrganizationRole || null;
+
+    }
   }
 }
 </script>
@@ -139,6 +145,7 @@ export default {
           :label="$t('projects.working-team.add-member.title')"
           icon="pi pi-user-plus"
           @click="showModal = true"
+          :disabled="currentOrgRole !== 'Contractor'"
       />
     </div>
 
@@ -164,7 +171,7 @@ export default {
     </div>
 
     <!-- Add member dialog -->
-    <pv-dialog v-model:visible="showModal" modal header="Agregar miembro" style="width: 30rem">
+    <pv-dialog v-if="currentOrgRole === 'Contractor'" v-model:visible="showModal" modal header="Agregar miembro" style="width: 30rem">
       <AddProjectMember
           :organization-id="organizationId"
           :project-id="projectId"

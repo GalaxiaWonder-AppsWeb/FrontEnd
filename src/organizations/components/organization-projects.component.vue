@@ -108,47 +108,11 @@ export default {
       <i class="pi pi-exclamation-triangle" style=" font-size: 2rem; color: var(--red-500);"></i>
       <p>{{ error }}</p>
     </div>
-      <!-- Debug information for roles and members -->
-    <div class="debug-info mb-4" v-if="userRole === 'Worker'">
-      <details>
-        <summary class="text-sm">Información de acceso</summary>
-        <div class="p-2 bg-blue-900 rounded text-xs">
-          <p>Rol en organización: <strong>{{ userRole }}</strong></p>
-          <p>ID de miembro: <strong>{{ currentUser?.memberId }}</strong></p>
-          <p>Proyectos donde es miembro: <strong>{{ projectsWhereUserIsTeamMember.length }}</strong></p>
-          <p>Total proyectos en organización: <strong>{{ projects.length }}</strong></p>
-          <p>Proyectos filtrados para mostrar: <strong>{{ filteredProjects.length }}</strong></p>
-        </div>
-      </details>
-    </div>
-    
-    <!-- Mensaje para recargar membresías si eres worker -->
-    <div v-if="userRole === 'Worker'" class="mb-4">
-      <pv-button 
-        icon="pi pi-refresh" 
-        label="Actualizar mis proyectos" 
-        class="p-button-sm p-button-outlined" 
-        @click="loadProjectMemberships"
-        :loading="loadingMemberships"
-      />
-      <small class="ml-2 text-blue-300">Si no ves todos tus proyectos, haz clic para actualizar</small>
-    </div>
+
     
     <div v-if="filteredProjects.length === 0" class="empty-state">
       <p>{{ userRole === 'Worker' ? $t('projects.empty_member') : $t('projects.empty') }}</p>
       <p v-if="canCreateProject" class="create-prompt">{{ $t('projects.create_prompt') }}</p>
-      
-      <!-- Mostrar mensaje específico para Workers -->
-      <div v-if="userRole === 'Worker'" class="mt-4 p-3 bg-blue-900 rounded">
-        <p class="font-semibold">¿No ves tus proyectos?</p>
-        <p class="text-sm mb-2">Puede que aún no hayas sido añadido como miembro a ningún proyecto de esta organización.</p>
-        <pv-button 
-          label="Contacta al administrador" 
-          icon="pi pi-envelope" 
-          class="p-button-sm" 
-          @click="$toast.add({severity:'info', summary:'Información', detail:'Ponte en contacto con el administrador de la organización para ser añadido a proyectos.', life: 3000})"
-        />
-      </div>
     </div>
     
     <div v-else class="projects-grid">

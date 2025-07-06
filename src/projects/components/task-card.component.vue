@@ -16,13 +16,15 @@ const loadingResponsible = ref(false);
 
 // Cargar los datos de la persona responsable
 const loadResponsiblePerson = async () => {
-  if (!props.task.responsible) return;
+  if (!props.task.personId) return;
   
   try {
     loadingResponsible.value = true;
-    const person = await personService.getById(props.task.responsible);
+    const person = await personService.getById(props.task.personId);
+
     if (person) {
       responsiblePerson.value = person;
+
     }
   } catch (error) {
     console.error('Error al cargar los datos del responsable:', error);
@@ -40,7 +42,7 @@ const formattedDate = (date) => {
 
 // Rango de fechas formateado
 const dateRange = computed(() => {
-  return `${formattedDate(props.task.startingDate)} - ${formattedDate(props.task.dueDate)}`;
+  return `${formattedDate(props.task.startDate)} - ${formattedDate(props.task.endDate)}`;
 });
 
 // Color del estado para mostrar en la etiqueta
@@ -58,11 +60,16 @@ const statusColor = computed(() => {
 // Nombre del responsable formateado
 const responsibleName = computed(() => {
   if (loadingResponsible.value) return 'Cargando...';
-  if (!props.task.responsible) return 'Sin asignar';
-  if (responsiblePerson.value) {
-    return `${responsiblePerson.value.name || ''} ${responsiblePerson.value.lastName || ''}`.trim() || `ID: ${props.task.responsible}`;
-  }
+
+  return `${responsiblePerson.value.firstName || ''} ${responsiblePerson.value.lastName || ''}`.trim() || `ID: ${props.task.responsible}`;
+
   return `ID: ${props.task.responsible}`;
+});
+
+const isContractor = computed(() => {
+  if (typeof window === 'undefined') return false; // SSR check
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user.activeOrganizationRole === 'Contractor';
 });
 
 onMounted(() => {
@@ -74,7 +81,7 @@ onMounted(() => {
     <template #title>
       <div class="card-header">
         <span class="task-title">{{ props.task.name }}</span>
-        <div class="card-icons">
+        <div class="card-icons" v-if="isContractor">
           <pv-button icon="pi pi-pencil" text rounded @click="emit('edit', props.task)" />
           <pv-button icon="pi pi-trash" text rounded severity="danger" @click="emit('delete', props.task)" />
         </div>
@@ -88,26 +95,29 @@ onMounted(() => {
     <template #content>
       <div class="task-details">
         <div class="detail-row">
-          <span class="label">Especialidad:</span>
+          <span class="label">{{ $t('tasks.task-card.specialty') }}</span>
           <pv-tag :value="props.task.specialty" severity="success" />
         </div>
         
         <div class="detail-row">
-          <span class="label">Estado:</span>
+          <span class="label">{{ $t('tasks.task-card.status') }}</span>
           <pv-tag :value="props.task.status" :severity="statusColor" />
         </div>
-        
+
         <div class="detail-row">
-          <span class="label">Responsable:</span>
+          <span class="label">{{ $t('tasks.task-card.responsible') }}</span>
           <div class="responsible-info">
             <span v-if="loadingResponsible" class="loading-text">
               <i class="pi pi-spin pi-spinner" style="font-size: 0.85rem;"></i> Cargando...
             </span>
-            <span v-else-if="!props.task.responsible" class="unassigned">
-              <i class="pi pi-user-minus"></i> Sin asignar
+            <!-- SIN responsable -->
+            <span v-else-if="!props.task.personId" class="unassigned">
+              <i class="pi pi-user-minus"></i> {{ $t('tasks.task-card.unassigned') }}
             </span>
+            <!-- CON responsable -->
             <span v-else class="assigned">
-              <i class="pi pi-user"></i> {{ responsibleName }}
+              <i class="pi pi-user"></i>
+              {{ responsibleName }}
             </span>
           </div>
         </div>
@@ -121,17 +131,6 @@ onMounted(() => {
           class="w-full" 
           severity="success"
           @click="emit('edit', props.task)" 
-        />
-      </div>
-      <div class="footer-actions" v-else>
-        <!-- Acciones estándar para tareas no asignadas al usuario -->
-        <pv-button 
-          icon="pi pi-user-plus" 
-          label="Asignar Responsable" 
-          class="w-full" 
-          outlined 
-          @click="emit('assign', props.task)" 
-          :disabled="loadingResponsible"
         />
       </div>
     </template>

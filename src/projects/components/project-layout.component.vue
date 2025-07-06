@@ -49,36 +49,6 @@ export default {
           localStorage.setItem("user", JSON.stringify(user));
           return;
         }
-        
-        // 4. Si no es Contractor, consultar la asignación específica en el proyecto
-        try {
-          // Aquí iría la llamada a la API para obtener el rol en el proyecto
-          const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/projects/${this.projectId}/members?personId=${this.personId}`);
-          
-          if (response.ok) {
-            const members = await response.json();
-            
-            if (members && members.length > 0) {
-              // Asignar el rol en el proyecto
-              user.activeProjectRole = members[0].role || ProjectRole.SPECIALIST;
-              localStorage.setItem("user", JSON.stringify(user));
-              } else {
-              // Si no es miembro, asignar rol por defecto (Specialist para Workers)
-              user.activeProjectRole = ProjectRole.SPECIALIST;
-              localStorage.setItem("user", JSON.stringify(user));
-              }
-          } else {
-            console.warn("Error al consultar miembros del proyecto");
-            // Si hay error en la consulta, usar rol por defecto según el rol en la organización
-            user.activeProjectRole = ProjectRole.SPECIALIST;
-            localStorage.setItem("user", JSON.stringify(user));
-          }
-        } catch (error) {
-          console.error("Error al consultar el rol en el proyecto:", error);
-          // En caso de error, establecer un rol por defecto
-          user.activeProjectRole = ProjectRole.SPECIALIST;
-          localStorage.setItem("user", JSON.stringify(user));
-        }
       } catch (err) {
         console.error("Error al determinar rol en el proyecto:", err);
       }

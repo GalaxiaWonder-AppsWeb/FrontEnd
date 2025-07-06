@@ -83,7 +83,7 @@
               <label for="name">{{ $t('profile.name') }}</label>
               <pv-input-text 
                 id="name" 
-                v-model="formData.name"
+                v-model="formData.firstName"
                 :disabled="!editMode" 
                 class="w-full"
               />
@@ -115,16 +115,6 @@
               <pv-input-text 
                 id="phoneNumber" 
                 v-model="formData.phoneNumber" 
-                :disabled="!editMode"
-                class="w-full"
-              />
-            </div>
-            
-            <div class="form-field">
-              <label for="profession">{{ $t('profile.profession') }}</label>
-              <pv-input-text 
-                id="profession" 
-                v-model="formData.profession" 
                 :disabled="!editMode"
                 class="w-full"
               />
@@ -268,10 +258,10 @@ export default {
         
         // Rellenar el formulario
         this.formData = {
-          name: personData.name || '',
+          firstName: personData.firstName || '',
           lastName: personData.lastName || '',
           email: personData.email || user.email || '',
-          phoneNumber: personData.phoneNumber || '',
+          phoneNumber: personData.phone || '',
           profession: personData.profession || '',
           userType: personData.userType || user.userType || '',
           password: '',

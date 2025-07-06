@@ -33,7 +33,7 @@ export default {
         const res = await billingService.create(invoice.toJSON())
         this.invoiceId = res.id
         this.message = `Invoice created for ${res.payer}`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }
@@ -44,7 +44,7 @@ export default {
         const res = await billingService.getAll()
         this.invoices = res
         this.message = `Fetched ${res.length} invoices`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }
@@ -55,7 +55,7 @@ export default {
         const id = parseInt(this.invoiceId)
         const res = await billingService.getById(id)
         this.message = `Invoice: ${res.id}`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }
@@ -67,7 +67,7 @@ export default {
         const res = await billingService.getByPayerId(payerId)
         this.invoices = res
         this.message = `Fetched ${res.length} invoices for payer`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }

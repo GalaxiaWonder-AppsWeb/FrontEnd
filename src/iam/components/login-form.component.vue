@@ -86,15 +86,21 @@ export default {
         if (user) {
           this.form.email = '';
           this.form.password = '';
-          this.router.push('/organizations') // Redirige tras login
+          // Redirección dinámica según tipo de usuario
+          if (user.userType === 'TYPE_CLIENT') {
+            this.router.push({ name: 'client-projects' })
+          } else {
+            this.router.push('/organizations')
+          }
         }
       } catch (error) {
-        this.errorMessage = error.message.data || 'Login failed'
+        this.errorMessage = error.message?.data || 'Login failed'
       } finally {
         this.loading = false
       }
     }
   }
+
 }
 </script>
 

@@ -1,6 +1,7 @@
 <template>
   <div class="toolbar-container">
-    <!-- Parte superior fija -->    <pv-toolbar class="toolbar-top">
+    <!-- Parte superior fija -->
+    <pv-toolbar class="toolbar-top">
       <template #start>
         <div class="title-section">
           <!-- Botón de navegación hacia atrás, mostrado solo en vistas específicas -->
@@ -11,14 +12,6 @@
             @click="navigateBack"
             aria-label="Volver"
             v-tooltip="$t('navigation-toolbar.back')"
-          />
-          <!-- Enlace para volver a organizaciones cuando estamos en una organización específica -->
-          <pv-button
-            v-if="inOrganizationView"
-            icon="pi pi-th-large" 
-            :label="$t('organization.all')" 
-            class="p-button-text organizations-link custom-label"
-            @click="goToOrganizationsList"
           />
           <h1 class="section-title">{{ $t(sectionTitle+'.title') }}</h1>
         </div>
@@ -55,7 +48,9 @@
         </div>
         <LanguageSwitcher />
       </template>
-    </pv-toolbar>    <!-- Parte inferior: navegación dinámica -->    <nav class="toolbar-nav">
+    </pv-toolbar>
+    <!-- Parte inferior: navegación dinámica -->
+    <nav class="toolbar-nav">
       <template v-if="inOrganizationView">
         <!-- Opciones siempre visibles para todos los miembros -->
         <pv-button text plain :label="$t(sectionTitle + '.section.information')" @click="goTo('information')" />
@@ -71,7 +66,7 @@
         <pv-button text plain :label="$t(sectionTitle + '.section.schedule')" @click="goTo('schedule')" />
         <pv-button text plain :label="$t(sectionTitle + '.section.working-team')" @click="goTo('working-team')" />
 
-        <pv-button text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
+        <pv-button v-if="isCoordinator" text plain :label="$t(sectionTitle + '.section.change-management')" @click="goTo('change-management')" />
         
         <pv-button v-if="isCoordinator" text plain :label="$t(sectionTitle + '.section.settings')" @click="goTo('settings')" />
       </template>
@@ -87,15 +82,14 @@
 <script>
 import { useRoute, useRouter } from 'vue-router'
 import LanguageSwitcher from './language-switcher.component.vue'
-//import NotificationBell from '../../organizations/components/notification-bell.component.vue'
 import { authService } from '../../iam/services/auth.service.js'
 
 export default {
   name: 'ToolbarComponent',
   components: {
-    LanguageSwitcher,
-    //NotificationBell
-  },  data() {
+    LanguageSwitcher
+  },
+  data() {
     return {
       route: useRoute(),
       router: useRouter(),
@@ -103,22 +97,29 @@ export default {
       isAuthenticated: false,
       showProfileMenu: false,
       isContractor: false,
-      isCoordinator: false
+      isCoordinator: false,
+      isClient: false
     }
   },
   async mounted() {
-    this.checkAuthentication();
+    await this.checkAuthentication();
     // Cerrar menú de perfil al hacer clic fuera
     document.addEventListener('click', this.handleClickOutside);
 
     // Verificar si el usuario es contratista
     if (this.inOrganizationView) {
-      this.isContractor = await this.userHasRole('Contractor');
+      this.isContractor = this.userHasRole('Contractor');
     }
-  },  async created() {
+  },
+  async created() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    this.isClient = user.userType === 'TYPE_CLIENT'
+    this.currentUser = user
+
+
     // Verificar el rol del usuario cuando se crea el componente
     if (this.inOrganizationView) {
-      this.isContractor = this.userHasRole('Contractor');
+      this.isContractor = await this.userHasRole('Contractor');
     }
 
     if (this.inProjectView) {
@@ -177,43 +178,40 @@ export default {
      */
     async userHasRole(role) {
       const user = JSON.parse(localStorage.getItem("user"));
-      if (!user) {
+      if (!user || !this.route.params.orgId) {
         return false;
       }
-
-      if (role === 'Contractor' && this.inOrganizationView && this.route.params.orgId && user.personId) {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/${this.route.params.orgId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token ? { Authorization: `Bearer ${token}` } : {})
-            }
-          });
-          if (response.ok) {
-            const organization = await response.json();
-            if (organization && organization.createdBy === user.personId) {
-              if (!user.activeOrganizationRole || user.activeOrganizationRole !== 'Contractor') {
-                user.activeOrganizationRole = 'Contractor';
-                localStorage.setItem('user', JSON.stringify(user));
-              }
-              return true;
-            }
-          } else {
-            // LOG GENTIL
-            console.warn(`No se pudo obtener la organización (${response.status}): ${url}`);
-            return false;
+      // Siempre consulta la organización
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/${this.route.params.orgId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
           }
-        } catch (error) {
-          console.error('Error al verificar si el usuario es creador:', error);
+        });
+        if (response.ok) {
+          const organization = await response.json();
+          // Comparar con el creador
+          let detectedRole = 'Worker';
+          if (organization && organization.createdBy === user.personId) {
+            detectedRole = 'Contractor';
+          }
+          // Guardar SIEMPRE el rol actual en localStorage
+          user.activeOrganizationRole = detectedRole;
+          user.activeOrganizationId = organization.id;
+          localStorage.setItem('user', JSON.stringify(user));
+          // Retorna true solo si coincide con el buscado
+          return detectedRole === role;
+        } else {
+          console.warn(`No se pudo obtener la organización (${response.status})`);
           return false;
         }
+      } catch (error) {
+        console.error('Error al verificar el rol en la organización:', error);
+        return false;
       }
-
-      return user.activeOrganizationRole === role;
     },
-
-
     /**
      * Verifica si el usuario actual tiene el rol especificado en el proyecto activo
      * @param {string} role - El rol a verificar (Coordinator, Specialist)
@@ -288,30 +286,7 @@ export default {
         if (isAuth) {
           // Obtener la información del usuario actual
           this.currentUser = authService.getCurrentUser();
-          
-          // Si no hay información del usuario, usamos información por defecto
-          if (!this.currentUser) {
-            this.currentUser = { 
-              name: "Usuario",
-              lastName: "Autenticado",
-              email: "usuario@ejemplo.com" 
-            };
-          } 
-          else if (this.currentUser.personId && !this.currentUser.profilePicture) {
-            // Si el usuario no tiene foto de perfil en localStorage, intentamos obtenerla
-            try {
-              const personData = await import('../../shared/services/person.service.js')
-                .then(module => module.personService.getById(this.currentUser.personId));
-                
-              if (personData && personData.profilePicture) {
-                // Actualizar el usuario en memoria y en localStorage
-                this.currentUser.profilePicture = personData.profilePicture;
-                localStorage.setItem('user', JSON.stringify(this.currentUser));
-              }
-            } catch (personError) {
-              console.error("Error fetching user profile picture:", personError);
-            }
-          }
+
         }
       } catch (error) {
         console.error("Error checking authentication:", error);
@@ -330,7 +305,8 @@ export default {
           !event.target.closest('[icon="pi pi-user"]')) {
         this.showProfileMenu = false;
       }
-    },    async logout() {
+    },
+    async logout() {
       try {
         // Limpiar el localStorage completamente para garantizar que no queden datos de sesión
         localStorage.clear();
@@ -355,7 +331,8 @@ export default {
           life: 3000
         });
       }
-    },    goToProfile() {
+    },
+    goToProfile() {
       this.showProfileMenu = false; // Cerrar el menú
       this.router.push('/profile');
       
@@ -424,13 +401,10 @@ export default {
 }
 
 ::v-deep(.p-button-label){
-  color: black;
+  color: var(--color-neutral-dark);
 }
 
-::v-deep(.p-button-label:hover){
-  text-decoration: underline;
-  background: white;
-}
+
 
 .toolbar-nav .p-button.p-button-text:hover {
   background-color: transparent !important;
@@ -565,7 +539,13 @@ export default {
 }
 
 .custom-label .p-button-label {
-  color: #ffffff; /* o el color que prefieras */
+  color: #ffffff !important; /* o el color que prefieras */
+}
+
+.p-button {
+  background: none !important;
+  border-color: white !important;
+  color: #fff !important;
 }
 
 </style>

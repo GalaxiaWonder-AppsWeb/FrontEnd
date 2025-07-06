@@ -19,6 +19,7 @@ const emit = defineEmits(['update:visible', 'save', 'cancel']);
 const formData = reactive({
   id: null,
   name: '',
+  description: '',
   startDate: null,
   endDate: null
 });
@@ -26,6 +27,7 @@ const formData = reactive({
 // Form validation
 const errors = reactive({
   name: null,
+  description: null,
   dates: null
 });
 
@@ -34,6 +36,7 @@ watch(() => props.milestone, (newMilestone) => {
   if (newMilestone) {
     formData.id = newMilestone.id;
     formData.name = newMilestone.name;
+    formData.description = newMilestone.description;
     
     // Handle date values carefully
     try {
@@ -93,10 +96,9 @@ const saveMilestone = () => {
     const milestone = new Milestone({
       id: formData.id,
       name: formData.name,
+      description: formData.description,
       startDate: formData.startDate,
-      endDate: formData.endDate,
-      projectId: props.milestone.projectId,
-      items: props.milestone.items || []
+      endDate: formData.endDate
     });
     
     // Send the milestone entity back to the parent component
@@ -130,24 +132,34 @@ const minEndDate = computed(() => {
     :modal="true"
     :closable="false"
     :style="{ width: '500px' }"
-    :header="isNewMilestone ? 'Create Milestone' : 'Edit Milestone'"
+    :header="$t('schedule.edit-milestone.title')"
   >
     <div class="form-container">
       <div class="form-field">
-        <label for="name">Milestone Name*</label>
-        <pv-input-text 
-          id="name" 
-          v-model="formData.name" 
-          class="w-full" 
+        <label for="name">{{ $t('schedule.edit-milestone.name') }}</label>
+        <pv-input-text
+          id="name"
+          v-model="formData.name"
+          class="w-full"
           :class="{ 'p-invalid': errors.name }"
           autofocus
         />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
+
+        <label for="name">{{ $t('schedule.edit-milestone.description') }}</label>
+        <pv-input-text
+            id="name"
+            v-model="formData.description"
+            class="w-full"
+            :class="{ 'p-invalid': errors.description }"
+            autofocus
+        />
+        <small v-if="errors.description" class="p-error">{{ errors.description }}</small>
       </div>
       
       <div class="form-dates">
         <div class="form-field">
-          <label for="startDate">Start Date*</label>
+          <label for="startDate">{{ $t('schedule.edit-milestone.start-date') }}</label>
           <pv-date-picker 
             id="startDate" 
             v-model="formData.startDate" 
@@ -159,7 +171,7 @@ const minEndDate = computed(() => {
         </div>
         
         <div class="form-field">
-          <label for="endDate">End Date*</label>
+          <label for="endDate">{{ $t('schedule.edit-milestone.end-date') }}</label>
           <pv-date-picker 
             id="endDate" 
             v-model="formData.endDate" 
@@ -176,15 +188,15 @@ const minEndDate = computed(() => {
       <div class="form-info">
         <i class="pi pi-info-circle"></i>
         <small>
-          Milestones help you organize tasks into logical groups or phases.
+          {{ $t('schedule.edit-milestone.key-point') }}
         </small>
       </div>
     </div>
     
     <template #footer>
       <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="cancel" />
-        <pv-button label="Save" icon="pi pi-check" @click="saveMilestone" />
+        <pv-button :label="$t('schedule.edit-milestone.cancel')" icon="pi pi-times" class="p-button-text" @click="cancel" />
+        <pv-button :label="$t('schedule.edit-milestone.save')" icon="pi pi-check" @click="saveMilestone" />
       </div>
     </template>
   </pv-dialog>

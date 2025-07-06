@@ -1,112 +1,90 @@
-<script setup>
-import { ref, reactive } from 'vue';
-import { Milestone } from '../model/milestone.entity.js';
+<script>
+import { milestoneService } from '../services/milestone.service.js';
 
-const props = defineProps({
-  visible: {
-    type: Boolean,
-    required: true
-  },  projectId: {
-    type: [Number, String], // Aceptar tanto número como cadena
-    required: true,
-    validator: (value) => {
-      // Validar que sea un número o una cadena que se puede convertir a número
-      return value !== undefined && value !== null && !isNaN(Number(value));
+export default {
+  name: 'CreateMilestone',
+  props: {
+    visible: { type: Boolean, default: false },
+    projectId: { type: [String, Number], required: true }
+  },
+  data() {
+    return {
+      formData: {
+        name: '',
+        description: '',
+        startDate: null,
+        endDate: null,
+      },
+      errors: {},
+      saving: false,
+    }
+  },
+  watch: {
+    visible(val) {
+      if (val) this.resetForm();
+    }
+  },
+  methods: {
+    resetForm() {
+      this.formData = {
+        name: '',
+        description: '',
+        startDate: null,
+        endDate: null,
+      };
+      this.errors = {};
+    },
+    updateVisible(val) {
+      this.$emit('update:visible', val);
+    },
+    cancelCreate() {
+      this.updateVisible(false);
+    },
+    validate() {
+      this.errors = {};
+      if (!this.formData.name.trim()) this.errors.name = 'Milestone name is required';
+      if (!this.formData.startDate || !this.formData.endDate) {
+        this.errors.dates = 'Start and end date are required';
+      } else if (this.formData.startDate > this.formData.endDate) {
+        this.errors.dates = 'End date must be after start date';
+      }
+      return Object.keys(this.errors).length === 0;
+    },
+    async createMilestone() {
+      if (!this.validate()) return;
+
+      this.saving = true;
+      try {
+        const payload = {
+          name: this.formData.name,
+          description: this.formData.description,
+          projectId: Number(this.projectId),
+          startDate: this.formData.startDate,
+          endDate: this.formData.endDate,
+        };
+        await milestoneService.create(payload);
+
+        this.$emit('milestoneCreated'); // O puedes pasarle el hito creado si el backend lo retorna
+        this.updateVisible(false);
+        this.$toast?.add?.({
+          severity: 'success',
+          summary: 'Milestone created!',
+          detail: 'The milestone was successfully added.',
+          life: 3000
+        });
+      } catch (e) {
+        this.$toast?.add?.({
+          severity: 'error',
+          summary: 'Error',
+          detail: e.message || 'Could not create milestone',
+          life: 3000
+        });
+      } finally {
+        this.saving = false;
+      }
     }
   }
-});
-
-const emit = defineEmits(['update:visible', 'create', 'cancel']);
-
-// Form data
-const formData = reactive({
-  name: '',
-  startDate: new Date(),
-  endDate: new Date(new Date().setMonth(new Date().getMonth() + 1))
-});
-
-// Form validation
-const errors = reactive({
-  name: null,
-  dates: null
-});
-
-// Reset form to initial state
-const resetForm = () => {
-  formData.name = '';
-  formData.startDate = new Date();
-  formData.endDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
-  
-  // Clear errors
-  errors.name = null;
-  errors.dates = null;
-};
-
-// Validate form
-const validateForm = () => {
-  let isValid = true;
-  
-  // Validate name
-  if (!formData.name || formData.name.trim() === '') {
-    errors.name = 'Milestone name is required';
-    isValid = false;
-  } else {
-    errors.name = null;
-  }
-  
-  // Validate dates
-  if (!formData.startDate || !formData.endDate) {
-    errors.dates = 'Start and end dates are required';
-    isValid = false;
-  } else if (formData.endDate < formData.startDate) {
-    errors.dates = 'End date cannot be earlier than start date';
-    isValid = false;
-  } else {
-    errors.dates = null;
-  }
-  
-  return isValid;
-};
-
-// Create milestone
-const createMilestone = () => {
-  if (!validateForm()) {
-    return;
-  }
-  
-  try {    // Convertir projectId a número si es una cadena
-    const projectId = typeof props.projectId === 'number' ? props.projectId : Number(props.projectId);
-    const milestone = new Milestone({
-      name: formData.name,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      projectId: projectId,
-      items: []
-    });
-    
-    // Use the milestone directly, as it now includes the projectId
-    const milestoneData = milestone;
-    
-    emit('create', milestoneData);
-    resetForm();
-  } catch (error) {
-    console.error('Error creating milestone:', error);
-  }
-};
-
-// Cancel and close dialog
-const cancelCreate = () => {
-  resetForm();
-  emit('cancel');
-};
-
-// Update visible property
-const updateVisible = (value) => {
-  emit('update:visible', value);
-  if (!value) {
-    resetForm();
-  }
-};
+}
 </script>
 
 <template>
@@ -119,27 +97,34 @@ const updateVisible = (value) => {
     header="Create New Milestone"
   >
     <div class="form-container">
-      <div class="milestone-icon">
-        <i class="pi pi-flag"></i>
-        <h3>New Project Milestone</h3>
-      </div>
       
       <div class="form-field">
-        <label for="name">Milestone Name*</label>
+        <label for="name">{{ $t('schedule.create-milestone.name') }}</label>
         <pv-input-text 
           id="name" 
           v-model="formData.name" 
           class="w-full" 
           :class="{ 'p-invalid': errors.name }"
-          placeholder="Enter milestone name"
+          :placeholder="$t('schedule.create-milestone.name-placeholder')"
           autofocus
         />
         <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
+
+        <label for="name">{{ $t('schedule.create-milestone.description') }}</label>
+        <pv-input-text
+            id="name"
+            v-model="formData.description"
+            class="w-full"
+            :class="{ 'p-invalid': errors.description }"
+            :placeholder="$t('schedule.create-milestone.description-placeholder')"
+            autofocus
+        />
+        <small v-if="errors.description" class="p-error">{{ errors.description }}</small>
       </div>
       
       <div class="form-dates">
         <div class="form-field">
-          <label for="startDate">Start Date*</label>
+          <label for="startDate">{{ $t('schedule.create-milestone.start-date') }}</label>
           <pv-date-picker 
             id="startDate" 
             v-model="formData.startDate" 
@@ -151,7 +136,7 @@ const updateVisible = (value) => {
         </div>
         
         <div class="form-field">
-          <label for="endDate">End Date*</label>
+          <label for="endDate">{{ $t('schedule.create-milestone.end-date') }}</label>
           <pv-date-picker 
             id="endDate" 
             v-model="formData.endDate" 
@@ -168,15 +153,15 @@ const updateVisible = (value) => {
       <div class="form-info">
         <i class="pi pi-info-circle"></i>
         <small>
-          Milestones are key points in your project schedule that mark important phases or deliverables.
+          {{ $t('schedule.create-milestone.key-point') }}
         </small>
       </div>
     </div>
     
     <template #footer>
       <div class="dialog-footer">
-        <pv-button label="Cancel" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
-        <pv-button label="Create" icon="pi pi-check" @click="createMilestone" />
+        <pv-button :label="$t('schedule.create-milestone.cancel')" icon="pi pi-times" class="p-button-text" @click="cancelCreate" />
+        <pv-button :label="$t('schedule.create-milestone.create')" icon="pi pi-check" @click="createMilestone" />
       </div>
     </template>
   </pv-dialog>

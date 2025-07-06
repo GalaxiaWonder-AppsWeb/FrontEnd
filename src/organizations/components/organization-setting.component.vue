@@ -96,7 +96,6 @@ export default {
     },
     async handleUpdate() {
       try {
-
         const updatedOrg = new Organization({
           id: parseInt(this.organizationId),
           legalName: this.legalName,
@@ -110,7 +109,8 @@ export default {
         console.error('Error al actualizar organización')
         this.message = err.message
       }
-    },    isEmpty(){
+    },
+    isEmpty(){
       return this.legalName.trim() !== '' && this.commercialName.trim() !== ''
     },
     isOriginal(){
@@ -119,7 +119,7 @@ export default {
     showDeleteConfirmation() {
       this.deleteDialogVisible = true;
     },
-      async handleDeleteOrganization() {
+    async handleDeleteOrganization() {
       try {
         this.deleting = true;
         this.message = '';
@@ -226,7 +226,7 @@ label {
 }
 
 .danger-zone h2 {
-  color: var(--red-600);
+  color: var(--red-600) !important;
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }

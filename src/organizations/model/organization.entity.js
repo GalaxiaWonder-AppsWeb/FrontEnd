@@ -81,11 +81,11 @@ export class Organization {
     }
 
     static salute(){
-        console.log('Holi')
+        
     }
 
     salute2(){
-        console.log('Holi')
+        
     }
 
     toJSON() {

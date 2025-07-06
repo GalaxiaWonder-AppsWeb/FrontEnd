@@ -1,4 +1,50 @@
 {
+  "client": {
+    "layout": {
+      "title": "Área del Cliente"
+    },
+    "projects": {
+      "title": "Proyectos",
+      "loading": "Cargando proyectos...",
+      "card": {
+        "name": "Nombre del Proyecto",
+        "description": "Descripción",
+        "budget": "Presupuesto",
+        "start_date": "Fecha de Inicio",
+        "end_date": "Fecha de Fin",
+        "status": "Estado",
+        "view_details": "Ver Detalles"
+      }
+    }
+  },
+  "change-management": {
+    "title": "Gestión de Cambios",
+    "form": {
+      "justification-label": "Justificación de la solicitud",
+      "submit-button": "Enviar solicitud",
+      "cancel-button": "Cancelar"
+    },
+    "new-request-button": "Nueva solicitud de cambio",
+    "success-message": "Tu solicitud de cambio ha sido enviada.",
+    "no-requests": "Aún no hay solicitudes de cambio.",
+    "status": {
+      "pending": "Pendiente",
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "project-label": "ID del proyecto",
+    "check-date-label": "Revisado el",
+    "pending": "Pendiente de revisión",
+    "approve-button": "Aprobar",
+    "reject-button": "Rechazar",
+    "response-label": "Respuesta del contratista"
+  },
+  "toolbar": {
+    "client-area": "Área de Cliente",
+    "projects": "Proyectos Asociados",
+    "logout": "Cerrar sesión",
+    "profile": "Perfil"
+  },
   "navigation-toolbar": {
     "back": "Volver",
     "all_organizations": "Todas las Organizaciones"
@@ -20,6 +66,7 @@
     "password": "Contraseña",
     "submit": "Registrarse",
     "successful-register": "exitosamente registrado",
+    "go-to-login": "¿Ya tienes una cuenta? Inicia sesión aquí",
     "roles": {
       "title": "Rol",
       "choose-role": "Selecciona un rol",
@@ -139,6 +186,12 @@
     }
   },  
   "projects": {
+
+      "budget_pie": {
+        "title": "Distribución del Presupuesto",
+        "tasks": "Presupuesto en Tareas",
+        "remainder": "Presupuesto sin Asignar"
+      },
     "title": "Proyectos",
     "create": "Nuevo proyecto",
     "empty": "No hay proyectos disponibles",
@@ -154,7 +207,8 @@
       "planning": "Planificación"
     },
     "access_denied": "No tienes permiso para ver este proyecto",
-    "view_details": "Ver detalles",    "create_dialog": {
+    "view_details": "Ver detalles",
+    "create_dialog": {
       "title": "Crear nuevo proyecto",
       "name": "Nombre del proyecto",
       "name_placeholder": "Ingrese el nombre del proyecto",
@@ -162,7 +216,9 @@
       "description_placeholder": "Ingrese una descripción del proyecto",
       "budget": "Presupuesto",
       "start_date": "Fecha de inicio",
-      "end_date": "Fecha de finalización"
+      "end_date": "Fecha de finalización",
+      "contracting_entity_email": "Email de la entidad contratante",
+      "contracting_entity_email_placeholder": "Ingrese el correo electrónico de la entidad contratante"
     },
     "section": {
       "information": "Información",
@@ -171,11 +227,28 @@
       "settings": "Configuraciones",
       "working-team": "Equipo de Trabajo"
     },
-    "information": "Información del Proyecto",
+    "information": {
+      "back-to-projects": "Volver a proyectos",
+      "title": "Información general",
+      "description": "DESCRIPCIÓN",
+      "budget": "PRESUPUESTO",
+      "start-date": "FECHA DE INICIO",
+      "end-date": "FECHA DE FIN",
+      "contractor": "CONTRATISTA",
+      "contracting-entity-email": "CORREO DE LA ENTIDAD CONTRATANTE"
+    },
     "working-team": {
       "title": "Equipo de Trabajo",
       "add-member": {
         "title": "Agregar Miembro",
+        "organization-member": "Miembros de la Organización",
+        "organization-member-placeholder": "Selecciona un miembro de la organización",
+        "role": "Rol del Miembro",
+        "role-placeholder": "Selecciona un rol para el miembro",
+        "specialty": "Especialidad del Miembro",
+        "specialty-placeholder": "Selecciona una especialidad para el miembro",
+        "cancel": "Cancelar",
+        "add": "Agregar al Proyecto",
         "subtitle": "Agregar miembros al equipo del proyecto",
         "first-step": "Paso 1: Selecciona miembros para agregar al proyecto",
         "first-step-placeholder": "Buscar por nombre o correo electrónico",
@@ -201,9 +274,15 @@
       "reload-data": "Recargar Datos"
     },
     "settings": {
+      "name": "Nombre del Proyecto",
+      "name_placeholder": "Ingrese el nombre del proyecto",
       "title": "Configuración del Proyecto",
       "description": "Descripción del Proyecto",
       "description_placeholder": "Ingrese una descripción detallada del proyecto",
+      "end_date": "Fecha de Finalización",
+        "end_date_placeholder": "Seleccione la fecha de finalización del proyecto",
+        "start_date": "Fecha de Inicio",
+        "start_date_placeholder": "Seleccione la fecha de inicio del proyecto",
       "status": "Estado del Proyecto",
       "status_placeholder": "Seleccione el estado del proyecto",
       "update": "Actualizar Proyecto",
@@ -266,5 +345,167 @@
       "image_too_large": "La imagen es demasiado grande (máximo 2MB)"
     },
     "uploading_image": "Subiendo imagen..."
+  },
+  "schedule": {
+    "title": "Cronograma",
+    "add-milestone": "Agregar hito",
+    "not-milestones": "No hay hitos disponibles",
+    "create-milestone": {
+      "title": "Crear nuevo hito",
+      "name": "Nombre del hito",
+      "name-placeholder": "Ingrese el nombre del hito",
+      "description": "Descripción del hito",
+      "description-placeholder": "Ingrese la descripción del hito",
+      "start-date": "Fecha de inicio",
+      "start-date-placeholder": "Seleccione la fecha de inicio",
+      "end-date": "Fecha de fin",
+      "end-date-placeholder": "Seleccione la fecha de fin",
+      "key-point": "Los hitos son puntos clave en el cronograma de tu proyecto que marcan fases o entregables importantes.",
+      "cancel": "Cancelar",
+      "create": "Crear"
+    },
+    "delete-milestone": {
+      "title": "Confirmar eliminación",
+      "message": "¿Está seguro de que desea eliminar este hito? Esto también eliminará todas las tareas asociadas.",
+      "no": "No",
+      "yes": "Sí"
+    },
+    "milestone-card": {
+      "tasks": "Tareas",
+      "view-tasks": "Ver tareas"
+    },
+    "edit-milestone": {
+      "title": "Editar hito",
+      "name": "Nombre del hito",
+      "name-placeholder": "Ingrese el nombre del hito",
+      "description": "Descripción del hito",
+      "description-placeholder": "Ingrese la descripción del hito",
+      "start-date": "Fecha de inicio",
+      "start-date-placeholder": "Seleccione la fecha de inicio",
+      "end-date": "Fecha de fin",
+      "end-date-placeholder": "Seleccione la fecha de fin",
+      "key-point": "Los hitos te ayudan a organizar tareas en grupos o fases lógicas.",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "success": {
+        "title": "Éxito",
+        "updated": "Hito actualizado correctamente"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "No se pudo cargar la información del hito",
+        "updating_title": "Error",
+        "updating_message": "No se pudo actualizar el hito"
+      }
+    }
+  },
+  "tasks": {
+    "title": "Tareas",
+    "create": "Nueva tarea",
+    "no-tasks": "No hay tareas disponibles",
+    "close": "Cerrar",
+    "confirm_delete": "¿Estás seguro de que deseas eliminar esta tarea? Esta acción no se puede deshacer.",
+    "confirm_delete_title": "Confirmar eliminación",
+    "updated_success": "Tarea actualizada correctamente",
+    "created_success": "Tarea creada correctamente",
+    "error_loading": "Error al cargar las tareas",
+    "deleted_success": "Tarea eliminada correctamente",
+    "create-task": {
+      "title": "Crear nueva tarea",
+      "name": "Nombre de la tarea",
+      "name-placeholder": "Ingrese el nombre de la tarea",
+      "description": "Descripción de la tarea",
+      "description-placeholder": "Ingrese la descripción de la tarea",
+      "budget": "Presupuesto de la tarea",
+      "specialty": "Especialidad requerida",
+      "specialty-placeholder": "Seleccionar especialidad",
+      "responsible": "Responsable",
+      "responsible-placeholder": "Seleccionar responsable",
+      "responsible-optional": "Opcional. Puede dejarse vacío para asignar después.",
+      "start-date": "Fecha de inicio",
+      "end-date": "Fecha de fin",
+      "cancel": "Cancelar",
+      "create": "Crear tarea"
+    },
+    "edit-task": {
+      "title": "Editar tarea",
+      "name": "Nombre de la tarea",
+      "name-placeholder": "Ingrese el nombre de la tarea",
+      "description": "Descripción de la tarea",
+      "description-placeholder": "Ingrese la descripción de la tarea",
+      "budget": "Presupuesto de la tarea",
+      "specialty": "Especialidad requerida",
+      "specialty-placeholder": "Seleccione la especialidad",
+      "responsible": "Responsable",
+      "responsible-placeholder": "Seleccione el responsable",
+      "responsible-optional": "Opcional. Puede dejar este campo vacío para asignar después.",
+      "start-date": "Fecha de inicio",
+      "end-date": "Fecha de fin",
+      "save": "Guardar cambios",
+      "cancel": "Cancelar",
+      "success": {
+        "title": "Éxito",
+        "updated": "Tarea actualizada exitosamente"
+      },
+      "error": {
+        "loading_title": "Error",
+        "loading_message": "No se pudo cargar la información de la tarea",
+        "updating_title": "Error",
+        "updating_message": "No se pudo actualizar la tarea"
+      }
+    },
+    "task-card": {
+      "name": "Nombre de la tarea",
+      "description": "Descripción",
+      "budget": "Presupuesto",
+      "specialty": "Especialidad",
+      "status": "Estado",
+      "responsible": "Responsable",
+      "unassigned": "Sin asignar",
+      "assign-responsible": "Asignar responsable"
+    }
+  },
+  "footer": {
+    "learn-about": {
+      "title": "Acerca de",
+      "privacy-policy": "Política de Privacidad"
+    },
+    "contact-us": "Contáctanos",
+    "rights": "Todos los derechos reservados."
+  },
+  "terms-and-conditions": {
+    "title": "Términos y Condiciones",
+    "introduction": {
+      "title": "Introducción",
+      "content": "Este documento establece los términos y condiciones de uso para ProP GMS, desarrollado por el equipo de Galaxia Wonder. Al acceder y utilizar esta plataforma, usted acepta estos términos."
+    },
+    "use-of-the-service": {
+      "title": "Uso del Servicio",
+      "content": "El usuario se compromete a hacer un uso responsable y ético de la plataforma, respetando las funcionalidades ofrecidas y evitando el mal uso."
+    },
+    "user-responsibility": {
+      "title": "Responsabilidad del Usuario",
+      "content": "El usuario es responsable de la veracidad de los datos que proporciona y del uso adecuado de la plataforma."
+    },
+    "responsibility-of-the-development-team": {
+      "title": "Responsabilidad del Equipo de Desarrollo",
+      "content": "El equipo se compromete a velar por el correcto funcionamiento del software, realizar el mantenimiento continuo y actuar de manera profesional y ética en todas las etapas del desarrollo."
+    },
+    "privacy-and-data-protection": {
+      "title": "Privacidad y Protección de Datos",
+      "content": "Se garantiza la confidencialidad y seguridad de los datos personales del usuario, y no serán compartidos con terceros sin consentimiento. Se aplican principios de privacidad por diseño y cumplimiento de la normativa vigente."
+    },
+    "intellectual-property": {
+      "title": "Propiedad Intelectual",
+      "content": "Todos los derechos de diseño, desarrollo y contenido pertenecen al equipo de desarrollo, salvo indicación contraria."
+    },
+    "ethical-and-professional-principles": {
+      "title": "Principios Éticos y Profesionales",
+      "content": "Nuestro equipo se rige por el Código de Ética Profesional de la ACM/IEEE y el Colegio de Ingenieros del Perú (CIP). Promovemos:\nTransparencia en la ingeniería de software.\nCompromiso con la calidad, equidad y accesibilidad.\nRespeto por los derechos de los usuarios y la sociedad."
+    },
+    "modifications-and-contact": {
+      "title": "Modificaciones y Contacto",
+      "content": "Nos reservamos el derecho de actualizar estos términos. Para consultas, contáctenos en:"
+    }
   }
 }

@@ -91,4 +91,9 @@ export default {
 .no-orga {
   color: black;
 }
+.p-button {
+  background: var(--color-primary) ;
+  border-color: var(--color-primary);
+  color: #fff ;
+}
 </style>

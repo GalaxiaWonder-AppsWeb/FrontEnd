@@ -25,15 +25,27 @@
     <div class="field-row">
       <div class="p-field">
         <label for="phoneNumber">{{ $t('register.phone') }}</label>
-        <pv-input-text
-            id="phoneNumber"
-            v-model="phoneNumber"
-            type="tel"
-            inputmode="numeric"
-            pattern="^\+51[0-9]{9}$"
-            maxlength="12"
-            required
-        />
+        <div class="input-wrapper">
+          <span class="flag-prefix-inside">
+            <svg width="22" height="14" viewBox="0 0 24 16">
+              <rect width="8" height="16" fill="#D91023"/>
+              <rect x="8" width="8" height="16" fill="#fff"/>
+              <rect x="16" width="8" height="16" fill="#D91023"/>
+            </svg>
+            <span class="prefix">+51</span>
+          </span>
+          <pv-input-text
+              class="phone-input"
+              id="phoneNumber"
+              v-model="phoneDigits"
+              type="tel"
+              inputmode="numeric"
+              pattern="^[0-9]{9}$"
+              maxlength="9"
+              required
+              style="padding-left: 55px;"
+          />
+        </div>
 
       </div>
 
@@ -48,7 +60,7 @@
     <!-- Password -->
     <div class="p-field">
       <label for="password">{{ $t('register.password') }}</label>
-      <pv-password id="password" v-model="password" toggleMask :feedback="false" required />
+      <pv-password id="password" v-model="password"   :feedback="false" toggleMask :mask="true" required />
     </div>
 
     <!-- Rol -->
@@ -64,6 +76,13 @@
         type="submit"
         :disabled="!role || (['Contractor', 'Specialist'].includes(role) )"
     />
+
+    <!-- Enlace al login debajo del botón -->
+    <div class="login-link">
+      <router-link to="/login">
+        {{ $t('register.go-to-login') || "¿Ya tienes cuenta? Inicia sesión aquí" }}
+      </router-link>
+    </div>
   </form>
 
 </template>
@@ -84,7 +103,7 @@ export default {
     return {
       name: '',
       lastName: '',
-      phoneNumber: '',
+      phoneDigits: '',
       email: '',
       password: '',
       role: '', // If u want an empty field use it like this, but always use enum values later for security
@@ -95,13 +114,14 @@ export default {
   },
   methods: {
     async handleRegister() {
-      console.log('Register button clicked')
+
 
       this.message = ''
 
+      const fullPhone = '+51' + this.phoneDigits;
       const phoneRegex = /^\+51[0-9]{9}$/;
 
-      if (!phoneRegex.test(this.phoneNumber)) {
+      if (!phoneRegex.test(fullPhone)) {
         this.message = this.$t('register.errors.invalid-phone');
         this.messageType = 'error';
         return;
@@ -121,7 +141,7 @@ export default {
             this.name,
             this.lastName,
             this.email,
-            this.phoneNumber,
+            fullPhone,
         )
 
         const credentials = new Credentials(
@@ -142,7 +162,7 @@ export default {
 
         this.name = ''
         this.lastName = ''
-        this.phoneNumber = ''
+        this.phoneDigits = ''
         this.email = ''
         this.password = ''
         this.role = ''
@@ -239,6 +259,50 @@ label {
 
 ::v-deep(.p-password-input) {
   width: 100% !important;
+}
+
+.login-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+.login-link a {
+  color: #1976d2;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+.flag-prefix-inside {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.flag-prefix-inside svg {
+  vertical-align: middle;
+}
+.prefix {
+  margin-left: 0.25em;
+  font-weight: 500;
+  color: #fffdfd;
+}
+.phone-input, .input-wrapper .p-inputtext {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 80px; /* <--- AJUSTA aquí según tu UI */
+}
+
+.phone-input {
+  padding-left: 80px!important; /* Ajusta el padding para que no se superponga con el prefijo */
 }
 
 </style>

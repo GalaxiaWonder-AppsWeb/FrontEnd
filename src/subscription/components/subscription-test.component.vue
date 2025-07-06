@@ -27,7 +27,7 @@ export default {
         const res = await subscriptionService.create(subscription.toJSON())
         this.subscriptionId = res.id
         this.message = `Subscription created with ID: ${res.id}`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }
@@ -47,7 +47,7 @@ export default {
 
         this.workspaceId = res.id
         this.message = `Workspace created with ID: ${res.id}`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }
@@ -57,7 +57,7 @@ export default {
       try {
         const res = await workspaceService.getById(this.workspaceId)
         this.message = `Fetched workspace: ${res.id}`
-        console.log(res)
+
       } catch (err) {
         this.message = err.message
       }

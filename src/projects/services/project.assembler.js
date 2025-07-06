@@ -11,11 +11,9 @@ export class ProjectAssembler {    static toEntityFromResource(resource) {
             budget: resource.budget,
             startingDate: new Date(resource.startingDate),
             endingDate: new Date(resource.endingDate),
-            team: resource.team,
             organizationId: resource.organizationId,
             contractor: resource.contractor,
-            contractingEntityId: resource.contractingEntityId,
-            createdBy: resource.createdBy,
+            contractingEntityEmail: resource.contractingEntityEmail,
             createdAt: resource.createdAt ? new Date(resource.createdAt) : new Date()
         });
     }

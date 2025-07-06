@@ -10,7 +10,30 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import Tooltip from 'primevue/tooltip'; // Import the Tooltip directive
 
 
-import {SelectButton, InputText, Password, Button, Message, Select, Toolbar, Card, Dialog, ProgressSpinner, Tag, Calendar, InputNumber, DatePicker, ProgressBar, RadioButton, DataTable, Dropdown, MultiSelect, Column} from "primevue";
+import {
+    SelectButton,
+    Textarea,
+    InputText,
+    Password,
+    Button,
+    Message,
+    Select,
+    Toolbar,
+    Card,
+    Dialog,
+    ProgressSpinner,
+    Tag,
+    Calendar,
+    InputNumber,
+    DatePicker,
+    ProgressBar,
+    RadioButton,
+    DataTable,
+    Dropdown,
+    MultiSelect,
+    Column,
+    Checkbox
+} from "primevue";
 import DataView from 'primevue/dataview';
 
 import i18n from "./i18n.js";
@@ -50,8 +73,11 @@ app.component('pv-select-button', SelectButton)
    .component('pv-data-table', DataTable)
    .component('pv-dropdown', Dropdown)
    .component('pv-multi-select', MultiSelect)
+    .component('pv-textarea', Textarea)
    .component('pv-column', Column)
-   .component('pv-input-number', InputNumber);
+   .component('pv-input-number', InputNumber)
+    .component('pv-checkbox', Checkbox)
+    .component('pv-input-textarea', Textarea);
 
 // Exponer el servicio de toast globalmente para el guardia de navegación
 const toastService = app.config.globalProperties.$toast;

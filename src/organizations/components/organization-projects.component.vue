@@ -57,11 +57,8 @@ export default {
           personId: this.currentUser.personId
         });
 
-
-
         // Si tu backend retorna un array directamente, usa esto:
         this.projects = response;
-
         // Si tu backend retorna { data: [...] }
         // this.projects = response.data;
 

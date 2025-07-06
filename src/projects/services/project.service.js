@@ -5,7 +5,7 @@ export const projectService = createService('/project', {
     getAll:                         { verb: HttpVerb.GET },
     getById:                        { verb: HttpVerb.GET, path: ':id', fullPath: true },
     getByCreatedBy:                 { verb: HttpVerb.GET },
-    getByContractingEntity:         { verb: HttpVerb.GET, path: 'contracting-entity/:id', fullPath: true },
+    getByContractingEntity:         { verb: HttpVerb.GET, path: 'contracting-entity/:id'},
     getByPersonAndOrganizationId:   { verb: HttpVerb.GET, path: 'by-person-and-organization/:personId/:organizationId', fullPath: true },
     create:                         { verb: HttpVerb.POST },
     updateName:                     { verb: HttpVerb.PATCH, path: ':id/name' },

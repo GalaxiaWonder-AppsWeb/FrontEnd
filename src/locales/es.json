@@ -6,6 +6,7 @@
     "projects": {
       "title": "Proyectos",
       "loading": "Cargando proyectos...",
+      "no_projects": "No tienes proyectos asociados.",
       "card": {
         "name": "Nombre del Proyecto",
         "description": "Descripción",

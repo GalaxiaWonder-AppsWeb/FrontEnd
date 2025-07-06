@@ -6,6 +6,7 @@
     "projects": {
       "title": "Projects",
       "loading": "Loading projects...",
+      "no_projects": "No projects available",
       "card": {
         "name": "Project Name",
         "description": "Description",

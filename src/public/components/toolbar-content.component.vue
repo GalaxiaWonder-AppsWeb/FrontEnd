@@ -110,7 +110,7 @@ export default {
     }
   },
   async mounted() {
-    this.checkAuthentication();
+    await this.checkAuthentication();
     // Cerrar menú de perfil al hacer clic fuera
     document.addEventListener('click', this.handleClickOutside);
 
@@ -127,7 +127,7 @@ export default {
 
     // Verificar el rol del usuario cuando se crea el componente
     if (this.inOrganizationView) {
-      this.isContractor = this.userHasRole('Contractor');
+      this.isContractor = await this.userHasRole('Contractor');
     }
 
     if (this.inProjectView) {
@@ -186,43 +186,40 @@ export default {
      */
     async userHasRole(role) {
       const user = JSON.parse(localStorage.getItem("user"));
-      if (!user) {
+      if (!user || !this.route.params.orgId) {
         return false;
       }
-
-      if (role === 'Contractor' && this.inOrganizationView && this.route.params.orgId && user.personId) {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/${this.route.params.orgId}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token ? { Authorization: `Bearer ${token}` } : {})
-            }
-          });
-          if (response.ok) {
-            const organization = await response.json();
-            if (organization && organization.createdBy === user.personId) {
-              if (!user.activeOrganizationRole || user.activeOrganizationRole !== 'Contractor') {
-                user.activeOrganizationRole = 'Contractor';
-                localStorage.setItem('user', JSON.stringify(user));
-              }
-              return true;
-            }
-          } else {
-            // LOG GENTIL
-            console.warn(`No se pudo obtener la organización (${response.status}): ${url}`);
-            return false;
+      // Siempre consulta la organización
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${import.meta.env.VITE_PROPGMS_API_URL}/organization/${this.route.params.orgId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
           }
-        } catch (error) {
-          console.error('Error al verificar si el usuario es creador:', error);
+        });
+        if (response.ok) {
+          const organization = await response.json();
+          // Comparar con el creador
+          let detectedRole = 'Worker';
+          if (organization && organization.createdBy === user.personId) {
+            detectedRole = 'Contractor';
+          }
+          // Guardar SIEMPRE el rol actual en localStorage
+          user.activeOrganizationRole = detectedRole;
+          user.activeOrganizationId = organization.id;
+          localStorage.setItem('user', JSON.stringify(user));
+          // Retorna true solo si coincide con el buscado
+          return detectedRole === role;
+        } else {
+          console.warn(`No se pudo obtener la organización (${response.status})`);
           return false;
         }
+      } catch (error) {
+        console.error('Error al verificar el rol en la organización:', error);
+        return false;
       }
-
-      return user.activeOrganizationRole === role;
     },
-
-
     /**
      * Verifica si el usuario actual tiene el rol especificado en el proyecto activo
      * @param {string} role - El rol a verificar (Coordinator, Specialist)

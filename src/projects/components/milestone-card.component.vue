@@ -41,13 +41,19 @@ const progressPercentage = computed(() => {
 const handleEditClick = () => {
   emit('edit', props.milestone);
 };
+
+const isContractor = computed(() => {
+  if (typeof window === 'undefined') return false; // SSR check
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user.activeOrganizationRole === 'Contractor';
+});
 </script>
 
 <template>
   <pv-card class="milestone-card">
     
     <template #title>
-      <div class="card-title-container">
+      <div class="card-title-container" v-if="isContractor">
         <h3 class="milestone-title">{{ milestone.name }}</h3>
         <div class="milestone-actions">          <pv-button 
             icon="pi pi-pencil" 

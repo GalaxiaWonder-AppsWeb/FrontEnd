@@ -22,7 +22,6 @@ export default {
   },
   created() {
     localStorage.setItem('organization', JSON.stringify({id: this.organization.id}));
-
   }
 }
 </script>

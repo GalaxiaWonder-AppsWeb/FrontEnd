@@ -66,6 +66,12 @@ const responsibleName = computed(() => {
   return `ID: ${props.task.responsible}`;
 });
 
+const isContractor = computed(() => {
+  if (typeof window === 'undefined') return false; // SSR check
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user.activeOrganizationRole === 'Contractor';
+});
+
 onMounted(() => {
   loadResponsiblePerson();
 });
@@ -75,7 +81,7 @@ onMounted(() => {
     <template #title>
       <div class="card-header">
         <span class="task-title">{{ props.task.name }}</span>
-        <div class="card-icons">
+        <div class="card-icons" v-if="isContractor">
           <pv-button icon="pi pi-pencil" text rounded @click="emit('edit', props.task)" />
           <pv-button icon="pi pi-trash" text rounded severity="danger" @click="emit('delete', props.task)" />
         </div>

@@ -43,7 +43,7 @@ export default {
   computed: {
     isContractor() {
       const user = JSON.parse(localStorage.getItem('user'))
-      return user?.userType === 'TYPE_WORKER'
+      return user?.activeOrganizationRole === 'Contractor'
     },
     pieData() {
       const remainder = Math.max(this.projectBudget - this.totalTaskBudget, 0)

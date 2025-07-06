@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import MilestoneList from './milestone-list.component.vue';
 import MilestoneCard from './milestone-card.component.vue';
@@ -11,6 +11,24 @@ import { milestoneService } from '../services/milestone.service.js';
 
 // Obtener la ruta actual
 const route = useRoute();
+
+const isContractor = ref(false);
+
+function updateContractorRole() {
+  try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    isContractor.value = user.activeOrganizationRole === 'Contractor';
+  } catch {
+    isContractor.value = false;
+  }
+}
+
+// Llama la función al cargar
+updateContractorRole();
+
+// Haz que se actualice dinámicamente si cambia el localStorage
+window.addEventListener('storage', updateContractorRole);
+watchEffect(updateContractorRole);
 
 const props = defineProps({
   projectId: {
@@ -154,15 +172,14 @@ const handleCreateMilestone = async (milestone) => {
       </div>
       
       <!-- Actions -->
-      <div class="header-actions">
+      <div class="header-actions" >
         <!-- Add milestone button (only on milestones tab) -->
         <pv-button 
-          v-if="activeTab === 'milestones'"
+          v-if="isContractor && activeTab === 'milestones'"
           :label="$t('schedule.add-milestone')"
           icon="pi pi-plus" 
           @click="openCreateMilestone" 
         />
-
       </div>
     </div>
     

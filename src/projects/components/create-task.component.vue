@@ -109,7 +109,7 @@ export default {
   },
   watch: {
     visible(val) {
-      console.log('[DEBUG] Watcher visible:', val)
+
       if (val) {
         this.resetForm()
         this.loadMembers()
@@ -117,22 +117,22 @@ export default {
     }
   },
   mounted() {
-    console.log('[DEBUG] mounted - projectId:', this.projectId)
+
     this.loadMembers()
   },
   methods: {
     async loadMembers() {
       try {
-        console.log('[DEBUG] projectId:', this.projectId)
+
         const res = await projectTeamMemberService.getProjectTeamMembersByProjectId({ projectId: this.projectId })
-        console.log('[DEBUG] Respuesta de miembros del backend:', res)
+
         // Transforma la data a lo que necesitas para el dropdown
         this.members = (res || []).map(m => ({
           personId: m.personId,
           fullName: `${m.firstName} ${m.lastName}` + (m.specialty ? ` (${m.specialty})` : ''),
           specialty: m.specialty
         }))
-        console.log('[DEBUG] members procesados para dropdown:', this.members)
+
       } catch (e) {
         this.error = 'Error cargando miembros del proyecto'
       }
@@ -178,7 +178,7 @@ export default {
     }
   },
   created() {
-    console.log('[DEBUG] created - projectId:', this.projectId)
+
     if (!this.projectId) {
       console.warn('[CreateTaskComponent] projectId no recibido o es undefined');
     }

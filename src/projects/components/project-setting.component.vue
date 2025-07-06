@@ -206,7 +206,7 @@ export default {
 
         this.startDate = res.startDate ? new Date(res.startDate) : null;
         this.endDate = res.endDate ? new Date(res.endDate) : null;
-        console.log('Project loaded:', res);
+
 
         // Llenar los campos del formulario con los valores actuales
         this.name = res.projectName || res.name || '';

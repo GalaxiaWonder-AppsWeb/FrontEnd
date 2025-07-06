@@ -132,7 +132,7 @@ export default {
       try {
         const response = await taskService.getByMilestoneId({ milestoneId: Number(this.milestoneId) })
         this.tasks = Array.isArray(response) ? response : []
-        console.log('Tareas:', this.tasks);
+
       } catch (e) {
         this.error = e.message || 'Error al cargar tareas'
       } finally {

@@ -28,10 +28,10 @@ export default {
     const projId = this.$route.params.projectId;
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     this.currentUserId = user.personId || user.id || null;
-    console.log(this.currentOrgRole, 'XD')
+
     this.currentProjectRole = user.activeProjectRole || null;
-    console.log('User data:', user);
-    console.log('Current user role:', this.currentUserRole);
+
+
 
     this.organizationId = orgId ? Number(orgId) : 1
     this.projectId = projId ? Number(projId) : 1
@@ -124,7 +124,7 @@ export default {
   computed: {
     currentOrgRole() {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
-      console.log('XD', user.activeOrganizationRole, 'XD')
+
       return user.activeOrganizationRole || null;
 
     }

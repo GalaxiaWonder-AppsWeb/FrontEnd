@@ -286,7 +286,7 @@ export default {
         if (isAuth) {
           // Obtener la información del usuario actual
           this.currentUser = authService.getCurrentUser();
-          console.log(this.currentUser)
+
         }
       } catch (error) {
         console.error("Error checking authentication:", error);

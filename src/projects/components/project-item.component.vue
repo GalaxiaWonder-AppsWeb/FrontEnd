@@ -23,7 +23,7 @@ export default {
     personId: String
   },
   created() {
-    console.log(this.project.id)
+
     localStorage.setItem('project', JSON.stringify({id: this.project.id}));
   }
 }

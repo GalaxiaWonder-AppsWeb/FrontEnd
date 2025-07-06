@@ -47,7 +47,7 @@ export default {
   },
   emits: ['edit', 'remove'],
   created() {
-    console.log('ProjectMemberCard created', this.member, this.person)
+
   }
 }
 </script>

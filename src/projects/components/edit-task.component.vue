@@ -86,7 +86,7 @@ export default {
     }
   },
   created() {
-    console.log('[DEBUG] created - projectId12:', this.projectId)
+
   },
   watch: {
     visible(val) {
@@ -107,20 +107,20 @@ export default {
     }
   },
   mounted() {
-    console.log('[DEBUG] mounted - projectIdAMOR:', this.projectId)
+
     this.loadMembers()
   },
   methods: {
     async loadMembers() {
       try {
         const res = await projectTeamMemberService.getProjectTeamMembersByProjectId({ projectId: this.projectId })
-        console.log('[DEBUG] Respuesta de miembros del backend:', res)
+
         this.members = (res || []).map(m => ({
           personId: m.personId,
           fullName: `${m.firstName} ${m.lastName}` + (m.specialty ? ` (${m.specialty})` : ''),
           specialty: m.specialty
         }))
-        console.log('[DEBUG] members procesados para dropdown:', this.members)
+
       } catch (e) {
         this.error = this.$t ? this.$t('tasks.error_loading_members') : 'Error cargando miembros del proyecto';
       }

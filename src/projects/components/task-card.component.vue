@@ -21,10 +21,10 @@ const loadResponsiblePerson = async () => {
   try {
     loadingResponsible.value = true;
     const person = await personService.getById(props.task.personId);
-    console.log('Persona responsable:', person);
+
     if (person) {
       responsiblePerson.value = person;
-      console.log('Datos del responsable cargados:', responsiblePerson.value);
+
     }
   } catch (error) {
     console.error('Error al cargar los datos del responsable:', error);

@@ -84,7 +84,7 @@ export default {
       try {
         const response = await organizationService.getAllMembers(this.organizationId);
         const members = Array.isArray(response?.data) ? response.data : response;
-        console.log("members", members);
+
 
         // Mapea y normaliza la respuesta según lo que espera el card
         this.members = members.map(m => ({

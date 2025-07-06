@@ -114,7 +114,7 @@ export default {
   },
   methods: {
     async handleRegister() {
-      console.log('Register button clicked')
+
 
       this.message = ''
 

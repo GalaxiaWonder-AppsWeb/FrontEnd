@@ -1,10 +1,5 @@
 <template>
   <footer class="footer">
-    <!-- Mobile Only Brand -->
-    <div class="footer-brand mobile-only">
-      <img src="../../assets/images/icons/product_logo.svg" alt="Logo ProP GMS" class="footer-logo" />
-      <p>Galaxia Wonder</p>
-    </div>
 
     <div class="footer-columns">
       <!-- Desktop Only Brand -->
@@ -32,15 +27,6 @@
         </a>
       </div>
     </div>
-
-    <div class="footer-bottom">
-      <p>Copyright &copy; 2025 Galaxia Wonder. {{ $t('footer.rights') }}</p>
-      <div class="footer-social">
-        <a href="#"><i class="pi pi-camera"></i></a>
-        <a href="#"><i class="pi pi-times"></i></a>
-        <a href="#"><i class="pi pi-briefcase"></i></a>
-      </div>
-    </div>
     <TermsAndConditionsModal :visible="showModal" @close="showModal = false" />
   </footer>
 </template>
@@ -61,101 +47,84 @@ export default {
 
 <style scoped>
 .footer {
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  min-width: 100vw;
-  z-index: 100;
-  background: #1c2331;
-  color: #fff;
-  /* No uses position fixed aquí */
-  box-shadow: 0 -2px 14px #00000025;
+  padding: 2rem;
+  background-color: #22396B;
+  color: white;
 }
-.footer-logo {
-  height: 44px;
-  margin-bottom: 0.6rem;
-}
-.footer-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
+
 .footer-columns {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  max-width: 1050px;
-  margin: 0 auto;
+  gap: 2rem;
+  align-items: flex-start;
 }
-.footer-column {
-  flex: 1;
-  min-width: 220px;
-  margin: 0 1rem 2rem 1rem;
-}
-.footer-column h4 {
-  font-size: 1.07em;
-  margin-bottom: 0.6em;
-  font-weight: 600;
-  color: #ffd600;
-}
-.footer-column a {
-  display: block;
-  color: #b3b9c9;
-  margin-bottom: 0.6em;
-  text-decoration: none;
-  font-size: 0.97em;
-  transition: color 0.2s;
-}
-.footer-column a:hover {
-  color: #fff;
-}
-.footer-bottom {
-  border-top: 1px solid #33394c;
-  padding-top: 1.2rem;
+
+/* Brand column */
+.footer-brand {
+  flex: 1 1 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 0.98em;
+  text-align: center;
 }
-.footer-social {
-  margin-top: 0.5rem;
+
+.footer-logo {
+  width: 80px;
+  margin-bottom: 0.5rem;
 }
-.footer-social a {
-  margin: 0 0.4em;
-  color: #ffd600;
-  font-size: 1.35em;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.footer-social a:hover {
-  color: #fff;
-}
-.mobile-only {
-  display: none;
-}
-.desktop-only {
+
+/* Individual column */
+.footer-column {
+  flex: 1 1 200px;
   display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: flex-start;
+  text-align: left;
 }
-/* Responsive: Show/hide mobile/desktop brand */
-@media (max-width: 700px) {
+
+.footer-column h4 {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.footer-column a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: opacity 0.2s;
+}
+
+.footer-column a:hover {
+  opacity: 0.7;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
   .footer-columns {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
   }
-  .footer-brand.desktop-only {
-    display: none;
+
+  .footer-brand,
+  .footer-double-column {
+    flex: 1 1 0;
+    max-width: 50%;
   }
-  .footer-brand.mobile-only {
-    display: flex;
+
+  .footer-brand {
+    align-items: flex-start;
+    text-align: left;
   }
-}
-@media (min-width: 701px) {
-  .footer-brand.desktop-only {
-    display: flex;
+
+  .footer-double-column {
+    justify-content: space-between;
   }
-  .footer-brand.mobile-only {
-    display: none;
+
+  .footer-column {
+    align-items: flex-start;
+    text-align: left;
   }
 }
 </style>
+

@@ -81,7 +81,7 @@ export default {
       <p class="value">{{ organization.legalName }}</p>
     </div>
     <div class="info-block">
-      <h3 class="label">{{ $t('organization.edit-organization.commercial  -name')}}</h3>
+      <h3 class="label">{{ $t('organization.edit-organization.commercial-name')}}</h3>
       <p class="value">{{ organization.commercialName }}</p>
     </div>
     <div class="info-block">

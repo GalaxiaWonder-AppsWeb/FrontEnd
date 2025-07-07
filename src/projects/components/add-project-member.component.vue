@@ -96,8 +96,8 @@ export default {
       messageType: '', // 'success' or 'error'
       ProjectRole, // para usar en template
       roleOptions: [
-        { label: 'Coordinador', value: ProjectRole.COORDINATOR },
-        { label: 'Especialista', value: ProjectRole.SPECIALIST }
+        { label: this.$t('roles.coordinator'), value: ProjectRole.COORDINATOR },
+        { label: this.$t('roles.specialist'), value: ProjectRole.SPECIALIST }
       ]
     };
   },

@@ -17,17 +17,22 @@
         </div>
       </template>
       <template #end>
-        <pv-button icon="pi pi-bell" text rounded severity="warning" />       
-        <button @click="toggleProfileMenu" class="user-profile-button">          
-          <img 
-            v-if="currentUser && currentUser.profilePicture" 
-            :src="currentUser.profilePicture" 
-            @error="handleAvatarLoadError"
-            alt="Profile Picture" 
-            class="profile-avatar-image" 
+        <pv-button icon="pi pi-bell" text rounded severity="warning" />
+        <button @click="toggleProfileMenu" class="user-profile-button">
+          <!-- Si hay imagen de perfil -->
+          <img
+              v-if="currentUser && currentUser.profilePicture"
+              :src="currentUser.profilePicture"
+              @error="handleAvatarLoadError"
+              alt="Profile Picture"
+              class="profile-avatar-image"
           />
+
+          <!-- Si no hay imagen de perfil, mostrar un ícono por defecto -->
           <div v-else class="profile-avatar-placeholder">
-            {{ getUserInitials() }}
+            <i class="pi pi-user" style="color: #999;"></i> <!-- Icono por defecto -->
+            <!-- O si prefieres las iniciales del usuario -->
+            <!-- {{ getUserInitials() }} -->
           </div>
         </button>
         <div v-if="showProfileMenu" class="profile-menu" ref="profileMenu">          

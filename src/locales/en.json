@@ -107,7 +107,7 @@
         "cancel": "Cancel"
       }
     },    "info-organization": {
-      "business-name": "Business Name",
+      "business-name": "Company Name",
       "ruc": "RUC",
       "creation-date": "Creation Date",
       "contractor": "Contractor"
@@ -151,7 +151,7 @@
       }
     },"edit-organization": {
       "title": "Edit organization",
-      "legal-name": "Legal Name",
+      "legal-name": "Company Name",
       "commercial-name": "Commercial Name",
       "change-settings": "Change settings",
       "danger-zone": "Danger Zone",
@@ -510,5 +510,9 @@
       "title": "Modifications and Contact",
       "content": "We reserve the right to update these terms. For questions, please contact us at:"
     }
+  },
+  "roles": {
+    "coordinator": "Coordinator",
+    "specialist": "Specialist"
   }
 }

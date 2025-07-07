@@ -103,7 +103,7 @@
         "cancel": "Cancelar"
       }
     },    "info-organization": {
-      "business-name": "Nombre del negocio",
+      "business-name": "Razón Social",
       "ruc": "RUC",
       "creation-date": "Fecha de Creación",
       "contractor": "Contratista"
@@ -141,8 +141,8 @@
         "rejected": "Rechazada"      }
     },    "edit-organization": {
       "title": "Editar organización",
-      "legal-name": "Nombre legal",
-      "commercial-name": "Nombre comercial",
+      "legal-name": "Razón Social",
+      "commercial-name": "Nombre Comercial",
       "change-settings": "Guardar cambios",
       "danger-zone": "Zona de Peligro",
       "delete": "Eliminar organización",
@@ -508,5 +508,9 @@
       "title": "Modificaciones y Contacto",
       "content": "Nos reservamos el derecho de actualizar estos términos. Para consultas, contáctenos en:"
     }
+  },
+  "roles": {
+    "coordinator": "Coordinador",
+    "specialist": "Especialista"
   }
 }
